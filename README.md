@@ -1,9 +1,9 @@
 # name of the software
 
 ### Collaborators:
-* [Cynthia Phan](https://github.com/cphan98)
+* [Hoang-Thi-Thi Cynthia Phan](https://github.com/cphan98)
 * [Trinh Ngo](https://github.com/m3m3h)
-* [Nathan Razafindrakoto](https://github.com/NathanRazaf)
+* [Nathan Riantsoa Razafindrakoto](https://github.com/NathanRazaf)
 * [Laura Cadillo Manrique](https://github.com/lauracadillo)
 
 This software coded in Java is a command-line based e-commerce platform destined to students wanting to buy school stuff at a very competitive price. 
