@@ -1,4 +1,4 @@
-# name of the software
+# UniShop
 
 ### Collaborators:
 * [Hoang-Thi-Thi Cynthia Phan](https://github.com/cphan98)
