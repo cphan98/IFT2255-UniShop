@@ -94,6 +94,30 @@
         <li></li>
         <li></li>
         <li></li>
+        <li>
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Supprimer son compte de la plateforme<br>
+                <span style="font-weight: bold;">But :</span> Si l’utilisateur n’est pas satisfait par la plateforme, il doit pouvoir supprimer son compte et toutes les informations qu’il a fournis dedans<br>
+                <span style="font-weight: bold;">Préconditions :</span> Le compte existe<br>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), revendeur (principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. Le client se connecte à son compte<br>
+                2. Il va dans la section “Paramètres”<br>
+                3. Il clique sur “Supprimer son compte”<br>
+                4. Il retape son mot de passe<br>
+                5. Il clique sur “Confirmer”<br>
+                6. Le compte est supprimé<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                5a. Le client s’est trompé de mot de passe<br>
+                &emsp;5a.1. Le système indique que le mot de passe est incorrect<br>
+                &emsp;5a.2. Retour à l’étape 4<br>
+                6a. Le système indique que le compte ne peut pas être supprimé car l’utilisateur a encore des commandes en cours ou des achats/frais à payer<br>
+                &emsp;6a.1. Le client règle toutes ses factures<br>
+                &emsp;6a.2. Le client termine ou annule toutes ses commandes<br>
+                &emsp;6a.3. Retour à l’étape 2<br>
+                <span style="font-weight: bold;">Postconditions :</span> Le compte est supprimé de la base de données<br>
+            </p>
+        </li>
 
     </ol>
     </body>
