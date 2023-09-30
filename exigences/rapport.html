@@ -45,9 +45,6 @@
                 </tr>
             </table>
         </div>
-
-        <h1 style="text-align: center;">Rapport</h1>
-
         <br>
       
         <!-- Cas d'utilisation -->
@@ -157,12 +154,263 @@
                     <span style="font-weight: bold;">Postconditions :</span> le système affiche « Envoyé » à l’écran lorsque la requête du revendeur a été envoyée à l’acheteur avec succès. <br>
                 </p>
             </li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
+            <li>
+              <!-- Laura -->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Retourner un/des produit(s)    
+                <br>
+                <span style="font-weight: bold;">But :</span> Permettre à un acheteur de retourner un ou plusieurs produits achetés en cas d’avoir un problème avec eux.
+                <br>
+                <span style="font-weight: bold;">Préconditions :</span> 
+                <ul>
+                    <li>l’acheteur est connecté à son compte UniShop</li>
+                    <li>Pas plus de 30 jours sont écoulés depuis l’achat</li>
+                    <li> L’acheteur a reçu un produit </li>
+                </ul>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. L’acheteur se connecte à son compte <br>
+                2. L’acheteur clique sur son profil.<br>
+                3. L’acheteur clique sur le bouton « Historique de commandes ».<br>
+                4. L’acheteur sélectionne la commande contenant le produit à retourner  <br>
+                5. Le système demande la raison du retour (mauvais produit reçu, produit défectueux, changement d'idée) <br>
+                6. L‘acheteur sélectionne l'option qui correspond à sa situation <br>
+                7. L’acheteur fournit les détails nécessaires sur le produit à retourner. <br>
+                8. L'acheteur est informé des étapes suivantes pour le retour <br>
+                9. L’acheteur recevra un remboursement pour le montant des articles retournés à son mode de paiement d’origine.<br>
+                10. Le système demande à l'acheteur de se présenter à la poste pour le retourner à l'entrepôt<br>
+                11. Le système envoie un numéro de livraison et un lien pour suivre l'état du colis <br>
+                12. Le revendeur envoie une confirmation à l'acheteur une fois qu’il reçoit le produit. <br>
+                13. L’inventaire du revendeur est mis à jour. <br>
+                <br>
+                
+                <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                13a. Le produit est retourné en raison d’un défaut     <br>
+                &emsp;13a.1 Le produit est retirée de l’inventaire<br>
+                &emsp;13a.2 Le scenario se termine<br>
+                <span style="font-weight: bold;">Postconditions :</span>  L’inventaire du revendeur est mis à jour.<br>
+            </p>
+            </li>
+            <li>
+              <!-- Laura -->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span>  Évaluer un produit   
+                <br>
+                <span style="font-weight: bold;">But :</span> Permettre  à l'acheteur de laisser une évaluation et des commentaires sur un produit qu'il a acheté afin de contribuer à l'amélioration de l'expérience d’achat et informer les autres acheteurs sur certains produits 
+                <br>
+                <span style="font-weight: bold;">Préconditions :</span> 
+                <ul>
+                    <li>L’acheteur est connecté à son compte </li>
+                    <li>L’acheteur a fait au moins un achat sur la plateforme </li>   
+                </ul>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. L’acheteur se connecter à son compte <br>
+                2. L’acheteur accède à la section mes achats pour trouver la liste des produits qu'il a achetés <br>
+                3. L’acheteur sélectionne le produit qu'il souhaite évaluer <br>
+                4. Le système affiche la page du produit avec des options pour laisser une évaluation et des commentaires <br>
+                5. L’acheteur redirige une évaluation en attribuant une note (x étoiles sur cinq) au produit <br>
+                6. L’acheteur a la possibilité de ecrire un commentaire détaillé  <br>
+                7. L’acheteur soumettre son évaluation et ses commentaires  <br>
+                8. Le système enregistre l'évaluation et les commentaires <br>
+                
+                
+                <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                6a. L'acheteur décide de ne pas laisser de commentaire <br>
+                &emsp;6a.1 L’acheteur soumet uniquement son évaluation     <br>
+                &emsp;6a.2 Le système enregistre uniquement l'évaluation <br>
+                &emsp;6a.3  Le scénario recommence à l'étape 7  <br>
+              
+                8a. L’acheteur change d’avis après avoir soumis son évaluation<br>
+                &emsp;8a.1 L’acheteur sélectionne l'évaluation qu’il souhaite changer <br>
+                &emsp;8a.2  L’acheteur sélectionne “modifier evaluation” <br>
+                &emsp;8a.3  L’acheteur met à jour son évaluation.<br>
+                &emsp;8a.4  Le scénario se termine.<br>
+            
+                8b. L'acheteur souhaite supprimer son évaluation    <br>
+                &emsp;8b.1 L’acheteur sélectionne l'évaluation qu’il souhaite supprimer 
+                &emsp;8b.2 L’acheteur sélectionne “éliminer evaluation” <br>
+                &emsp;8b.3 Le scénario se termine. <br>
+            
+                <span style="font-weight: bold;">Postconditions :</span>  L'évaluation et les commentaires sont associes au produit dans la base de données    .<br>
+            </p>
+            </li>
+            <li>
+              <!-- Laura -->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span>  Échanger un/des produit(s)   
+                <br>
+                <span style="font-weight: bold;">But :</span> Permettre à un acheteur d'échanger un ou plusieurs produits achetés en cas d’avoir un problème avec eux.
+                <br>
+                <span style="font-weight: bold;">Préconditions :</span> 
+                <ul>
+                    <li>l’acheteur est connecté à son compte UniShop</li>
+                    <li>Pas plus de 30 jours sont écoulés depuis l’achat</li>
+                    <li> L’acheteur a reçu un produit </li>
+                </ul>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. L’acheteur se connecte à son compte <br>
+                2. L’acheteur clique sur son profil.<br>
+                3. L’acheteur clique sur le bouton « Historique de commandes ».<br>
+                4. L’acheteur sélectionne la commande contenant le produit à échanger  <br>
+                5. Le système demande la raison de l'échange (mauvais produit reçu, produit défectueux, changement d'idée) <br>
+                6. L‘acheteur sélectionne l'option qui correspond à sa situation <br>
+                7. L’acheteur fournit les détails nécessaires sur le produit à retourner. <br>
+                8. L'acheteur est informé des étapes suivantes pour le retour <br>
+                9. L’acheteur paie la différence de prix entre les produits <br>
+                10. Le système met à jour la commande et génère un nouveau numéro de suivi pour la livraison du produit de replacement <br>
+                11. Le système demande à l'acheteur de se présenter à la poste pour le retourner à l'entrepôt<br>
+                12. L’acheteur peut suivre l'état de retour ou d'échange <br>
+                13. Le revendeur envoie une confirmation à l'acheteur une fois qu’il  reçoit le produit <br>
+                <br>
+                
+                <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                8a. Il n'y a pas assez de produits pour faire l'échange.    <br>
+                &emsp;8a.1 Le système affiche les produits liés au produit souhaité    e<br>
+                &emsp;8a.2 L'acheteur choisit le produit qui lui convient le mieux ou indique qu'il préfère un remboursement<br>
+                &emsp;8a.3 le scenario recommence à l'étape 9
+            
+                <span style="font-weight: bold;">Postconditions :</span>  L’inventaire du revendeur est mis à jour.<br>
+            </p>
+            </li>
+            <li>
+              <!-- Laura -->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span>  Rembourser un/des produit(s)   
+                <br>
+                <span style="font-weight: bold;">But :</span> Permettre  au revendeur de traiter les remboursements pour les produits retournes par les acheteurs.
+                <br>
+                <span style="font-weight: bold;">Préconditions :</span> 
+                <ul>
+                    <li>le revendeur est connecté à son compte</li>
+                    <li> un acheteur a retourné un produit </li>   
+                    <li>le revendeur a reçu le produit retourné </li>
+                </ul>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. Le revendeur se connecte à son compte  <br>
+                2. Le revendeur sélectionné la commande contenant le produit retourné par l’acheteur <br>
+                3. Le revendeur choisit l’option rembourser<br>
+                4. Le système calcule le montant du remboursement en fonction du prix du produit retourné <br>
+                5. Le revendeur confirme le remboursement<br>
+                6. L’acheteur est notifié du remboursement effectué <br>
+                7. L’acheteur reçoit le remboursement dans son compte <br>
+                
+                <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                4a. L'acheteur a acheté le produit en solde et il ne bénéficie plus de réduction    <br>
+                &emsp;4a.1 Le système choisit de rembourser uniquement le prix paye en solde    e<br>
+                &emsp;4a.2 Le scénario recommence à l'étape 5  <br>
+
+                7a. L'acheteur ne reçoit pas le remboursement intégral sur son compte<br>
+                &emsp;7a.1 L'acheteur informe le revendeur qu'il y a eu une erreur <br>
+                &emsp;7a.2 le revendeur est notifie d’un erreur  <br>
+                &emsp;7a.3 le scenario recommence à l'étape 4
+            
+                <span style="font-weight: bold;">Postconditions :</span>  Le solde du compte bancaire de l'acheteur est mis à jour.<br>
+            </p>
+            </li>
+            <li>
+              <!-- Laura -->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span>  Évaluer un revendeur  
+                <br>
+                <span style="font-weight: bold;">But :</span> Permettre  à l'acheteur de laisser une évaluation et des commentaires sur un revendeur avec lequel il a eu une expérience d’achat afin de contribuer à l'amélioration de l'expérience d’achat et informer les autres acheteurs sur certains revendeurs.  
+                <br>
+                <span style="font-weight: bold;">Préconditions :</span> 
+                <ul>
+                    <li>L’acheteur est connecté à son compte </li>
+                    <li>L’acheteur a fait au moins un achat auprès du revendeur qu’il souhaite évaluer  </li>   
+                </ul>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. L’acheteur se connecter à son compte <br>
+                2. L’acheteur accède à la section mes achats pour trouver la liste des produits qu'il a acheté auprès du revendeur qu'il souhaite évaluer  <br>
+                3. L’acheteur sélectionne le revendeur qu'il souhaite évaluer <br>
+                4. Le système affiche la page d’information du revendeur avec des options pour laisser une évaluation et des commentaires <br>
+                5. L’acheteur redirige une évaluation en attribuant une note (x étoiles sur cinq) au revendeur <br>
+                6. L’acheteur a la possibilité de ecrire un commentaire détaillé  <br>
+                7. L’acheteur soumettre son évaluation et ses commentaires  <br>
+                8. Le système enregistre l'évaluation et les commentaires associés au revendeur <br>
+                
+                
+                <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                3a. Le revendeur a supprimé son compte
+		        &emsp;3a.1 Le système affiche que le revendeur n’est plus inscrit à la plateforme
+		        &emsp;3a.2 Le système renvoie l’utilisateur à l’étape 2
+
+                6a. L'acheteur décide de ne pas laisser de commentaire <br>
+                &emsp;6a.1 L’acheteur soumet uniquement son évaluation     <br>
+                &emsp;6a.2 Le système enregistre uniquement l'évaluation <br>
+                &emsp;6a.3  Le scénario recommence à l'étape 8  <br>
+              
+                8a. L’acheteur change d’avis après avoir soumis son évaluation
+                &emsp;8a.1 L’acheteur sélectionne l'évaluation qu’il souhaite changer 
+                &emsp;8a.2 L’acheteur sélectionne “modifier evaluation” 
+                &emsp;8a.3 L’acheteur met à jour son évaluation
+                &emsp;8a.4 Le système enregistre la nouvelle évaluation
+                &emsp;8a.5 Le profil du revendeur est mis à jour avec la nouvelle évaluation
+                &emsp;8a.6 Le scénario se termine
+
+            
+                8b. L'acheteur souhaite supprimer son évaluation    <br>
+                &emsp;8b.1 L’acheteur sélectionne l'évaluation qu’il souhaite supprimer 
+                &emsp;8b.2 L’acheteur sélectionne “éliminer evaluation” <br>
+                &emsp;8b.3 Le système enregistre les modifications <br>
+                &emsp;8b.3 Le scénario se termine. <br>
+            
+                <span style="font-weight: bold;">Postconditions :</span>  L'évaluation et les commentaires sont associes au revendeur dans la base de données.<br>
+            </p>
+            </li>
+            <li>
+              <!-- Laura -->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Passer une commande  
+                <br>
+                <span style="font-weight: bold;">But :</span> Permettre  à l'acheteur de sélectionner des produits, de les ajouter à son panier, de spécifier les informations de paiement et de livraison, puis de finaliser la commande.
+                <br>
+                <span style="font-weight: bold;">Préconditions :</span> 
+                <ul>
+                    <li>L’acheteur est connecté à son compte </li>
+                    <li>L’acheteur dispose d’un mode de paiement valide enregistre sur son compte  </li>   
+                </ul>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. L’acheteur accède à son panier d’achat pour vérifier les articles qu'il a sélectionné <br>
+                2. L’acheteur sélectionne “passer la commande” <br>
+                3. L'acheteur choisit l'adresse de livraison<br>
+                4. L'acheteur sélectionne la méthode de paiement <br>
+                5. Le système vérifie l’information de la carte bancaire <br> 
+                6. Le système confirme l’information de la carte bancaire <br> 
+                7. L'acheteur confirme sa commande et procède au paiement. <br>
+                8. Le système enregistre la commande <br>
+                9. Le système envoie au revendeur qu’il y a une commande à préparer <br>
+                10. Le système met à jour l'inventaire des produits. <br>
+                11. Le système envoie le nom de la compagnie d'expédition et  le numéro de suivi <br>
+                
+                <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                4a. Un produit sélectionné est en rupture stock <br>
+                &emsp;4a.1 L'acheteur est informé que ce produit n'est plus disponible. <br>
+                &emsp;4a.2 Le produit est automatiquement retiré du panier <br>
+                &emsp;4a.3 Le système renvoie l’acheteur au catalogue de produits <br>
+                &emsp;4a.4 Retour à l’étape 1 <br>
+            
+                5a. L'acheteur souhaite plus d'un produit du même type dans son panier <br>
+                &emsp;5a.1 L'acheteur modifie la quantité de chaque article qu'il souhaite <br>
+                &emsp;5a.2 L'acheteur peut poursuivre son achat ou procéder au paiement <br>
+                &emsp;5a.3 Retour à l’étape 1 <br>
+            
+                8a. L’acheteur n’a pas encore enregistré un mode de paiement <br>
+                &emsp;8a.1 le système demande d’entrer les informations d’un nouveau mode de paiement <br>
+                &emsp;8a.2 Retour à l’étape 4 <br>
+                
+                9a. L’acheteur quitte la plateforme avant de confirmer son achat <br>
+                &emsp;9a.1 Le système enregistre la commande dans le compte de l’acheteur <br>
+                &emsp;9a.2 Le scénario se termine <br>
+            
+                <span style="font-weight: bold;">Postconditions :</span>  La commande est enregistrée dans la base de données avec un identifiant unique.<br>
+            </p>
+            </li>
             <li>
               <!--Nathan-->
               <p>
