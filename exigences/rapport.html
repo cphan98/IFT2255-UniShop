@@ -45,78 +45,126 @@
                 </tr>
             </table>
         </div>
+
         <h1 style="text-align: center;">Rapport</h1>
 
-    <br>
-
-    <h2>Cas d'utilisation</h2>
-
-//Template pour les cas d'utilisation
-        <p>
-            <span style="font-weight: bold;">Cas d'utilisation :</span> nom du CU en expression verbale.<br>
-            <span style="font-weight: bold;">But :</span> mise en contexte, description brève, préconditions
-            nécessaires.<br>
-            <span style="font-weight: bold;">Préconditions :</span> préconditions nécessaires avant
-            d'entammer le scéanrio principal.<br>
-            <span style="font-weight: bold;">Acteurs :</span> Acteur 1 (principal), Acteur 2
-            (secondaire).<br>
-            <span style="font-weight: bold;">Scénario principal :</span> description étape par étape,
-            ordonnée numériquement<br>
-            1. Étape 1<br>
-             1.1. Étape 1.1<br>
-            2. Étape 2<br>
-            3. Étape 3<br>
-            <span style="font-weight: bold;">Scénarios alternatifs :</span> ramifications du déroulement
-            principal, alternatives possibles à certaines étapes<br>
-            1a.1. remplace étape 1 du scenario principal<br>
-            1b.1. autre remplacement de la même étape<br>
-            1b.2. suit 1b.1 indépendamment du scénario principal<br>
-            <span style="font-weight: bold;">Postconditions :</span> État du système lorsque le scénario
-            principal achève avec succès.<br>
-        </p>
-
-    <ol>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li>
-            <p>
-                <span style="font-weight: bold;">Cas d'utilisation :</span> Annuler une commande<br>
-                <span style="font-weight: bold;">But :</span> Permettre à un acheteur d’annuler sa commande et de recevoir un remboursement<br>
-                <span style="font-weight: bold;">Préconditions :</span> L’acheteur a déjà passé la commande et son paiement a été bien reçu<br>
-                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), revendeur (secondaire)<br>
-                <span style="font-weight: bold;">Scénario principal :</span><br>
-                1. L’acheteur se connecte à la plateforme<br>
-                2. Il se rend dans sa section “Historique de commandes”<br>
-                3. Il clique sur la commande qu’il veut annuler<br>
-                4. Il appuie sur le bouton “Annuler la commande”<br>
-                5. Il confirme l’annulation<br>
-                6. La commande est annulée<br>
-                7. L’acheteur récupère son argent<br>
-                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
-                6a. Le système indique que la commande ne peut pas être annulée<br>
-                &emsp;6a.1. Le système indique que la commande a déjà été empaquetée est déjà en route avec le livreur<br>
-                &emsp;6a.2. Retour à l’étape 2<br>
-                7a. L’argent n’est pas revenu directement dans le compte de l’acheteur<br>
-                &emsp;4a.1. Le système notifie le revendeur<br>
-                &emsp;4a.2. Le revendeur rectifie le remboursement auprès de l’acheteur<br>
-                &emsp;4a.3. Le scénario se termine<br>
-                <span style="font-weight: bold;">Postconditions :</span> La commande disparaît de la base de données<br>
-            </p>
-        </li>
-        <li>
-            <p>
+        <br>
+      
+        <!-- Cas d'utilisation -->
+        <h2>Cas d'utilisation</h2>
+        <ol>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li>
+                <!-- Cynthia -->
+                <p>
+                    <span style="font-weight: bold;">Cas d'utilisation :</span> S’abonner à un revendeur <br>
+                    <span style="font-weight: bold;">But :</span> recevoir les mises à jour du revendeur, tels que les nouveaux produits mis en vente, les promotions, etc. <br>
+                    <span style="font-weight: bold;">Préconditions :</span> l’acheteur est connecté à la plateforme. <br>
+                    <span style="font-weight: bold;">Acteurs :</span> acheteur (principal) <br>
+                    <span style="font-weight: bold;">Scénario principal :</span> <br>
+                    1. L’acheteur clique sur le profil du revendeur. <br>
+                    2. L’acheteur clique sur le bouton « Like ». <br>
+                    3. Le bouton devient « Liked ». <br>
+                    4. L’acheteur est abonné au revendeur. <br>
+                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                    2a. L’acheteur est déjà abonné au revendeur. <br>
+                     2a.1. L’acheteur clique sur le bouton « Liked ». <br>
+                     2a.2. Le bouton devient « Like ». <br>
+                     2a.2. Le bouton devient « Like ». <br>
+                     2a.2. Le bouton devient « Like ». <br>
+                    <span style="font-weight: bold;">Postconditions :</span> le bouton « Like » devient « Liked » lorsque l’acheteur s’abonne à un revendeur ou le bouton « Liked » devient « Like » lorsque l’acheteur se désabonne d’un revendeur. <br>
+                </p>
+            </li>
+            <li>
+                <!-- Cynthia -->
+                <p>
+                    <span style="font-weight: bold;">Cas d'utilisation :</span> Signaler un problème concernant un/des produit(s) ou une commande <br>
+                    <span style="font-weight: bold;">But :</span> lorsqu’il y a un problème avec leur(s) produit(s) ou commande, l’acheteur peut signaler le revendeur sur la plateforme. <br>
+                    <span style="font-weight: bold;">Préconditions :</span> l’acheteur <br>
+                    - est connecté à la plateforme; <br>
+                    - reçoit un/des produit(s) défectueux ou manquants; <br>
+                    - reçoit le(s) mauvais produit(s) ou la mauvaise commande; <br>
+                    - n’a pas reçu leur commande à temps. <br>
+                    <span style="font-weight: bold;">Acteurs :</span> acheteur (principal) <br>
+                    <span style="font-weight: bold;">Scénario principal :</span> <br>
+                    1. L’acheteur rencontre un problème avec leur(s) produits ou leur commande. <br>
+                    2. L’acheteur se connecte sur la plateforme. <br>
+                    3. L’acheteur clique sur son profil. <br>
+                    4. L’acheteur clique sur le bouton « Historique de commandes ». <br>
+                    5. L’acheteur clique sur la commande concernée. <br>
+                    6. L’acheteur clique sur le bouton « Signaler un problème ». <br>
+                    7. L’acheteur sélectionne le(s) produit(s) concerné(s). <br>
+                    8. L’acheteur sélectionne la raison du signalement. <br>
+                    9. L’acheteur écrit une note au besoin. <br>
+                    10. L’acheteur clique sur le bouton « Envoyer ». <br>
+                    11. Le système vérifie que toutes les informations nécessaires sont valides. <br>
+                    12. Le système envoie la requête au revendeur. <br>
+                    13. Le système affiche « Envoyé » à l’écran. <br>
+                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                    8a. La raison du signalement n’est pas listée. <br>
+                     8a.1. L’acheteur sélectionne « Autre ». <br>
+                     8a.2. L’acheteur écrit la raison du signalement. <br>
+                    11a. Certaines informations sont manquantes. <br>
+                     11a.1. Le système affiche « INFORMATIONS MANQUANTES. Veuillez SVP remplir les champs obligatoires. » affiche à l’écran. <br>
+                     11a.2. L’acheteur clique sur le bouton « OK ». <br>
+                     11a.3. Le message se ferme. <br>
+                     11a.4. L’acheteur remplit les informations manquantes. <br>
+                     11a.5. Le scénario reprend à l’étape 10. <br>
+                    12a. Le système ne réussit pas à envoyer la requête au revendeur. <br>
+                     12a.1. Le système affiche « ERREUR. La requête n’a pas été envoyée. Veuillez réessayer. » à l’écran. <br>
+                     12a.2. L’acheteur clique sur le bouton « OK ». <br>
+                     12a.3. Le message se ferme. <br>
+                     12a.4. Le scénario reprend à l’étape 10. <br>
+                    <span style="font-weight: bold;">Postconditions :</span> le système affiche « Envoyé » à l’écran lorsque la requête de l’acheteur a été envoyée au revendeur avec succès. <br>
+                </p>
+            </li>
+            <li>
+                <!-- Cynthia -->
+                <p>
+                    <span style="font-weight: bold;">Cas d'utilisation :</span> Proposer une/des solution(s) à un problème concernant un/des produit(s) ou une commande <br>
+                    <span style="font-weight: bold;">But :</span> le revendeur propose à l’acheteur une ou plusieurs solutions pour résoudre le problème concernant leur(s) produit(s) ou commande. <br>
+                    <span style="font-weight: bold;">Préconditions :</span> le revendeur reçoit une requête de l’acheteur. <br>
+                    <span style="font-weight: bold;">Acteurs :</span> revendeur (principal) <br>
+                    <span style="font-weight: bold;">Scénario principal :</span> <br>
+                    1. Le revendeur reçoit une requête de l'acheteur. <br>
+                    2. Le revendeur clique sur le bouton « Résoudre le problème ». <br>
+                    3. Le revendeur sélectionne la/les solution(s) à proposer. <br>
+                    4. Le revendeur écrit une note au besoin. <br>
+                    5. Le revendeur clique sur le bouton « Envoyer ». <br>
+                    6. Le système vérifie que toutes les informations nécessaires sont valides. <br>
+                    7. Le système envoie la réponse du revendeur à l’acheteur. <br>
+                    8. Le système affiche « Envoyé » à l’écran. <br>
+                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                    3a. La solution n’est pas listée. <br>
+                     3a.1. Le revendeur sélectionne « Autre ». <br>
+                     3a.2. Le revendeur écrit la solution. <br>
+                     3a.3. Le scénario reprend à l’étape 3. <br>
+                    6a. Certaines solutions sont manquantes. <br>
+                     6a.1. Le système affiche « INFORMATIONS MANQUANTES. Veuillez SVP remplir les champs obligatoires. » affiche à l’écran. <br>
+                     6a.2. Le revendeur clique sur le bouton « OK ». <br>
+                     6a.3. Le message se ferme. <br>
+                     6a.4. Le revendeur remplit les informations manquantes. <br>
+                     6a.5. Le scénario reprend à l’étape 5. <br>
+                    7a. Le système ne réussit pas à envoyer la réponse du revendeur à l’acheteur. <br>
+                     7a.1. Le système affiche « ERREUR. La requête n’a pas été envoyée. Veuillez réessayer. » à l’écran. <br>
+                     7a.2. L’acheteur clique sur le bouton « OK ». <br>
+                     7a.3. Le message se ferme. <br>
+                     7a.4. Le scénario reprend à l’étape 5. <br>
+                    <span style="font-weight: bold;">Postconditions :</span> le système affiche « Envoyé » à l’écran lorsque la requête du revendeur a été envoyée à l’acheteur avec succès. <br>
+                </p>
+            </li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li>
+              <!--Nathan-->
+              <p>
                 <span style="font-weight: bold;">Cas d'utilisation :</span> Mettre à jour l’état de la commande<br>
                 <span style="font-weight: bold;">But :</span> Donner en temps réel des informations sur la commande à l’acheteur pour que ce dernier puisse agir en conséquence<br>
                 <span style="font-weight: bold;">Préconditions :</span> - L’acheteur a acheté et confirmé sa commande<br>
@@ -141,10 +189,38 @@
                 &emsp;5a.1. Le revendeur envoie la mise à jour de la commande à l’acheteur par SMS<br>
                 &emsp;5a.2. Un message est envoyé à l’acheteur pour lui dire de reconfirmer son	 adresse e-mail<br>
                 &emsp;5a.3. Fin du scénario<br>
+              </p>
+            </li>
+            <li>
+              <!--Nathan-->
+              <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Annuler une commande<br>
+                <span style="font-weight: bold;">But :</span> Permettre à un acheteur d’annuler sa commande et de recevoir un remboursement<br>
+                <span style="font-weight: bold;">Préconditions :</span> L’acheteur a déjà passé la commande et son paiement a été bien reçu<br>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), revendeur (secondaire)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. L’acheteur se connecte à la plateforme<br>
+                2. Il se rend dans sa section “Historique de commandes”<br>
+                3. Il clique sur la commande qu’il veut annuler<br>
+                4. Il appuie sur le bouton “Annuler la commande”<br>
+                5. Il confirme l’annulation<br>
+                6. La commande est annulée<br>
+                7. L’acheteur récupère son argent<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                6a. Le système indique que la commande ne peut pas être annulée<br>
+                &emsp;6a.1. Le système indique que la commande a déjà été empaquetée est déjà en route avec le livreur<br>
+                &emsp;6a.2. Retour à l’étape 2<br>
+                7a. L’argent n’est pas revenu directement dans le compte de l’acheteur<br>
+                &emsp;4a.1. Le système notifie le revendeur<br>
+                &emsp;4a.2. Le revendeur rectifie le remboursement auprès de l’acheteur<br>
+                &emsp;4a.3. Le scénario se termine<br>
+                <span style="font-weight: bold;">Postconditions :</span> La commande disparaît de la base de données<br>
             </p>
-        </li>
-        <li>
-            <p>
+          </li>
+            <li></li>
+            <li>
+              <!--Nathan-->
+              <p>
                 <span style="font-weight: bold;">Cas d'utilisation :</span> Consulter/suivre l’état d’une commande<br>
                 <span style="font-weight: bold;">But :</span> Donner à l’acheteur des informations sur sa commande pour qu’il puisse agir et prévoir ses futurs déplacements<br>
                 <span style="font-weight: bold;">Préconditions :</span> La commande qu’il veut suivre existe<br>
@@ -158,12 +234,45 @@
                 4a. L’état de la commande n’est pas mis à jour malgré les notifications reçues par l’acheteur sur le statut de sa commande<br>
                 &emsp;4a.1. L’acheteur revient à la section “Historique de commandes”<br>
                 &emsp;4a.2. Retour à l’étape 3<br>
-            </p>
-
-        </li>
-        <li></li>
-        <li>
-            <p>
+              </p>
+            </li>
+            <li>
+                <!-- Cynthia -->
+                <p>
+                    <span style="font-weight: bold;">Cas d'utilisation :</span> Confirmer la réception d’une commande ou d’un retour <br>
+                    <span style="font-weight: bold;">But :</span> mettre à jour l’état de la commande ou du retour à « livré » lorsque l’acheteur reçoit sa commande ou lorsque le revendeur reçoit le retour. <br>
+                    <span style="font-weight: bold;">Préconditions :</span> l’acheteur a reçu sa commande ou le revendeur a reçu le retour. <br>
+                    <span style="font-weight: bold;">Acteurs :</span> (principal), revendeur (principal) <br>
+                    <span style="font-weight: bold;">Scénario principal :</span> <br>
+                    1. Le client reçoit un colis à sa porte. <br>
+                    2. Le client se connecte à la plateforme. <br>
+                    3. Le client clique sur le bouton « Historique de commandes ». <br>
+                    4. Le client clique sur la commande ou le retour reçu. <br>
+                    5. Le client clique sur le bouton « Confirmer la réception ». <br>
+                    6. Le système affiche « Voulez-vous confirmer la réception? » à l’écran. <br>
+                    7. Le client clique sur le bouton « Confirmer ». <br>
+                    8. Le système affiche « La réception a été confirmée avec succès! » à l’écran. <br>
+                    9. L’état de la commande ou du retour devient « livré ». <br>
+                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                    1a. L’acheteur ne reçoit pas la commande. <br>
+                     1a.1. L’acheteur signale le problème au revendeur. <br>
+                     1a.2. Le revendeur propose une/des solutions. <br>
+                     1a.3. L’acheteur et le revendeur prennent les actions nécessaires selon la solution. <br>
+                     1a.4. Le scénario se termine. <br>
+                    1b. Le revendeur ne reçoit pas la commande. <br>
+                     1b.1. Le revendeur écrit un message à l’acheteur concernant l’échec de la réception. <br>
+                     1b.2. Le revendeur effectue un remboursement à l’acheteur. <br>
+                     1b.3. Le revendeur met à jour son inventaire. <br>
+                     1b.4. Le scénario se termine. <br>
+                    7a. Le client clique sur le bouton « Annuler ». <br>
+                     7a.1. Le message se ferme. <br>
+                     7a.2. Le scénario reprend à l’étape 5. <br>
+                    <span style="font-weight: bold;">Postconditions :</span> l’état de la commande ou du retour devient « livré » après avoir confirmée sa reception. <br>
+                </p>
+            </li>
+            <li>
+              <!--Nathan-->
+              <p>
                 <span style="font-weight: bold;">Cas d'utilisation :</span> Supprimer son compte de la plateforme<br>
                 <span style="font-weight: bold;">But :</span> Si l’utilisateur n’est pas satisfait par la plateforme, il doit pouvoir supprimer son compte et toutes les informations qu’il a fournis dedans<br>
                 <span style="font-weight: bold;">Préconditions :</span> Le compte existe<br>
@@ -184,9 +293,8 @@
                 &emsp;6a.2. Le client termine ou annule toutes ses commandes<br>
                 &emsp;6a.3. Retour à l’étape 2<br>
                 <span style="font-weight: bold;">Postconditions :</span> Le compte est supprimé de la base de données<br>
-            </p>
-        </li>
-
-    </ol>
+              </p>
+            </li>
+        </ol>
     </body>
 </html>
