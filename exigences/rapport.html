@@ -6,7 +6,7 @@
               content="width=device-width, user-scalable=no, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
         <title>Rapport</title>
     </head>
-    <body>
+    <body style="font-family: sans-serif">
         <div style="background-color: aliceblue; padding: 2px;">
             <p style="text-align: center;"><strong>Binary Brahman Brotherhood</strong></p>
             <table style="width: 100%; text-align: center;">
@@ -162,10 +162,80 @@
             <li></li>
             <li></li>
             <li></li>
+            <li>
+              <!--Nathan-->
+              <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Mettre à jour l’état de la commande<br>
+                <span style="font-weight: bold;">But :</span> Donner en temps réel des informations sur la commande à l’acheteur pour que ce dernier puisse agir en conséquence<br>
+                <span style="font-weight: bold;">Préconditions :</span> - L’acheteur a acheté et confirmé sa commande<br>
+                - La commande est dans la base de données<br>
+                <span style="font-weight: bold;">Acteurs :</span> Revendeur (principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. Le revendeur se connecte à sa plateforme<br>
+                2. Il se rend dans sa section “Activités” et retrouve la commande qu’il veut mettre à jour<br>
+                3. Il clique sur la section “Statut” de la commande et le modifie en fonction de l’état actuel de la commande<br>
+                4. Il confirme la mise à jour du statut<br>
+                5. Le système affiche que le statut de la commande a bien été mis à jour<br>
+                6. Le système envoie un e-mail à l’acheteur pour l’informer du nouvel état de sa commande<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                2a. Le revendeur ne retrouve pas la commande qu’il veut mettre à jour<br>
+                &emsp;2a.1. Le revendeur signale le problème aux assistants techniques de la plateforme <br>
+                &emsp;2a.2. Le revendeur contacte l’acheteur pour confirmer que la commande a bien été passée<br>
+                &emsp;2a.3. Retour à l’étape 2<br>
+                4a. Le statut ne peut pas être mis à jour<br>
+                &emsp;4a.1. Le revendeur reconfirme l’état réel de la commande chez le livreur engagé<br>
+                &emsp;4a.2. Retour à l’étape 3<br>
+                5a. L’e-mail de mise à jour n’est pas reçu par l’acheteur<br>
+                &emsp;5a.1. Le revendeur envoie la mise à jour de la commande à l’acheteur par SMS<br>
+                &emsp;5a.2. Un message est envoyé à l’acheteur pour lui dire de reconfirmer son	 adresse e-mail<br>
+                &emsp;5a.3. Fin du scénario<br>
+              </p>
+            </li>
+            <li>
+              <!--Nathan-->
+              <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Annuler une commande<br>
+                <span style="font-weight: bold;">But :</span> Permettre à un acheteur d’annuler sa commande et de recevoir un remboursement<br>
+                <span style="font-weight: bold;">Préconditions :</span> L’acheteur a déjà passé la commande et son paiement a été bien reçu<br>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), revendeur (secondaire)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. L’acheteur se connecte à la plateforme<br>
+                2. Il se rend dans sa section “Historique de commandes”<br>
+                3. Il clique sur la commande qu’il veut annuler<br>
+                4. Il appuie sur le bouton “Annuler la commande”<br>
+                5. Il confirme l’annulation<br>
+                6. La commande est annulée<br>
+                7. L’acheteur récupère son argent<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                6a. Le système indique que la commande ne peut pas être annulée<br>
+                &emsp;6a.1. Le système indique que la commande a déjà été empaquetée est déjà en route avec le livreur<br>
+                &emsp;6a.2. Retour à l’étape 2<br>
+                7a. L’argent n’est pas revenu directement dans le compte de l’acheteur<br>
+                &emsp;4a.1. Le système notifie le revendeur<br>
+                &emsp;4a.2. Le revendeur rectifie le remboursement auprès de l’acheteur<br>
+                &emsp;4a.3. Le scénario se termine<br>
+                <span style="font-weight: bold;">Postconditions :</span> La commande disparaît de la base de données<br>
+            </p>
+          </li>
             <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
+            <li>
+              <!--Nathan-->
+              <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Consulter/suivre l’état d’une commande<br>
+                <span style="font-weight: bold;">But :</span> Donner à l’acheteur des informations sur sa commande pour qu’il puisse agir et prévoir ses futurs déplacements<br>
+                <span style="font-weight: bold;">Préconditions :</span> La commande qu’il veut suivre existe<br>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. Le client se connecte à la plateforme<br>
+                2. Le client clique sur le bouton “Historique de commandes”<br>
+                3. Le client clique sur la commande qu’il veut suivre<br>
+                4. Le système lui indique en ordre chronologique toutes les mises à jour sur l’état de la commande<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                4a. L’état de la commande n’est pas mis à jour malgré les notifications reçues par l’acheteur sur le statut de sa commande<br>
+                &emsp;4a.1. L’acheteur revient à la section “Historique de commandes”<br>
+                &emsp;4a.2. Retour à l’étape 3<br>
+              </p>
+            </li>
             <li>
                 <!-- Cynthia -->
                 <p>
@@ -200,7 +270,31 @@
                     <span style="font-weight: bold;">Postconditions :</span> l’état de la commande ou du retour devient « livré » après avoir confirmée sa reception. <br>
                 </p>
             </li>
-            <li></li>
+            <li>
+              <!--Nathan-->
+              <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Supprimer son compte de la plateforme<br>
+                <span style="font-weight: bold;">But :</span> Si l’utilisateur n’est pas satisfait par la plateforme, il doit pouvoir supprimer son compte et toutes les informations qu’il a fournis dedans<br>
+                <span style="font-weight: bold;">Préconditions :</span> Le compte existe<br>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), revendeur (principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span><br>
+                1. Le client se connecte à son compte<br>
+                2. Il va dans la section “Paramètres”<br>
+                3. Il clique sur “Supprimer son compte”<br>
+                4. Il retape son mot de passe<br>
+                5. Il clique sur “Confirmer”<br>
+                6. Le compte est supprimé<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                5a. Le client s’est trompé de mot de passe<br>
+                &emsp;5a.1. Le système indique que le mot de passe est incorrect<br>
+                &emsp;5a.2. Retour à l’étape 4<br>
+                6a. Le système indique que le compte ne peut pas être supprimé car l’utilisateur a encore des commandes en cours ou des achats/frais à payer<br>
+                &emsp;6a.1. Le client règle toutes ses factures<br>
+                &emsp;6a.2. Le client termine ou annule toutes ses commandes<br>
+                &emsp;6a.3. Retour à l’étape 2<br>
+                <span style="font-weight: bold;">Postconditions :</span> Le compte est supprimé de la base de données<br>
+              </p>
+            </li>
         </ol>
     </body>
 </html>
