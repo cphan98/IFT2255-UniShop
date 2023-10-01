@@ -54,7 +54,7 @@
         <h2>Cas d'utilisation</h2>
         <ol>
             <li>
-            <!-- Mimi -->
+            <!-- 1 Mimi -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> S’inscrire à la plateforme en tant qu’acheteur. <br>
                     <span style="font-weight: bold;">But :</span> Un acheteur souhaite s’inscrire à la plateforme
@@ -90,7 +90,7 @@
                 </p>
             </li>
             <li>
-                <!--Mimi-->
+                <!-- 2 Mimi -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span>  S’inscrire à la plateforme en tant que revendeur. <br>
                     <span style="font-weight: bold;">But :</span> Un revendeur souhaite s’inscrire à la plateforme
@@ -120,7 +120,7 @@
                 </p>
             </li>
             <li>
-                <!--Mimi-->
+                <!-- 3 Mimi -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> Se connecter à la plateforme. <br>
                     <span style="font-weight: bold;">But :</span> Acteur désire accéder au compte sur la plateforme.<br>
@@ -154,7 +154,7 @@
                 </p>
             </li>
             <li>
-                <!--Mimi-->
+                <!-- 4 Mimi -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> Modifier son profil.<br>
                     <span style="font-weight: bold;">But :</span> Modifier le profil.<br>
@@ -177,7 +177,7 @@
                 </p>
             </li>
             <li>
-                <!--Mimi-->
+                <!-- 5 Mimi -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> Rechercher un/des produit(s) ou un/des revendeurs.<br>
                     <span style="font-weight: bold;">But :</span>  Recherche par mot-clé pour trouver des produits spécifiques ou un revendeur.<br>
@@ -215,7 +215,7 @@
                 </p>
             </li>
             <li>
-                <!-- Cynthia -->
+                <!-- 6 Cynthia -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> S’abonner à un revendeur <br>
                     <span style="font-weight: bold;">But :</span> recevoir les mises à jour du revendeur, tels que les nouveaux produits mis en vente, les promotions, etc. <br>
@@ -236,7 +236,7 @@
                 </p>
             </li>
             <li>
-                <!-- Cynthia -->
+                <!-- 7 Cynthia -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> Signaler un problème concernant un/des produit(s) ou une commande <br>
                     <span style="font-weight: bold;">But :</span> lorsqu’il y a un problème avec leur(s) produit(s) ou commande, l’acheteur peut signaler le revendeur sur la plateforme. <br>
@@ -279,7 +279,7 @@
                 </p>
             </li>
             <li>
-                <!-- Cynthia -->
+                <!-- 8 Cynthia -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> Proposer une/des solution(s) à un problème concernant un/des produit(s) ou une commande <br>
                     <span style="font-weight: bold;">But :</span> le revendeur propose à l’acheteur une ou plusieurs solutions pour résoudre le problème concernant leur(s) produit(s) ou commande. <br>
@@ -314,7 +314,7 @@
                 </p>
             </li>
             <li>
-              <!-- Laura -->
+                <!-- 9 Laura -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> Retourner un/des produit(s)    
                     <br>
@@ -349,7 +349,76 @@
                 </p>
             </li>
             <li>
-              <!-- Laura -->
+                <!-- 10 Laura -->
+                <p>
+                    <span style="font-weight: bold;">Cas d'utilisation :</span>  Échanger un/des produit(s)   
+                    <br>
+                    <span style="font-weight: bold;">But :</span> Permettre à un acheteur d'échanger un ou plusieurs produits achetés en cas d’avoir un problème avec eux.
+                    <br>
+                    <span style="font-weight: bold;">Préconditions :</span> 
+                    <ul>
+                        <li>l’acheteur est connecté à son compte UniShop</li>
+                        <li>Pas plus de 30 jours sont écoulés depuis l’achat</li>
+                        <li> L’acheteur a reçu un produit </li>
+                    </ul>
+                    <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
+                    <span style="font-weight: bold;">Scénario principal :</span><br>
+                    1. L’acheteur se connecte à son compte <br>
+                    2. L’acheteur clique sur son profil.<br>
+                    3. L’acheteur clique sur le bouton « Historique de commandes ».<br>
+                    4. L’acheteur sélectionne la commande contenant le produit à échanger  <br>
+                    5. Le système demande la raison de l'échange (mauvais produit reçu, produit défectueux, changement d'idée) <br>
+                    6. L‘acheteur sélectionne l'option qui correspond à sa situation <br>
+                    7. L’acheteur fournit les détails nécessaires sur le produit à retourner. <br>
+                    8. L'acheteur est informé des étapes suivantes pour le retour <br>
+                    9. L’acheteur paie la différence de prix entre les produits <br>
+                    10. Le système met à jour la commande et génère un nouveau numéro de suivi pour la livraison du produit de replacement <br>
+                    11. Le système demande à l'acheteur de se présenter à la poste pour le retourner à l'entrepôt<br>
+                    12. L’acheteur peut suivre l'état de retour ou d'échange <br>
+                    13. Le revendeur envoie une confirmation à l'acheteur une fois qu’il  reçoit le produit <br>
+                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                    8a. Il n'y a pas assez de produits pour faire l'échange.    <br>
+                    &emsp;8a.1 Le système affiche les produits liés au produit souhaité    e<br>
+                    &emsp;8a.2 L'acheteur choisit le produit qui lui convient le mieux ou indique qu'il préfère un remboursement<br>
+                    &emsp;8a.3 le scenario recommence à l'étape 9
+                    <span style="font-weight: bold;">Postconditions :</span>  L’inventaire du revendeur est mis à jour.<br>
+                </p>
+            </li>
+            <li>
+              <!-- 11 Laura -->
+                <p>
+                    <span style="font-weight: bold;">Cas d'utilisation :</span>  Rembourser un/des produit(s)   
+                    <br>
+                    <span style="font-weight: bold;">But :</span> Permettre  au revendeur de traiter les remboursements pour les produits retournes par les acheteurs.
+                    <br>
+                    <span style="font-weight: bold;">Préconditions :</span> 
+                    <ul>
+                        <li>le revendeur est connecté à son compte</li>
+                        <li> un acheteur a retourné un produit </li>   
+                        <li>le revendeur a reçu le produit retourné </li>
+                    </ul>
+                    <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
+                    <span style="font-weight: bold;">Scénario principal :</span><br>
+                    1. Le revendeur se connecte à son compte  <br>
+                    2. Le revendeur sélectionné la commande contenant le produit retourné par l’acheteur <br>
+                    3. Le revendeur choisit l’option rembourser<br>
+                    4. Le système calcule le montant du remboursement en fonction du prix du produit retourné <br>
+                    5. Le revendeur confirme le remboursement<br>
+                    6. L’acheteur est notifié du remboursement effectué <br>
+                    7. L’acheteur reçoit le remboursement dans son compte <br>
+                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
+                    4a. L'acheteur a acheté le produit en solde et il ne bénéficie plus de réduction    <br>
+                    &emsp;4a.1 Le système choisit de rembourser uniquement le prix paye en solde    e<br>
+                    &emsp;4a.2 Le scénario recommence à l'étape 5  <br>
+                    7a. L'acheteur ne reçoit pas le remboursement intégral sur son compte<br>
+                    &emsp;7a.1 L'acheteur informe le revendeur qu'il y a eu une erreur <br>
+                    &emsp;7a.2 le revendeur est notifie d’un erreur  <br>
+                    &emsp;7a.3 le scenario recommence à l'étape 4
+                    <span style="font-weight: bold;">Postconditions :</span>  Le solde du compte bancaire de l'acheteur est mis à jour.<br>
+                </p>
+            </li>
+            <li>
+                <!-- 12 Laura -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span>  Évaluer un produit   
                     <br>
@@ -388,76 +457,7 @@
                 </p>
             </li>
             <li>
-              <!-- Laura -->
-                <p>
-                    <span style="font-weight: bold;">Cas d'utilisation :</span>  Échanger un/des produit(s)   
-                    <br>
-                    <span style="font-weight: bold;">But :</span> Permettre à un acheteur d'échanger un ou plusieurs produits achetés en cas d’avoir un problème avec eux.
-                    <br>
-                    <span style="font-weight: bold;">Préconditions :</span> 
-                    <ul>
-                        <li>l’acheteur est connecté à son compte UniShop</li>
-                        <li>Pas plus de 30 jours sont écoulés depuis l’achat</li>
-                        <li> L’acheteur a reçu un produit </li>
-                    </ul>
-                    <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
-                    <span style="font-weight: bold;">Scénario principal :</span><br>
-                    1. L’acheteur se connecte à son compte <br>
-                    2. L’acheteur clique sur son profil.<br>
-                    3. L’acheteur clique sur le bouton « Historique de commandes ».<br>
-                    4. L’acheteur sélectionne la commande contenant le produit à échanger  <br>
-                    5. Le système demande la raison de l'échange (mauvais produit reçu, produit défectueux, changement d'idée) <br>
-                    6. L‘acheteur sélectionne l'option qui correspond à sa situation <br>
-                    7. L’acheteur fournit les détails nécessaires sur le produit à retourner. <br>
-                    8. L'acheteur est informé des étapes suivantes pour le retour <br>
-                    9. L’acheteur paie la différence de prix entre les produits <br>
-                    10. Le système met à jour la commande et génère un nouveau numéro de suivi pour la livraison du produit de replacement <br>
-                    11. Le système demande à l'acheteur de se présenter à la poste pour le retourner à l'entrepôt<br>
-                    12. L’acheteur peut suivre l'état de retour ou d'échange <br>
-                    13. Le revendeur envoie une confirmation à l'acheteur une fois qu’il  reçoit le produit <br>
-                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
-                    8a. Il n'y a pas assez de produits pour faire l'échange.    <br>
-                    &emsp;8a.1 Le système affiche les produits liés au produit souhaité    e<br>
-                    &emsp;8a.2 L'acheteur choisit le produit qui lui convient le mieux ou indique qu'il préfère un remboursement<br>
-                    &emsp;8a.3 le scenario recommence à l'étape 9
-                    <span style="font-weight: bold;">Postconditions :</span>  L’inventaire du revendeur est mis à jour.<br>
-                </p>
-            </li>
-            <li>
-              <!-- Laura -->
-                <p>
-                    <span style="font-weight: bold;">Cas d'utilisation :</span>  Rembourser un/des produit(s)   
-                    <br>
-                    <span style="font-weight: bold;">But :</span> Permettre  au revendeur de traiter les remboursements pour les produits retournes par les acheteurs.
-                    <br>
-                    <span style="font-weight: bold;">Préconditions :</span> 
-                    <ul>
-                        <li>le revendeur est connecté à son compte</li>
-                        <li> un acheteur a retourné un produit </li>   
-                        <li>le revendeur a reçu le produit retourné </li>
-                    </ul>
-                    <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
-                    <span style="font-weight: bold;">Scénario principal :</span><br>
-                    1. Le revendeur se connecte à son compte  <br>
-                    2. Le revendeur sélectionné la commande contenant le produit retourné par l’acheteur <br>
-                    3. Le revendeur choisit l’option rembourser<br>
-                    4. Le système calcule le montant du remboursement en fonction du prix du produit retourné <br>
-                    5. Le revendeur confirme le remboursement<br>
-                    6. L’acheteur est notifié du remboursement effectué <br>
-                    7. L’acheteur reçoit le remboursement dans son compte <br>
-                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
-                    4a. L'acheteur a acheté le produit en solde et il ne bénéficie plus de réduction    <br>
-                    &emsp;4a.1 Le système choisit de rembourser uniquement le prix paye en solde    e<br>
-                    &emsp;4a.2 Le scénario recommence à l'étape 5  <br>
-                    7a. L'acheteur ne reçoit pas le remboursement intégral sur son compte<br>
-                    &emsp;7a.1 L'acheteur informe le revendeur qu'il y a eu une erreur <br>
-                    &emsp;7a.2 le revendeur est notifie d’un erreur  <br>
-                    &emsp;7a.3 le scenario recommence à l'étape 4
-                    <span style="font-weight: bold;">Postconditions :</span>  Le solde du compte bancaire de l'acheteur est mis à jour.<br>
-                </p>
-            </li>
-            <li>
-              <!-- Laura -->
+                <!-- 13 Laura -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span>  Évaluer un revendeur <br>
                     <span style="font-weight: bold;">But :</span> Permettre  à l'acheteur de laisser une évaluation et des commentaires sur un revendeur avec lequel il a eu une expérience d’achat afin de contribuer à l'amélioration de l'expérience d’achat et informer les autres acheteurs sur certains revendeurs.<br>
