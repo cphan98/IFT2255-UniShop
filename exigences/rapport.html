@@ -50,11 +50,167 @@
         <!-- Cas d'utilisation -->
         <h2>Cas d'utilisation</h2>
         <ol>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
+            <li>
+            <!-- Mimi -->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> S’inscrire à la plateforme en tant qu’acheteur. <br>
+                <span style="font-weight: bold;">But :</span> Un acheteur souhaite s’inscrire à la plateforme
+                nécessaires.<br>
+                <span style="font-weight: bold;">Préconditions :</span>L’acheteur dispose d’un nom, prénom, pseudo, adresse courriel, téléphone et un adresse d’expédition. <br>
+                <span style="font-weight: bold;">Acteurs :</span> Acheteur (Principal)
+                (secondaire).<br>
+                <span style="font-weight: bold;">Scénario principal :</span> <br>
+                1. Acheteur se rend à la plateforme. <br>
+                2. Acheteur pèse sur Inscription<br>
+                3. Acheteur entre ses informations personnelles (nom, prénom, pseudo(unique), adresse courriel, téléphone et adresse d’expédition) dans le système.<br>
+                4. Le système vérifier la validité du courriel et du pseudo unique. <br>
+                5. Le système affiche Succès à l’écran. <br>
+                6. Le système demande de cocher la boîte pour accepter les termes et conditions.<br>
+                7. Acheteur coche la boîte <br>
+                8. Acheteur pèse le bouton S’inscrire pour poursuivre à la création. <br>
+                9. Le système confirme la création du compte. <br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                4a. Le courriel n’est pas valide (mal saisi le courriel).<br>
+                    4a.1 Le système redemande de nouveau l’entrée d’adresse courriel.<br>
+                    4a.2 Acheteur saisit de nouveau son adresse courriel.<br>
+                    4a.3 La scène recommence à l’étape 4.<br>
+                4b. Le pseudo n'est pas unique. <br>
+                    4b.1 Le système redemande à l’acheteur de saisir un pseudo qui est unique 
+                    de nouveau. <br>
+                    4b.2 L’acheteur saisit de nouveau un pseudo. <br>
+                    4b.3 La scène recommence à l’étape 4. <br>
+                6a. L’acheteur n’accepte pas les termes et conditions. <br>
+                    6a.1 L’acheteur pèse le bouton S’inscrire pour poursuivre à la création. <br>
+                    6a.2 Le système envoie Erreur: Ce champ est obligatoire. <br>
+                    6a.3 Retour à l’étape 6.<br>
+                <span style="font-weight: bold;">Postconditions :</span> L’acheteur a créé un compte et peut modifier son profil après l’inscription. <br>
+            </p>
+        </li>
+        <li>
+            <!--Mimi-->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span>  S’inscrire à la plateforme en tant que revendeur. <br>
+                <span style="font-weight: bold;">But :</span> Un revendeur souhaite s’inscrire à la plateforme
+                nécessaires.<br>
+                <span style="font-weight: bold;">Préconditions :</span>Au moins un produit à revendre. <br>
+                <span style="font-weight: bold;">Acteurs :</span> Revendeur (Principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span> <br>
+                1. Revendeur se rend à la plateforme.<br>
+                2. Revendeur pèse sur Inscription.<br>
+                3. Revendeur entre ses informations personnelles (nom unique, adresse, adresse courriel, téléphone) dans le système.<br>
+                4. Le système vérifier la validité du courriel et du nom unique.<br>
+                5. Le système affiche Succès à l’écran. <br>
+                6. Le système demande de cocher la boîte pour accepter les termes et conditions.<br>
+                7. Revendeur coche la boîte <br>
+                8. Revendeur pèse le bouton S’inscrire pour poursuivre à la création. <br>
+                9. Le système confirme la création du compte. <br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                4a. Le courriel n’est pas valide (mal saisi le courriel).<br>
+                    4a.1 Le système redemande de nouveau l’entrée d’adresse courriel.<br>
+                    4a.2 Revendeur saisit de nouveau son adresse courriel.<br>
+                    4a.3 La scène recommence à l’étape 4.<br>
+                4b. Le nom n'est pas unique. <br>
+                    4b.1 Le système redemande au revendeur de saisir un nom qui est unique 
+                    de nouveau. <br>
+                    4b.2 Le revendeur saisit de nouveau un nom. <br>
+                    4b.3 La scène recommence à l’étape 4. <br>
+                <span style="font-weight: bold;">Postconditions :</span> Le revendeur doit modifier son profil après l’inscription.<br>
+            </p>
+        </li>
+        <li>
+            <!--Mimi-->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Se connecter à la plateforme. <br>
+                <span style="font-weight: bold;">But :</span> Acteur désire accéder au compte sur la plateforme.<br>
+                <span style="font-weight: bold;">Préconditions :</span>Au moins un produit à revendre. <br>
+                <span style="font-weight: bold;">Acteurs :</span>Acheteur (principal), Revendeur (Principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span>Le client doit disposer d’un compte.<br>
+                1. Le client se présente à la page d'accueil.<br>
+                2. Le client pèse le bouton Connexion.<br>
+                3. Le système lui demande pour son nom d’utilisateur et son courriel.<br>
+                4. Le client entre son nom d’utilisateur et son courriel.<br>
+                5. Le système vérifie que les données correspondent à ceux dans le système.<br>
+                6. Le système sauvegarde les modifications.<br>
+                7. Le système affiche Succès à l’écran.<br>
+                8. Le système laisse entrer le client à la plateforme.<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                2a. Le client veut se connecter en tant qu’acheteur.<br>
+                  2a.1 Le client pèse sur Connexion en-dessous de Acheteur.<br>
+                  2a.2 La scène reprend à l’étape 3.<br>
+                2b. Le client veut se connecter en tant que revendeur.<br>
+                  2b.1 Le client pèse sur Connexion en-dessous de Revendeur.<br>
+                  2b.2. La scène reprend à l’étape 3.<br>
+                5a. Le nom d’utilisateur n’est pas valide (nom a été mal saisi).<br>
+                  5a.1 Le système n’a pas trouvé le compte.<br>
+                  5a.2 Le système affiche Compte inexistant à l’écran.<br>
+                  5a.3 Le système reprend à l’étape 4.<br>
+                5b. Le courriel n’est pas valide (courriel  a été mal saisi).<br>
+                  5b.1 Le système n’a pas trouvé le compte.<br>
+                  5b.2 Le système affiche Compte inexistant à l’écran.<br>
+                  5b.3 Le système reprend à l’étape 4.<br>
+                <span style="font-weight: bold;">Postconditions :</span> Le système enregistre amène l’acheteur/ le revendeur à la plateforme.<br>
+            </p>
+        </li>
+        <li>
+            <!--Mimi-->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Modifier son profil.<br>
+                <span style="font-weight: bold;">But :</span> Modifier le profil.<br>
+                <span style="font-weight: bold;">Préconditions :</span>Au moins un produit à revendre. <br>
+                <span style="font-weight: bold;">Acteurs :</span>Acheteur (principal), Revendeur (Principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span>Le client est inscrit sur la plateforme.<br>
+                1. Le client sélectionne l’option “modifier le profil” dans le réglage.<br>
+                2. Le client choisit et modifie le champ à modifier dans leur profil.<br>
+                3. Le système vérifie les informations modifiées.<br>
+                4. Le système sauvegarde les informations modifiées.<br>
+                5. Le système affiche Succès à l’écran.<br>
+                6. Le système envoie une notification du changement.<br>
+                7. Le client pourra quitter ou continuer sur la plateforme.<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                3a. Le client laisse un champ vide.<br>
+			              3a.1 Le système affiche Erreur: Le champ est obligatoire.<br>
+			              3a.2 Le client va remplir le champ manqué.<br>
+                    3a.3 La scène reprend à l’étape 3.<br>
+                <span style="font-weight: bold;">Postconditions :</span> Être capable de modifier le profil encore.<br>
+            </p>
+        </li>
+        <li>
+            <!--Mimi-->
+            <p>
+                <span style="font-weight: bold;">Cas d'utilisation :</span> Rechercher un/des produit(s) ou un/des revendeurs.<br>
+                <span style="font-weight: bold;">But :</span>  Recherche par mot-clé pour trouver des produits spécifiques ou un revendeur.<br>
+                <span style="font-weight: bold;">Préconditions :</span>- Accès à la barre de recherche; <br>
+                - L’acheteur est inscrit à la plateforme; <br>
+                - L’acheteur est connecté à la plateforme. <br>
+                <span style="font-weight: bold;">Acteurs :</span>Acheteur (Principal)<br>
+                <span style="font-weight: bold;">Scénario principal :</span>Le client est inscrit sur la plateforme.<br>
+                1. L’acheteur se présente à la page d’accueil. <br>
+                2. L’acheteur sélectionne quel type de recherche il veut faire.<br>
+                3. L’acheteur pèse le champ de recherche.<br>
+                4. L’acheteur écrit le(s) mot-clé(s) dans la barre de recherche.<br>
+                5. L’acheteur pèse sur Rechercher.<br>
+                6. Le système fait la recherche par catégorie, prix, note moyenne ou popularité.<br>
+                7.Le système amène le client à une page avec une liste de résultats possibles.<br>
+                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
+                2a. L’acheteur veut rechercher un produit.<br>
+				          2a.1 L’acheteur sélectionne Produit.<br>
+				          2a.2 La scène reprend à l’étape 4.<br>
+			          2b. L’acheteur veut rechercher un revendeur.<br>
+				          2b.1 L’acheteur sélectionne Revendeur.<br>
+				          2b.1 La scène reprend à l’étape 4.<br>
+			          6a. Le(s) mot(s) clé(s) invalide(s) (mal saisi le mot).<br>
+				          6a.1 Le système trouve aucun résultat correspondant aux mots-clés.<br>
+				          6a.2 Le système affiche Aucun résultat sur l’écran.<br>
+				          6a.3 La scène reprend à l’étape 4.<br>
+			          7a. Le système affiche une liste de produits possibles.<br>
+				          7a.1 L’acheteur utilise le système de filtrage pour faciliter sa recherche.<br>
+				          7a.2 L'acheteur trouve le produit recherché..<br>
+				          7a.3 Le scénario se termine.<br>
+			          7b. Le système affiche une liste de revendeurs possibles.<br>
+				          7b.1 L’acheteur trouve le revendeur recherché..<br>
+				          7b.2 Le scénario se termine<br>
+            </p>
+        </li>
             <li>
                 <!-- Cynthia -->
                 <p>
@@ -351,198 +507,7 @@
                 &emsp;8a.4 Le système enregistre la nouvelle évaluation
                 &emsp;8a.5 Le profil du revendeur est mis à jour avec la nouvelle évaluation
                 &emsp;8a.6 Le scénario se termine
-
-            
-                8b. L'acheteur souhaite supprimer son évaluation    <br>
-                &emsp;8b.1 L’acheteur sélectionne l'évaluation qu’il souhaite supprimer 
-                &emsp;8b.2 L’acheteur sélectionne “éliminer evaluation” <br>
-                &emsp;8b.3 Le système enregistre les modifications <br>
-                &emsp;8b.3 Le scénario se termine. <br>
-            
-                <span style="font-weight: bold;">Postconditions :</span>  L'évaluation et les commentaires sont associes au revendeur dans la base de données.<br>
             </p>
             </li>
-            <li>
-              <!-- Laura -->
-            <p>
-                <span style="font-weight: bold;">Cas d'utilisation :</span> Passer une commande  
-                <br>
-                <span style="font-weight: bold;">But :</span> Permettre  à l'acheteur de sélectionner des produits, de les ajouter à son panier, de spécifier les informations de paiement et de livraison, puis de finaliser la commande.
-                <br>
-                <span style="font-weight: bold;">Préconditions :</span> 
-                <ul>
-                    <li>L’acheteur est connecté à son compte </li>
-                    <li>L’acheteur dispose d’un mode de paiement valide enregistre sur son compte  </li>   
-                </ul>
-                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal)<br>
-                <span style="font-weight: bold;">Scénario principal :</span><br>
-                1. L’acheteur accède à son panier d’achat pour vérifier les articles qu'il a sélectionné <br>
-                2. L’acheteur sélectionne “passer la commande” <br>
-                3. L'acheteur choisit l'adresse de livraison<br>
-                4. L'acheteur sélectionne la méthode de paiement <br>
-                5. Le système vérifie l’information de la carte bancaire <br> 
-                6. Le système confirme l’information de la carte bancaire <br> 
-                7. L'acheteur confirme sa commande et procède au paiement. <br>
-                8. Le système enregistre la commande <br>
-                9. Le système envoie au revendeur qu’il y a une commande à préparer <br>
-                10. Le système met à jour l'inventaire des produits. <br>
-                11. Le système envoie le nom de la compagnie d'expédition et  le numéro de suivi <br>
-                
-                <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
-                4a. Un produit sélectionné est en rupture stock <br>
-                &emsp;4a.1 L'acheteur est informé que ce produit n'est plus disponible. <br>
-                &emsp;4a.2 Le produit est automatiquement retiré du panier <br>
-                &emsp;4a.3 Le système renvoie l’acheteur au catalogue de produits <br>
-                &emsp;4a.4 Retour à l’étape 1 <br>
-            
-                5a. L'acheteur souhaite plus d'un produit du même type dans son panier <br>
-                &emsp;5a.1 L'acheteur modifie la quantité de chaque article qu'il souhaite <br>
-                &emsp;5a.2 L'acheteur peut poursuivre son achat ou procéder au paiement <br>
-                &emsp;5a.3 Retour à l’étape 1 <br>
-            
-                8a. L’acheteur n’a pas encore enregistré un mode de paiement <br>
-                &emsp;8a.1 le système demande d’entrer les informations d’un nouveau mode de paiement <br>
-                &emsp;8a.2 Retour à l’étape 4 <br>
-                
-                9a. L’acheteur quitte la plateforme avant de confirmer son achat <br>
-                &emsp;9a.1 Le système enregistre la commande dans le compte de l’acheteur <br>
-                &emsp;9a.2 Le scénario se termine <br>
-            
-                <span style="font-weight: bold;">Postconditions :</span>  La commande est enregistrée dans la base de données avec un identifiant unique.<br>
-            </p>
-            </li>
-            <li>
-              <!--Nathan-->
-              <p>
-                <span style="font-weight: bold;">Cas d'utilisation :</span> Mettre à jour l’état de la commande<br>
-                <span style="font-weight: bold;">But :</span> Donner en temps réel des informations sur la commande à l’acheteur pour que ce dernier puisse agir en conséquence<br>
-                <span style="font-weight: bold;">Préconditions :</span> - L’acheteur a acheté et confirmé sa commande<br>
-                - La commande est dans la base de données<br>
-                <span style="font-weight: bold;">Acteurs :</span> Revendeur (principal)<br>
-                <span style="font-weight: bold;">Scénario principal :</span><br>
-                1. Le revendeur se connecte à sa plateforme<br>
-                2. Il se rend dans sa section “Activités” et retrouve la commande qu’il veut mettre à jour<br>
-                3. Il clique sur la section “Statut” de la commande et le modifie en fonction de l’état actuel de la commande<br>
-                4. Il confirme la mise à jour du statut<br>
-                5. Le système affiche que le statut de la commande a bien été mis à jour<br>
-                6. Le système envoie un e-mail à l’acheteur pour l’informer du nouvel état de sa commande<br>
-                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
-                2a. Le revendeur ne retrouve pas la commande qu’il veut mettre à jour<br>
-                &emsp;2a.1. Le revendeur signale le problème aux assistants techniques de la plateforme <br>
-                &emsp;2a.2. Le revendeur contacte l’acheteur pour confirmer que la commande a bien été passée<br>
-                &emsp;2a.3. Retour à l’étape 2<br>
-                4a. Le statut ne peut pas être mis à jour<br>
-                &emsp;4a.1. Le revendeur reconfirme l’état réel de la commande chez le livreur engagé<br>
-                &emsp;4a.2. Retour à l’étape 3<br>
-                5a. L’e-mail de mise à jour n’est pas reçu par l’acheteur<br>
-                &emsp;5a.1. Le revendeur envoie la mise à jour de la commande à l’acheteur par SMS<br>
-                &emsp;5a.2. Un message est envoyé à l’acheteur pour lui dire de reconfirmer son	 adresse e-mail<br>
-                &emsp;5a.3. Fin du scénario<br>
-              </p>
-            </li>
-            <li>
-              <!--Nathan-->
-              <p>
-                <span style="font-weight: bold;">Cas d'utilisation :</span> Annuler une commande<br>
-                <span style="font-weight: bold;">But :</span> Permettre à un acheteur d’annuler sa commande et de recevoir un remboursement<br>
-                <span style="font-weight: bold;">Préconditions :</span> L’acheteur a déjà passé la commande et son paiement a été bien reçu<br>
-                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), revendeur (secondaire)<br>
-                <span style="font-weight: bold;">Scénario principal :</span><br>
-                1. L’acheteur se connecte à la plateforme<br>
-                2. Il se rend dans sa section “Historique de commandes”<br>
-                3. Il clique sur la commande qu’il veut annuler<br>
-                4. Il appuie sur le bouton “Annuler la commande”<br>
-                5. Il confirme l’annulation<br>
-                6. La commande est annulée<br>
-                7. L’acheteur récupère son argent<br>
-                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
-                6a. Le système indique que la commande ne peut pas être annulée<br>
-                &emsp;6a.1. Le système indique que la commande a déjà été empaquetée est déjà en route avec le livreur<br>
-                &emsp;6a.2. Retour à l’étape 2<br>
-                7a. L’argent n’est pas revenu directement dans le compte de l’acheteur<br>
-                &emsp;4a.1. Le système notifie le revendeur<br>
-                &emsp;4a.2. Le revendeur rectifie le remboursement auprès de l’acheteur<br>
-                &emsp;4a.3. Le scénario se termine<br>
-                <span style="font-weight: bold;">Postconditions :</span> La commande disparaît de la base de données<br>
-            </p>
-          </li>
-            <li>
-              <!--Nathan-->
-              <p>
-                <span style="font-weight: bold;">Cas d'utilisation :</span> Consulter/suivre l’état d’une commande<br>
-                <span style="font-weight: bold;">But :</span> Donner à l’acheteur des informations sur sa commande pour qu’il puisse agir et prévoir ses futurs déplacements<br>
-                <span style="font-weight: bold;">Préconditions :</span> La commande qu’il veut suivre existe<br>
-                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal)<br>
-                <span style="font-weight: bold;">Scénario principal :</span><br>
-                1. Le client se connecte à la plateforme<br>
-                2. Le client clique sur le bouton “Historique de commandes”<br>
-                3. Le client clique sur la commande qu’il veut suivre<br>
-                4. Le système lui indique en ordre chronologique toutes les mises à jour sur l’état de la commande<br>
-                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
-                4a. L’état de la commande n’est pas mis à jour malgré les notifications reçues par l’acheteur sur le statut de sa commande<br>
-                &emsp;4a.1. L’acheteur revient à la section “Historique de commandes”<br>
-                &emsp;4a.2. Retour à l’étape 3<br>
-              </p>
-            </li>
-            <li>
-                <!-- Cynthia -->
-                <p>
-                    <span style="font-weight: bold;">Cas d'utilisation :</span> Confirmer la réception d’une commande ou d’un retour <br>
-                    <span style="font-weight: bold;">But :</span> mettre à jour l’état de la commande ou du retour à « livré » lorsque l’acheteur reçoit sa commande ou lorsque le revendeur reçoit le retour. <br>
-                    <span style="font-weight: bold;">Préconditions :</span> l’acheteur a reçu sa commande ou le revendeur a reçu le retour. <br>
-                    <span style="font-weight: bold;">Acteurs :</span> (principal), revendeur (principal) <br>
-                    <span style="font-weight: bold;">Scénario principal :</span> <br>
-                    1. Le client reçoit un colis à sa porte. <br>
-                    2. Le client se connecte à la plateforme. <br>
-                    3. Le client clique sur le bouton « Historique de commandes ». <br>
-                    4. Le client clique sur la commande ou le retour reçu. <br>
-                    5. Le client clique sur le bouton « Confirmer la réception ». <br>
-                    6. Le système affiche « Voulez-vous confirmer la réception? » à l’écran. <br>
-                    7. Le client clique sur le bouton « Confirmer ». <br>
-                    8. Le système affiche « La réception a été confirmée avec succès! » à l’écran. <br>
-                    9. L’état de la commande ou du retour devient « livré ». <br>
-                    <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
-                    1a. L’acheteur ne reçoit pas la commande. <br>
-                     1a.1. L’acheteur signale le problème au revendeur. <br>
-                     1a.2. Le revendeur propose une/des solutions. <br>
-                     1a.3. L’acheteur et le revendeur prennent les actions nécessaires selon la solution. <br>
-                     1a.4. Le scénario se termine. <br>
-                    1b. Le revendeur ne reçoit pas la commande. <br>
-                     1b.1. Le revendeur écrit un message à l’acheteur concernant l’échec de la réception. <br>
-                     1b.2. Le revendeur effectue un remboursement à l’acheteur. <br>
-                     1b.3. Le revendeur met à jour son inventaire. <br>
-                     1b.4. Le scénario se termine. <br>
-                    7a. Le client clique sur le bouton « Annuler ». <br>
-                     7a.1. Le message se ferme. <br>
-                     7a.2. Le scénario reprend à l’étape 5. <br>
-                    <span style="font-weight: bold;">Postconditions :</span> l’état de la commande ou du retour devient « livré » après avoir confirmée sa reception. <br>
-                </p>
-            </li>
-            <li>
-              <!--Nathan-->
-              <p>
-                <span style="font-weight: bold;">Cas d'utilisation :</span> Supprimer son compte de la plateforme<br>
-                <span style="font-weight: bold;">But :</span> Si l’utilisateur n’est pas satisfait par la plateforme, il doit pouvoir supprimer son compte et toutes les informations qu’il a fournis dedans<br>
-                <span style="font-weight: bold;">Préconditions :</span> Le compte existe<br>
-                <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), revendeur (principal)<br>
-                <span style="font-weight: bold;">Scénario principal :</span><br>
-                1. Le client se connecte à son compte<br>
-                2. Il va dans la section “Paramètres”<br>
-                3. Il clique sur “Supprimer son compte”<br>
-                4. Il retape son mot de passe<br>
-                5. Il clique sur “Confirmer”<br>
-                6. Le compte est supprimé<br>
-                <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
-                5a. Le client s’est trompé de mot de passe<br>
-                &emsp;5a.1. Le système indique que le mot de passe est incorrect<br>
-                &emsp;5a.2. Retour à l’étape 4<br>
-                6a. Le système indique que le compte ne peut pas être supprimé car l’utilisateur a encore des commandes en cours ou des achats/frais à payer<br>
-                &emsp;6a.1. Le client règle toutes ses factures<br>
-                &emsp;6a.2. Le client termine ou annule toutes ses commandes<br>
-                &emsp;6a.3. Retour à l’étape 2<br>
-                <span style="font-weight: bold;">Postconditions :</span> Le compte est supprimé de la base de données<br>
-              </p>
-            </li>
-        </ol>
     </body>
 </html>
