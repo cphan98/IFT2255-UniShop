@@ -378,9 +378,9 @@
                     13. Le revendeur envoie une confirmation à l'acheteur une fois qu’il  reçoit le produit <br>
                     <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
                     8a. Il n'y a pas assez de produits pour faire l'échange.    <br>
-                    &emsp;8a.1 Le système affiche les produits liés au produit souhaité    e<br>
+                    &emsp;8a.1 Le système affiche les produits liés au produit souhaitée<br>
                     &emsp;8a.2 L'acheteur choisit le produit qui lui convient le mieux ou indique qu'il préfère un remboursement<br>
-                    &emsp;8a.3 le scenario recommence à l'étape 9
+                    &emsp;8a.3 le scenario recommence à l'étape 9 <br>
                     <span style="font-weight: bold;">Postconditions :</span>  L’inventaire du revendeur est mis à jour.<br>
                 </p>
             </li>
@@ -413,7 +413,7 @@
                     7a. L'acheteur ne reçoit pas le remboursement intégral sur son compte<br>
                     &emsp;7a.1 L'acheteur informe le revendeur qu'il y a eu une erreur <br>
                     &emsp;7a.2 le revendeur est notifie d’un erreur  <br>
-                    &emsp;7a.3 le scenario recommence à l'étape 4
+                    &emsp;7a.3 le scenario recommence à l'étape 4 <br>
                     <span style="font-weight: bold;">Postconditions :</span>  Le solde du compte bancaire de l'acheteur est mis à jour.<br>
                 </p>
             </li>
@@ -484,13 +484,14 @@
                     &emsp;6a.1 L’acheteur soumet uniquement son évaluation     <br>
                     &emsp;6a.2 Le système enregistre uniquement l'évaluation <br>
                     &emsp;6a.3  Le scénario recommence à l'étape 8  <br>
-                    8a. L’acheteur change d’avis après avoir soumis son évaluation
-                    &emsp;8a.1 L’acheteur sélectionne l'évaluation qu’il souhaite changer 
-                    &emsp;8a.2 L’acheteur sélectionne “modifier evaluation” 
-                    &emsp;8a.3 L’acheteur met à jour son évaluation
-                    &emsp;8a.4 Le système enregistre la nouvelle évaluation
-                    &emsp;8a.5 Le profil du revendeur est mis à jour avec la nouvelle évaluation
-                    &emsp;8a.6 Le scénario se termine
+                    8a. L’acheteur change d’avis après avoir soumis son évaluation <br>
+                    &emsp;8a.1 L’acheteur sélectionne l'évaluation qu’il souhaite changer <br> 
+                    &emsp;8a.2 L’acheteur sélectionne “modifier evaluation” <br>
+                    &emsp;8a.3 L’acheteur met à jour son évaluation <br>
+                    &emsp;8a.4 Le système enregistre la nouvelle évaluation <br>
+                    &emsp;8a.5 Le profil du revendeur est mis à jour avec la nouvelle évaluation <br>
+                    &emsp;8a.6 Le scénario se termine <br>
+                    <span style="font-weight: bold;">Postconditions :</span> L'évaluation et les commentaires sont associes au revendeur dans la base de données
                 </p>
             </li>
             <li>
@@ -555,9 +556,9 @@
                     &emsp;6a.1. Le système indique que la commande a déjà été empaquetée est déjà en route avec le livreur<br>
                     &emsp;6a.2. Retour à l’étape 2<br>
                     7a. L’argent n’est pas revenu directement dans le compte de l’acheteur<br>
-                    &emsp;4a.1. Le système notifie le revendeur<br>
-                    &emsp;4a.2. Le revendeur rectifie le remboursement auprès de l’acheteur<br>
-                    &emsp;4a.3. Le scénario se termine<br>
+                    &emsp;7a.1. Le système notifie le revendeur<br>
+                    &emsp;7a.2. Le revendeur rectifie le remboursement auprès de l’acheteur<br>
+                    &emsp;7a.3. Le scénario se termine<br>
                     <span style="font-weight: bold;">Postconditions :</span> La commande disparaît de la base de données<br>
                 </p>
             </li>
@@ -566,7 +567,8 @@
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> Mettre à jour l’état de la commande<br>
                     <span style="font-weight: bold;">But :</span> Donner en temps réel des informations sur la commande à l’acheteur pour que ce dernier puisse agir en conséquence<br>
-                    <span style="font-weight: bold;">Préconditions :</span> - L’acheteur a acheté et confirmé sa commande<br>
+                    <span style="font-weight: bold;">Préconditions :</span> <br>
+                    - L’acheteur a acheté et confirmé sa commande<br>
                     - La commande est dans la base de données<br>
                     <span style="font-weight: bold;">Acteurs :</span> Revendeur (principal)<br>
                     <span style="font-weight: bold;">Scénario principal :</span><br>
@@ -588,6 +590,7 @@
                     &emsp;5a.1. Le revendeur envoie la mise à jour de la commande à l’acheteur par SMS<br>
                     &emsp;5a.2. Un message est envoyé à l’acheteur pour lui dire de reconfirmer son	 adresse e-mail<br>
                     &emsp;5a.3. Fin du scénario<br>
+                    <span style="font-weight: bold;">Postconditions :</span> L’état de la commande est mise à jour.
                 </p>
             </li>
             <li>
@@ -606,6 +609,7 @@
                     4a. L’état de la commande n’est pas mis à jour malgré les notifications reçues par l’acheteur sur le statut de sa commande<br>
                     &emsp;4a.1. L’acheteur revient à la section “Historique de commandes”<br>
                     &emsp;4a.2. Retour à l’étape 3<br>
+                    <span style="font-weight: bold;">Postconditions :</span> Le système indique à l’acheteur l’ordre chronologique de toutes les mises à jour sur l’état de la commande.
                 </p>
             </li>
             <li>
