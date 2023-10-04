@@ -5,9 +5,49 @@
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
         <title>Rapport</title>
+        <style>
+            li p {
+                margin: 0;
+            }
+            h2 {
+                margin-top: 50px;
+                font-style: italic;
+                width: 100%;
+                padding-bottom: 10px;
+                border-bottom: 2px solid black;
+            }
+            ol > li {
+                margin-bottom: 50px;
+            }
+            dt {
+                font-style: italic;
+            }
+            dd {
+                margin-bottom: 12px;
+                width: 80%;
+            }
+            body {
+                background-color: #e3edff;
+                font-size: 20px;
+                line-height: 25px;
+            }
+            thead {
+                font-size: 1.5rem;
+            }
+            table {
+                padding: 10px;
+                background-color: #48cbc6;
+            }
+            td {
+                border: 1px solid black;
+                padding: 10px;
+                margin: 0;
+                background-color: white;
+            }
+        </style>
     </head>
     <body style="font-family: sans-serif">
-        <div style="background-color: aliceblue; padding: 2px;">
+        <div style="background-color: #97caf5; padding: 2px;">
             <p style="text-align: center;"><strong>Binary Brahman Brotherhood</strong></p>
             <table style="width: 100%; text-align: center;">
                 <tr>
@@ -42,12 +82,12 @@
                     <td>Nathan Riantsoa Razafindrakoto</td>
                     <td>20254813</td>
                     <td>nathan.razafindrakoto@umontreal.ca</td>
-                    <td></td>
+                    <td>8</td>
                 </tr>
             </table>
         </div>
 
-        <h1 style="text-align: center;">Rapport</h1>
+        <h1 style="text-align: center; margin-top: 50px;">Rapport</h1>
         
         <br>
         
@@ -168,8 +208,8 @@
             <dt>Promotion </dt>
             <dd>L'action de faire la publicité de produits ou d'offres spéciales sur la plateforme. </dd>
 
-            <dt>Réception d’un produit (laura)</dt>
-            <dd>Changement du statut de la commande à livré. </dd>
+            <dt>Réception d’un produit</dt>
+            <dd>Changement du statut de la commande à "livré". </dd>
 
             <dt>Recherche et filtrage des produits/revendeurs </dt>   
             <dd>Processus permettant aux utilisateurs de sélectionner ou de restreindre les résultats de recherche sur la plateforme en fonction de critères spécifiques. </dd>
@@ -205,8 +245,7 @@
             <!-- 1 Mimi -->
                 <p>
                     <span style="font-weight: bold;">Cas d'utilisation :</span> S’inscrire à la plateforme en tant qu’acheteur. <br>
-                    <span style="font-weight: bold;">But :</span> Un acheteur souhaite s’inscrire à la plateforme
-                    nécessaires.<br>
+                    <span style="font-weight: bold;">But :</span> Un acheteur souhaite s’inscrire à la plateforme .<br>
                     <span style="font-weight: bold;">Préconditions :</span>L’acheteur dispose d’un nom, prénom, pseudo, adresse courriel, téléphone et un adresse d’expédition. <br>
                     <span style="font-weight: bold;">Acteurs :</span> Acheteur (Principal)
                     (secondaire).<br>
@@ -214,56 +253,55 @@
                     1. Acheteur se rend à la plateforme. <br>
                     2. Acheteur pèse sur Inscription<br>
                     3. Acheteur entre ses informations personnelles (nom, prénom, pseudo(unique), adresse courriel, téléphone et adresse d’expédition) dans le système.<br>
-                    4. Le système vérifier la validité du courriel et du pseudo unique. <br>
-                    5. Le système affiche Succès à l’écran. <br>
-                    6. Le système demande de cocher la boîte pour accepter les termes et conditions.<br>
+                    4. Le système vérifie la validité du courriel et du pseudo unique. <br>
+                    5. Le système affiche "Succès" à l’écran. <br>
+                    6. Le système demande de cocher la boîte pour accepter les conditions générales.<br>
                     7. Acheteur coche la boîte <br>
-                    8. Acheteur pèse le bouton S’inscrire pour poursuivre à la création. <br>
+                    8. Acheteur appuie sur le bouton "S’inscrire" pour continuer. <br>
                     9. Le système confirme la création du compte. <br>
                     <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
                     4a. Le courriel n’est pas valide (mal saisi le courriel).<br>
-                        4a.1 Le système redemande de nouveau l’entrée d’adresse courriel.<br>
-                        4a.2 Acheteur saisit de nouveau son adresse courriel.<br>
-                        4a.3 La scène recommence à l’étape 4.<br>
+                    &emsp;4a.1 Le système redemande de nouveau l’entrée d’adresse courriel.<br>
+                    &emsp;4a.2 Acheteur saisit de nouveau son adresse courriel.<br>
+                    &emsp;4a.3 La scène recommence à l’étape 4.<br>
                     4b. Le pseudo n'est pas unique. <br>
-                        4b.1 Le système redemande à l’acheteur de saisir un pseudo qui est unique 
+                    &emsp;4b.1 Le système redemande à l’acheteur de saisir un pseudo qui est unique
                         de nouveau. <br>
-                        4b.2 L’acheteur saisit de nouveau un pseudo. <br>
-                        4b.3 La scène recommence à l’étape 4. <br>
-                    6a. L’acheteur n’accepte pas les termes et conditions. <br>
-                        6a.1 L’acheteur pèse le bouton S’inscrire pour poursuivre à la création. <br>
-                        6a.2 Le système envoie Erreur: Ce champ est obligatoire. <br>
-                        6a.3 Retour à l’étape 6.<br>
+                    &emsp;4b.2 L’acheteur saisit de nouveau un pseudo. <br>
+                    &emsp;4b.3 La scène recommence à l’étape 4. <br>
+                    6a. L’acheteur n’accepte pas les conditions générales. <br>
+                    &emsp;6a.1 L’acheteur appuie sur le bouton "S’inscrire" pour continuer. <br>
+                    &emsp;6a.2 Le système envoie "Erreur: Ce champ est obligatoire." <br>
+                    &emsp;6a.3 Retour à l’étape 6.<br>
                     <span style="font-weight: bold;">Postconditions :</span> L’acheteur a créé un compte et peut modifier son profil après l’inscription. <br>
                 </p>
             </li>
             <li>
                 <!-- 2 Mimi -->
                 <p>
-                    <span style="font-weight: bold;">Cas d'utilisation :</span>  S’inscrire à la plateforme en tant que revendeur. <br>
-                    <span style="font-weight: bold;">But :</span> Un revendeur souhaite s’inscrire à la plateforme
-                    nécessaires.<br>
+                    <span style="font-weight: bold;">Cas d'utilisation :</span> S’inscrire à la plateforme en tant que revendeur. <br>
+                    <span style="font-weight: bold;">But :</span> Un revendeur souhaite s’inscrire à la plateforme .<br>
                     <span style="font-weight: bold;">Préconditions :</span>Au moins un produit à revendre. <br>
                     <span style="font-weight: bold;">Acteurs :</span> Revendeur (Principal)<br>
                     <span style="font-weight: bold;">Scénario principal :</span> <br>
                     1. Revendeur se rend à la plateforme.<br>
-                    2. Revendeur pèse sur Inscription.<br>
+                    2. Revendeur appuie sur "Inscription".<br>
                     3. Revendeur entre ses informations personnelles (nom unique, adresse, adresse courriel, téléphone) dans le système.<br>
-                    4. Le système vérifier la validité du courriel et du nom unique.<br>
+                    4. Le système vérifie la validité du courriel et du nom unique.<br>
                     5. Le système affiche Succès à l’écran. <br>
-                    6. Le système demande de cocher la boîte pour accepter les termes et conditions.<br>
+                    6. Le système demande de cocher la boîte pour accepter les conditions générales.<br>
                     7. Revendeur coche la boîte <br>
-                    8. Revendeur pèse le bouton S’inscrire pour poursuivre à la création. <br>
+                    8. Revendeur appuie sur le bouton "S’inscrire" pour continuer. <br>
                     9. Le système confirme la création du compte. <br>
                     <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
                     4a. Le courriel n’est pas valide (mal saisi le courriel).<br>
-                        4a.1 Le système redemande de nouveau l’entrée d’adresse courriel.<br>
-                        4a.2 Revendeur saisit de nouveau son adresse courriel.<br>
-                        4a.3 La scène recommence à l’étape 4.<br>
+                    &emsp;4a.1 Le système redemande de nouveau l’entrée d’adresse courriel.<br>
+                    &emsp;4a.2 Revendeur saisit de nouveau son adresse courriel.<br>
+                    &emsp;4a.3 La scène recommence à l’étape 4.<br>
                     4b. Le nom n'est pas unique. <br>
-                        4b.1 Le système redemande au revendeur de saisir un nom qui est unique de nouveau. <br>
-                        4b.2 Le revendeur saisit de nouveau un nom. <br>
-                        4b.3 La scène recommence à l’étape 4. <br>
+                    &emsp;4b.1 Le système redemande au revendeur de saisir un nom qui est unique de nouveau. <br>
+                    &emsp;4b.2 Le revendeur saisit de nouveau un nom. <br>
+                    &emsp;4b.3 La scène recommence à l’étape 4. <br>
                     <span style="font-weight: bold;">Postconditions :</span> Le revendeur doit modifier son profil après l’inscription.<br>
                 </p>
             </li>
@@ -285,20 +323,20 @@
                     8. Le système laisse entrer le client à la plateforme.<br>
                     <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
                     2a. Le client veut se connecter en tant qu’acheteur.<br>
-                        2a.1 Le client pèse sur Connexion en-dessous de Acheteur.<br>
-                        2a.2 La scène reprend à l’étape 3.<br>
+                    &emsp;2a.1 Le client pèse sur Connexion en-dessous de Acheteur.<br>
+                    &emsp;2a.2 La scène reprend à l’étape 3.<br>
                     2b. Le client veut se connecter en tant que revendeur.<br>
-                        2b.1 Le client pèse sur Connexion en-dessous de Revendeur.<br>
-                        2b.2. La scène reprend à l’étape 3.<br>
+                    &emsp;2b.1 Le client pèse sur Connexion en-dessous de Revendeur.<br>
+                    &emsp;2b.2. La scène reprend à l’étape 3.<br>
                     5a. Le nom d’utilisateur n’est pas valide (nom a été mal saisi).<br>
-                        5a.1 Le système n’a pas trouvé le compte.<br>
-                        5a.2 Le système affiche Compte inexistant à l’écran.<br>
-                        5a.3 Le système reprend à l’étape 4.<br>
-                    5b. Le courriel n’est pas valide (courriel  a été mal saisi).<br>
-                        5b.1 Le système n’a pas trouvé le compte.<br>
-                        5b.2 Le système affiche Compte inexistant à l’écran.<br>
-                        5b.3 Le système reprend à l’étape 4.<br>
-                    <span style="font-weight: bold;">Postconditions :</span> Le système enregistre amène l’acheteur/ le revendeur à la plateforme.<br>
+                    &emsp;5a.1 Le système n’a pas trouvé le compte.<br>
+                    &emsp;5a.2 Le système affiche Compte inexistant à l’écran.<br>
+                    &emsp;5a.3 Le système reprend à l’étape 4.<br>
+                    5b. Le courriel n’est pas valide (courriel a été mal saisi).<br>
+                    &emsp;5b.1 Le système n’a pas trouvé le compte.<br>
+                    &emsp;5b.2 Le système affiche Compte inexistant à l’écran.<br>
+                    &emsp;5b.3 Le système reprend à l’étape 4.<br>
+                    <span style="font-weight: bold;">Postconditions :</span> Le système dirige l’acheteur/ le revendeur vers la plateforme.<br>
                 </p>
             </li>
             <li>
@@ -313,14 +351,14 @@
                     2. Le client choisit et modifie le champ à modifier dans leur profil.<br>
                     3. Le système vérifie les informations modifiées.<br>
                     4. Le système sauvegarde les informations modifiées.<br>
-                    5. Le système affiche Succès à l’écran.<br>
+                    5. Le système affiche "Succès" à l’écran.<br>
                     6. Le système envoie une notification du changement.<br>
                     7. Le client pourra quitter ou continuer sur la plateforme.<br>
                     <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
                     3a. Le client laisse un champ vide.<br>
-                        3a.1 Le système affiche Erreur: Le champ est obligatoire.<br>
-                        3a.2 Le client va remplir le champ manqué.<br>
-                        3a.3 La scène reprend à l’étape 3.<br>
+                    &emsp;3a.1 Le système affiche Erreur: Le champ est obligatoire.<br>
+                    &emsp;3a.2 Le client va remplir le champ manqué.<br>
+                    &emsp;3a.3 La scène reprend à l’étape 3.<br>
                     <span style="font-weight: bold;">Postconditions :</span> Être capable de modifier le profil encore.<br>
                 </p>
             </li>
@@ -335,30 +373,30 @@
                     <span style="font-weight: bold;">Acteurs :</span>Acheteur (Principal)<br>
                     <span style="font-weight: bold;">Scénario principal :</span>Le client est inscrit sur la plateforme.<br>
                     1. L’acheteur se présente à la page d’accueil. <br>
-                    2. L’acheteur sélectionne quel type de recherche il veut faire.<br>
-                    3. L’acheteur pèse le champ de recherche.<br>
+                    2. L’acheteur sélectionne le type de recherche qu'il veut faire.<br>
+                    3. L’acheteur appuie sur le champ de recherche.<br>
                     4. L’acheteur écrit le(s) mot-clé(s) dans la barre de recherche.<br>
-                    5. L’acheteur pèse sur Rechercher.<br>
+                    5. L’acheteur appuie sur Rechercher.<br>
                     6. Le système fait la recherche par catégorie, prix, note moyenne ou popularité.<br>
-                    7. Le système amène le client à une page avec une liste de résultats possibles.<br>
+                    7. Le système amène le client à une page avec une liste des résultats possibles.<br>
                     <span style="font-weight: bold;">Scénarios alternatifs :</span><br>
                     2a. L’acheteur veut rechercher un produit.<br>
-                        2a.1 L’acheteur sélectionne Produit.<br>
-                        2a.2 La scène reprend à l’étape 4.<br>
+                    &emsp;2a.1 L’acheteur sélectionne Produit.<br>
+                    &emsp;2a.2 La scène reprend à l’étape 4.<br>
                     2b. L’acheteur veut rechercher un revendeur.<br>
-                        2b.1 L’acheteur sélectionne Revendeur.<br>
-                        2b.1 La scène reprend à l’étape 4.<br>
+                    &emsp;2b.1 L’acheteur sélectionne Revendeur.<br>
+                    &emsp;2b.1 La scène reprend à l’étape 4.<br>
                     6a. Le(s) mot(s) clé(s) invalide(s) (mal saisi le mot).<br>
-                        6a.1 Le système trouve aucun résultat correspondant aux mots-clés.<br>
-                        6a.2 Le système affiche Aucun résultat sur l’écran.<br>
-                        6a.3 La scène reprend à l’étape 4.<br>
+                    &emsp;6a.1 Le système ne trouve aucun résultat correspondant aux mots-clés.<br>
+                    &emsp;6a.2 Le système affiche Aucun résultat sur l’écran.<br>
+                    &emsp;6a.3 La scène reprend à l’étape 4.<br>
                     7a. Le système affiche une liste de produits possibles.<br>
-                        7a.1 L’acheteur utilise le système de filtrage pour faciliter sa recherche.<br>
-                        7a.2 L'acheteur trouve le produit recherché.<br>
-                        7a.3 Le scénario se termine.<br>
+                    &emsp;7a.1 L’acheteur utilise le système de filtrage pour faciliter sa recherche.<br>
+                    &emsp;7a.2 L'acheteur trouve le produit recherché.<br>
+                    &emsp;7a.3 Le scénario se termine.<br>
                     7b. Le système affiche une liste de revendeurs possibles.<br>
-                        7b.1 L’acheteur trouve le revendeur recherché.<br>
-                        7b.2 Le scénario se termine<br>
+                    &emsp;7b.1 L’acheteur trouve le revendeur recherché.<br>
+                    &emsp;7b.2 Le scénario se termine<br>
                     <span style="font-weight: bold;">Postconditions :</span> Le client peut faire une autre recherche. <br>
                 </p>
             </li>
@@ -377,8 +415,6 @@
                     <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
                     2a. L’acheteur est déjà abonné au revendeur. <br>
                      2a.1. L’acheteur clique sur le bouton « Liked ». <br>
-                     2a.2. Le bouton devient « Like ». <br>
-                     2a.2. Le bouton devient « Like ». <br>
                      2a.2. Le bouton devient « Like ». <br>
                     <span style="font-weight: bold;">Postconditions :</span> le bouton « Like » devient « Liked » lorsque l’acheteur s’abonne à un revendeur ou le bouton « Liked » devient « Like » lorsque l’acheteur se désabonne d’un revendeur. <br>
                 </p>
@@ -598,7 +634,7 @@
                     &emsp;8a.3  L’acheteur met à jour son évaluation.<br>
                     &emsp;8a.4  Le scénario se termine.<br>
                     8b. L'acheteur souhaite supprimer son évaluation    <br>
-                    &emsp;8b.1 L’acheteur sélectionne l'évaluation qu’il souhaite supprimer 
+                    &emsp;8b.1 L’acheteur sélectionne l'évaluation qu’il souhaite supprimer <br>
                     &emsp;8b.2 L’acheteur sélectionne “éliminer evaluation” <br>
                     &emsp;8b.3 Le scénario se termine. <br>
                     <span style="font-weight: bold;">Postconditions :</span>  L'évaluation et les commentaires sont associes au produit dans la base de données    .<br>
@@ -621,13 +657,13 @@
                     3. L’acheteur sélectionne le revendeur qu'il souhaite évaluer <br>
                     4. Le système affiche la page d’information du revendeur avec des options pour laisser une évaluation et des commentaires <br>
                     5. L’acheteur redirige une évaluation en attribuant une note (x étoiles sur cinq) au revendeur <br>
-                    6. L’acheteur a la possibilité de ecrire un commentaire détaillé  <br>
+                    6. L’acheteur a la possibilité d'écrire un commentaire détaillé  <br>
                     7. L’acheteur soumettre son évaluation et ses commentaires  <br>
                     8. Le système enregistre l'évaluation et les commentaires associés au revendeur <br>
                     <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
-                    3a. Le revendeur a supprimé son compte
-                    &emsp;3a.1 Le système affiche que le revendeur n’est plus inscrit à la plateforme
-                    &emsp;3a.2 Le système renvoie l’utilisateur à l’étape 2
+                    3a. Le revendeur a supprimé son compte <br>
+                    &emsp;3a.1 Le système affiche que le revendeur n’est plus inscrit à la plateforme <br>
+                    &emsp;3a.2 Le système renvoie l’utilisateur à l’étape 2 <br>
                     6a. L'acheteur décide de ne pas laisser de commentaire <br>
                     &emsp;6a.1 L’acheteur soumet uniquement son évaluation     <br>
                     &emsp;6a.2 Le système enregistre uniquement l'évaluation <br>
@@ -812,7 +848,7 @@
                     5a. Le client s’est trompé de mot de passe<br>
                     &emsp;5a.1. Le système indique que le mot de passe est incorrect<br>
                     &emsp;5a.2. Retour à l’étape 4<br>
-                    6a. Le système indique que le compte ne peut pas être supprimé car l’utilisateur a encore des commandes en cours ou des achats/frais à payer<br>
+                    6a. Le système indique que le compte ne peut pas être supprimé, car l’utilisateur a encore des commandes en cours ou des achats/frais à payer<br>
                     &emsp;6a.1. Le client règle toutes ses factures<br>
                     &emsp;6a.2. Le client termine ou annule toutes ses commandes<br>
                     &emsp;6a.3. Retour à l’étape 2<br>
@@ -837,7 +873,7 @@
                     - Conflit lors de la mise à jour de l’inventaire (plusieurs personnes achètent le dernier produit en même temps).<br>
             </li>    
             <li>Obstacle mineur<br>
-                    - Un revendeur vend des produits non reliés au cadre de l’école (ex. le revendeur vend des produits alimentaires sur le la plateforme UniShop). <br>
+                    - Un revendeur vend des produits non reliés au cadre de l’école (ex. le revendeur vend des produits alimentaires sur la plateforme UniShop). <br>
             </li>
         </ol>
         <br>
@@ -857,9 +893,9 @@
 
         <h2>Distribution des tâches</h2>
         <p>
-            <span style="font-weight: bold;">Soumissionaire: </span>Amal Ben Abdellah
+            <span style="font-weight: bold;">Soumissionaire: </span> Hoang-Thi-Thi Cynthia Phan <br>
         </p>
-        <table cellpadding="7px">
+        <table style="border: 2px solid black">
             <thead>
                 <tr>
                     <th class="first_col">
@@ -902,16 +938,16 @@
                         Diagramme de cas d’utilisation
                     </td>
                     <td>
-                        Identifier cas d'utilisation (25%), faire draft du diagramme UML (25%)
+                        -Identifier cas d'utilisation (25%)<br>-Faire draft du diagramme UML (25%)
                     </td>
                     <td>
-                        Identifier cas d'utilisation (25%), faire draft du diagramme UML (25%)
+                        -Identifier cas d'utilisation (25%)<br>-Faire draft du diagramme UML (25%)
                     </td>
                     <td>
-                        Identifier cas d'utilisation (25%), faire draft du diagramme UML (25%), ajouter diagramme au rapport (100%)
+                        -Identifier cas d'utilisation (25%)<br>-Faire draft du diagramme UML (25%)<br>-Ajouter diagramme au rapport (100%)
                     </td>
                     <td>
-                        Identifier cas d'utilisation (25%), faire draft du diagramme UML (25%)
+                        -Identifier cas d'utilisation (25%)<br>-Faire draft du diagramme UML (25%)
                     </td>
                 </tr>
                 <tr>
@@ -919,16 +955,16 @@
                         Cas d’utilisation
                     </td>
                     <td>
-                        Decrire, corriger et ajouter au rapport les cas d'utilisation (25%)
+                        Décrire, corriger et ajouter au rapport les cas d'utilisation (25%)
                     </td>
                     <td>
-                        Decrire, corriger et ajouter au rapport les  cas d'utilisation (25%)
+                        Décrire, corriger et ajouter au rapport les cas d'utilisation (25%)
                     </td>
                     <td>
-                        Decrire, corriger et ajouter au rapport les  cas d'utilisation (25%)
+                        Décrire, corriger et ajouter au rapport les cas d'utilisation (25%)
                     </td>
                     <td>
-                        Decrire, corriger et ajouter au rapport les  cas d'utilisation (25%)
+                        Décrire, corriger et ajouter au rapport les cas d'utilisation (25%)
                     </td>
                 </tr>
                 <tr>
@@ -942,7 +978,7 @@
                         Trouver et discuter risques(25%)
                     </td>
                     <td>
-                        Trouver et discuter risques(25%), ajouter risques au rapport (100%)
+                        -Trouver et discuter risques(25%)<br>-Ajouter risques au rapport (100%)
                     </td>
                     <td>
                         Trouver et discuter risques(25%)
@@ -956,18 +992,17 @@
                         Trouver et discuter exigences non-fonctionnelles(25%)
                     </td>
                     <td>
-                        trouver et discuter exigences non-fonctionnelles(25%), ajouter au rapport (100%)
+                        -Trouver et discuter exigences non-fonctionnelles(25%)<br>-Ajouter au rapport (100%)
                     </td>
                     <td>
-                        trouver et discuter exigences non-fonctionnelles (25%)
+                        Trouver et discuter exigences non-fonctionnelles (25%)
                     </td>
                     <td>
-                        trouver et discuter exigences non-fonctionnelles (25%)
+                        Trouver et discuter exigences non-fonctionnelles (25%)
                     </td>
                 </tr>
                 
             </tbody>
         </table>
-
     </body>
 </html>
