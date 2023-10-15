@@ -2,7 +2,7 @@
 
 Corrigé par An Li
 
-Total: 91%
+Total: 92%
 
 ## Glossaire [9/10]
 
@@ -41,9 +41,8 @@ La panne de la plateforme cause directement la non mise à jour du numéro de co
 
 Bien!
 
-## Bonne utilisation de GitHub et statistiques [3/5]
+## Bonne utilisation de GitHub et statistiques [4/5]
 
 - Mettre le lien vers le repo GitHub dans le rapport
-- Mettre la capture d'écran des Insights dans le rapport
 
 ## Bonus: Application Java [N/A]
