@@ -619,30 +619,49 @@
                         <li> L’acheteur a reçu un produit </li>
                     </ul>
                     
-                    <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
+                    <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire)<ins>, service postal (secondaire)</ins>.<br>
                     
                     <span style="font-weight: bold;">Scénario principal :</span><br>
                     1. L’acheteur se connecte à son compte <br>
                     2. L’acheteur clique sur son profil.<br>
                     3. L’acheteur clique sur le bouton « Historique de commandes ».<br>
-                    4. L’acheteur sélectionne la commande contenant le produit à retourner  <br>
-                    5. Le système demande la raison du retour (mauvais produit reçu, produit défectueux, changement d'idée) <br>
-                    6. L‘acheteur sélectionne l'option qui correspond à sa situation <br>
-                    7. L’acheteur fournit les détails nécessaires sur le produit à retourner. <br>
-                    8. L'acheteur est informé des étapes suivantes pour le retour <br>
-                    9. L’acheteur recevra un remboursement pour le montant des articles retournés à son mode de paiement d’origine.<br>
-                    10. Le système demande à l'acheteur de se présenter à la poste pour le retourner à l'entrepôt<br>
-                    11. Le système envoie un numéro de livraison et un lien pour suivre l'état du colis <br>
-                    12. Le revendeur envoie une confirmation à l'acheteur une fois qu’il reçoit le produit. <br>
-                    13. L’inventaire du revendeur est mis à jour. <br>
+                    4. L’acheteur sélectionne la commande contenant le produit à retourner <br>
+                    <ins>5. L'acheteur sélectionne « Effectuer un retour ». <br>
+                    6. L'acheteur sélectionne le(s) produit(s) à retourner. <br></ins>
+                    7. Le système demande la raison du retour (mauvais produit reçu, produit défectueux, changement d'idée) <br>
+                    8. L‘acheteur sélectionne l'option qui correspond à sa situation <br>
+                    9. L’acheteur fournit les détails nécessaires sur le produit à retourner. <br>
+                    <ins>10. Le système calcul le montant à rembourser. <br>
+                    11. Le système affiche le montant à rembourser à l'écran. <br>
+                    12. L'acheteur clique sur « Confirmer ». <br></ins>
+                    13. L'acheteur est informé des étapes suivantes pour le retour <br>
+                    <del>10. L’acheteur recevra un remboursement pour le montant des articles retournés à son mode de paiement d’origine.</del><br>
+                    <ins>14. L'acheteur prépare le colis. <br></ins>
+                    15. <del>Le système demande à</del> L'acheteur <del>de</del> se présente<del>r</del> à la poste pour <del>le</del> retourner <ins>le produit</ins> à l'entrepôt<br>
+                    16. Le système envoie un numéro de livraison et un lien pour suivre l'état du colis <br>
+                    <ins>17. Le service postal envoie le colis à l'entrepôt. <br></ins>
+                    18. Le revendeur envoie une confirmation à l'acheteur une fois qu’il reçoit le produit. <br>
+                    <ins>19. Le système met à jour l'état du retour à « Livré ». <br></ins>
+                    20. L’inventaire du revendeur est mis à jour. <br>
+                    <ins>21. Le système rembourse le montant des articles retournés au mode de paiement original.</ins><br>
                     
                     <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
-                    <ins>12a. le produit défectueux n’est pas reçu par le revendeur dans un délais de 30 jours suivant la date d’émission du numéro de suivi <br>
-                    &emsp;12a.1 le système annule la demande de réexpédition <br>
-                    &emsp;12a.2 le scénario se termine</ins><br>
-                    13a. Le produit est retourné en raison d’un défaut<br>
-                    &emsp;13a.1 Le produit est retirée de l’inventaire<br>
-                    &emsp;13a.2 Le scenario se termine<br>
+                    <ins>12a. L'acheteur clique sur « Annuler ». <br>
+                    &emsp;12a.1 Le retour est annulé. <br>
+                    &emsp;12a.2 Le système redirige l'acheteur à la pge « Historique de commandes ». <br>
+                    &emsp;12a.3 Le scénario se termine. <br>
+                    18a. Le produit n’est pas reçu par le revendeur dans un délais de 30 jours suivant la date d’émission du numéro de suivi. <br>
+                    &emsp;18a.1 Le système annule le retour. <br>
+                    &emsp;18a.2 Le scénario se termine. <br>
+                    18b. Le produit est reçu, mais pas dans un délais de 30 jours suivant la date d'émission du numéro de suivi. <br>
+                    &emsp;18b.1 Le système annule le retour. <br>
+                    &emsp;18b.2 Le scénario se termine. <br></ins>
+                    20a. Le produit <del>est</del> retourné <del>en raison d’un défaut</del> <ins>est défectueux.</ins><br>
+                    &emsp;20a.1 <del>Le produit est retirée de l’inventaire</del> <ins>L'inventaire n'est pas mis à jour (le produit a déjà été retiré lors de la première commande).</ins><br>
+                    &emsp;20a.2 <del>Le scénario se termine</del> <ins>Le scénario reprend à l'étape 21.</ins><br>
+                    <ins>20b. Le produit retourné n'est pas défectueux. <br>
+                    &emsp;20b.1 Le système remet le produit dans l'incventaire du revendeur. <br>
+                    &emsp;20b.2 Le scénario reprend à l'étape 21. <br></ins>
                     
                     <span style="font-weight: bold;">Postconditions :</span>  L’inventaire du revendeur est mis à jour.<br>
                 </p>
@@ -661,31 +680,71 @@
                         <li> L’acheteur a reçu un produit </li>
                     </ul>
                     
-                    <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire).<br>
+                    <span style="font-weight: bold;">Acteurs :</span> Acheteur (principal), Revendeur (secondaire)<ins>, service postal (secondaire), fournisseur de paiement (secondaire)</ins>.<br>
                     
                     <span style="font-weight: bold;">Scénario principal :</span><br>
                     1. L’acheteur se connecte à son compte <br>
                     2. L’acheteur clique sur son profil.<br>
                     3. L’acheteur clique sur le bouton « Historique de commandes ».<br>
                     4. L’acheteur sélectionne la commande contenant le produit à échanger  <br>
-                    5. Le système demande la raison de l'échange (mauvais produit reçu, produit défectueux, changement d'idée) <br>
-                    6. L‘acheteur sélectionne l'option qui correspond à sa situation <br>
-                    7. L’acheteur fournit les détails nécessaires sur le produit à retourner. <br>
-                    8. L'acheteur est informé des étapes suivantes pour le retour <br>
-                    9. L’acheteur paie la différence de prix entre les produits <br>
-                    10. Le système met à jour la commande et génère un nouveau numéro de suivi pour la livraison du produit de replacement <br>
-                    11. Le système demande à l'acheteur de se présenter à la poste pour le retourner à l'entrepôt<br>
-                    12. L’acheteur peut suivre l'état de retour ou d'échange <br>
-                    13. Le revendeur envoie une confirmation à l'acheteur une fois qu’il  reçoit le produit <br>
+                    <ins>5. L'acheteur sélectionne « Effectuer un échange ». <br>
+                    6. L'acheteur sélectionne le(s) produit(s) à échanger. <br></ins>
+                    7. Le système demande la raison de l'échange (mauvais produit reçu, produit défectueux, changement d'idée) <br>
+                    8. L‘acheteur sélectionne l'option qui correspond à sa situation <br>
+                    9. L’acheteur fournit les détails nécessaires sur le produit à retourner. <br>
+                    <ins>10. Le système affiche des produits disponibles pour le remplacement. <br>
+                    11. L'acheteur sélectionne le produit de remplacement. <br>
+                    12. L'acheteur clique sur « Confirmer ». <br>
+                    13. Le système calcule la différence de prix à payer. <br>
+                    14. Le système affiche le montant a1 payer  à l'écran. </ins><br>
+                    15. L’acheteur paie la différence de prix entre les produits <br>
+                    <ins>16. Le système communique avec le fournisseur de paiement pour valider les informations du paiement. <br></ins>
+                    17. Le système <del>met à jour la commande et</del> génère un nouveau numéro de suivi pour la livraison du produit de replacement <br>
+                    18. L'acheteur est informé des étapes suivantes pour le retour <br>
+                    <ins>19. L'acheteur prépare le colis. <br></ins>
+                    20. <del>Le système demande à</del> L'acheteur se présente à la poste pour retourner <ins>le produit</ins> à l'entrepôt<br>
+                    <del>21. L’acheteur peut suivre l'état du retour ou d'échange</del> <br>
+                    21. Le revendeur envoie une confirmation à l'acheteur une fois qu’il reçoit le produit <br>
+                    <ins>22. Le système met à jour l'état du retour à « Livré ». <br>
+                    23. Le syste1me met à jour l'inventaire du revendeur. <br>
+                    24. Le revendeur prépare la nouvelle commande. <br>
+                    25. Le système met à jour l'inventaire du revendeur. <br>
+                    26. Le revendeur transmet le colis au service postal. <br>
+                    27. Le revendeur met à jour l'état de la commande à « En livraison ». <br>
+                    28. Le service postal envoie le colis à l'acheteur. <br>
+                    29. L'acheteur reçoit le colis. <br>
+                    30. L'acheteur confirme la réception du colis. <br>
+                    31. Le système met à jour l'état de la commande à « Livré ». <br></ins>
                     
                     <span style="font-weight: bold;">Scénarios alternatifs :</span> <br>
-                    8a. Il n'y a pas assez de produits pour faire l'échange.    <br>
-                    &emsp;8a.1 Le système affiche les produits liés au produit souhaitée<br>
-                    &emsp;8a.2 L'acheteur choisit le produit qui lui convient le mieux ou indique qu'il préfère un remboursement<br>
-                    &emsp;8a.3 le scenario recommence à l'étape 9 <br>
-                    <ins>13a. le produit défectueux n’est pas reçu par le revendeur dans un délais de 30 jours suivant la date d’émission du numéro de suivi <br>
-                    &emsp;13a.1 le système annule la demande de réexpédition <br>
-                    &emsp;13a.2 le scénario se termine</ins><br>
+                    10a. Il n'y a pas assez de produits pour faire l'échange.    <br>
+                    &emsp;10a.1 Le système affiche les produits liés au produit souhaitée<br>
+                    &emsp;10a.2 L'acheteur choisit le produit qui lui convient le mieux ou indique qu'il préfère un remboursement<br>
+                    &emsp;10a.3 le scenario recommence à l'étape 9 <br>
+                    <ins>12a. L'acheteur clique sur « Annuler ». <br>
+                    &emsp;12a.1 Le système annule l'échange. <br>
+                    &emsp;12a.2 Le système redirige l'acheteur à la page « Historique de commandes ». <br>
+                    &emsp;12a.3 Le scénario se termine. <br>
+                    16a. Le paiement n'est pas validé. <br>
+                    &emsp;16a.1 Le système annule l'échange. <br>
+                    &emsp;16a.2 Le système redirige l'acheteur à la page « Historique de commandes ». <br>
+                    &emsp;16a.3 Le scénario se termine. <br>
+                    21a. Le produit n'est pas reçu dans un délais de 30 jours suivant la date d'émission du numéro de suivi. <br>
+                    &emsp;21a.1 Le système annule le retour.
+                    &emsp;21a.2 Le scénario se termine. <br>
+                    21b. Le produit est reçu, mais pas dans un délais de 30 jours suivant la date d'émission du numéro de suivi. <br>
+                    &emsp;21b.1 Le système annule le retour. <br>
+                    &emsp;21b.2 Le scénario se termine. <br>
+                    23a. Le produit retourné est défectueux. <br>
+                    &emsp;23a.1 L'inventaire n'est pas mis à jour (le produit a déjà été retiré lors de la première commande). <br>
+                    &emsp;23a.2 Le scénario reprend à l'étape 21. <br>
+                    23b. Le produit retourné n'est pas défectueux. <br>
+                    &emsp;23b.1 Le syste1me remet le produit dans l'inventaire du revendeur. <br>
+                    &emsp;23b.2 Le scénario reprend à l'étape 21.
+                    29a. Le colis n'est pas reçu. <br>
+                    &emsp;29a.1 Le système rembourse le montant des articles retournés et la différence de prix. <br>
+                    &emsp;29a.2 Le système annule la nouvelle commande. <br>
+                    &emsp;29a.3 Le scénario se termine. <br></ins>
                     
                     <span style="font-weight: bold;">Postconditions :</span>  L’inventaire du revendeur est mis à jour.<br>
                 </p>
