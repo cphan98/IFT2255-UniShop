@@ -1,4 +1,4 @@
-ce dossier doit contenir :
+Ce dossier contient :
 
-- le rapport
-- les diagrammes d'activités
+- Le rapport
+- Les diagrammes d'activités
