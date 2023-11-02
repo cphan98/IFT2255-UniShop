@@ -1,11 +1,13 @@
 package LoginUtility;
 
 import Users.User;
+import products.Product;
 
 import java.util.ArrayList;
 
 public class DataBase {
     private ArrayList<User> users;
+    private ArrayList<Product> products;
 
     public DataBase(ArrayList<User> users) {
         this.users = users;

@@ -16,5 +16,26 @@ public class Buyer extends User {
         this.cart = new Cart();
         this.points = 0;
     }
+    public void addPoints(int points) {
+        this.points += points;
+    }
+    public void removePoints(int points) {
+        this.points -= points;
+    }
+    public int getPoints() {
+        return points;
+    }
+    public String getFirstName() {
+        return firstName;
+    }
+    public String getLastName() {
+        return lastName;
+    }
+    public Cart getCart() {
+        return cart;
+    }
+    public BuyerMetrics getMetrics() {
+        return metrics;
+    }
 
 }

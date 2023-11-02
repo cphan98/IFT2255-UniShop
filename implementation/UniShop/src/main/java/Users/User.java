@@ -66,7 +66,6 @@ public abstract class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber=" + phoneNumber +
-                ", address='" + address + '\'' +
-                '}';
+                ", address='" + address + '\'';
     }
 }

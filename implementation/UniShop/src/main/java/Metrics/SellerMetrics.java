@@ -27,7 +27,7 @@ public class SellerMetrics implements Metrics {
 
     public String toString() {
         return "Since inception," + "\n" +
-            "Revenue: " + revenue + "\n" +
+            "Income: " + revenue + "\n" +
             "Products sold: " + productsSold + "\n" +
             "Average note received: " + averageNoteReceived + "\n";
     }

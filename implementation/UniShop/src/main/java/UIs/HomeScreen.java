@@ -1,6 +1,8 @@
 package UIs;
 
 import LoginUtility.DataBase;
+import Users.Buyer;
+import Users.Seller;
 import Users.User;
 
 public class HomeScreen {
@@ -16,6 +18,8 @@ public class HomeScreen {
         while (continueLoop) {
             System.out.println("HEY!");
             System.out.println("Welcome to UniShop!");
+            System.out.println("For further actions, unless prompted to do otherwise, please enter the number corresponding to your choice.");
+            System.out.println("For example, if the option is '1. Login', please enter '1' to login.");
             System.out.println();
             System.out.println("1. Login");
             System.out.println("2. Signup as a buyer");
@@ -23,13 +27,12 @@ public class HomeScreen {
             System.out.println("4. Exit");
 
             String choice = readInput();
-            InputManager inputManager = InputManager.getInstance();
             switch (choice) {
                 case "1":
                     System.out.println("!!!Login!!!");
                     boolean successfulLogin = redirectToLoginScreen();
                     if (successfulLogin) {
-                        continueLoop = false; // break out of the loop if login is successful
+                        continue; // Instead of breaking out, just continue to show the HomeScreen again
                     }
                     break;
                 case "2":
@@ -65,9 +68,9 @@ public class HomeScreen {
             System.out.println("User not found");
             return false;
         }
-        Menu menu = new Menu(user);
-        menu.displayMainMenu();
-        return true; // indicates successful login
+        Menu menu = user instanceof Buyer ? new BuyerMenu((Buyer) user) : new SellerMenu((Seller) user);
+        boolean continueLoop = menu.displayMenu();
+        return !continueLoop; // indicates successful login
     }
     public boolean redirectToSignupScreen(boolean isSeller) {
         SignUpScreen signUpScreen = isSeller ? new SellerSignUp() : new BuyerSignUp();
