@@ -33,11 +33,15 @@ public class IssueQuery {
 
     // constructor
     public IssueQuery(String issueDescription) {
-        this.id = "issue" + idCount;
+        this.id = makeId();
         this.issueDescription = issueDescription;
     }
 
     // operations
     int idCount = 0;
+    public String makeId() {
+        int zeros = 3 - Integer.toString(idCount).length();
+        return("issue" + ("0".repeat(zeros)) + idCount);
+    }
     // TODO: interaction between buyer and seller
 }
