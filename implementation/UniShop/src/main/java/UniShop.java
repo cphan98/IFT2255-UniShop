@@ -14,7 +14,7 @@ public class UniShop {
         users.add(new Buyer("pd","lol","abc", "1234", "abc@def", 2003, "1267 av."));
         users.add(new Seller("def", "1234", "def@abc", 2004, "1268 av.", Category.ELECTRONICS));
         users.add(new Buyer("montcuq","flemme","ghi", "1234", "ghi@jkl", 2005, "1269 av."));
-        users.add(new Seller("jkl", "1234", "jkl@ghi", 2006, "1270 av.", Category.BOOKSgit a));
+        users.add(new Seller("jkl", "1234", "jkl@ghi", 2006, "1270 av.", Category.BOOKS));
         database = new DataBase(users);
         HomeScreen homeScreen = new HomeScreen(database);
         homeScreen.initialize();
