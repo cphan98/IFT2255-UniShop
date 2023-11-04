@@ -2,15 +2,17 @@ package products;
 
 public class IssueQuery {
     // attributes
+    private String id;
     private String issueDescription;
     private String solutionDescription;
     private int reshipmentTrackingNum;
-    private Boolean reshipmentReceived;
+    private Boolean reshipmentReceived = false;
     private Product replacementProduct;
     private int replacementTrackingNum;
-    private Boolean replacementReceived;
+    private Boolean replacementReceived = false;
 
     // getters
+    public String getId() { return id; }
     public String getIssueDescription() { return issueDescription; }
     public String getSolutionDescription() { return solutionDescription; }
     public int getReshipmentTrackingNum() { return reshipmentTrackingNum; }
@@ -20,6 +22,7 @@ public class IssueQuery {
     public Boolean getReplacementReceived() { return replacementReceived; }
 
     // setters
+    public void setId(String id) { this.id = id; }
     public void setIssueDescription(String issueDescription) { this.issueDescription = issueDescription; }
     public void setSolutionDescription(String solutionDescription) { this.solutionDescription = solutionDescription; }
     public void setReshipmentTrackingNum(int reshipmentTrackingNum) { this.reshipmentTrackingNum = reshipmentTrackingNum; }
@@ -27,4 +30,14 @@ public class IssueQuery {
     public void setReplacementProduct(Product replacementProduct) { this.replacementProduct = replacementProduct; }
     public void setReplacementTrackingNum(int replacementTrackingNum) { this.replacementTrackingNum = replacementTrackingNum; }
     public void setReplacementReceived(Boolean replacementReceived) { this.replacementReceived = replacementReceived; }
+
+    // constructor
+    public IssueQuery(String issueDescription) {
+        this.id = "issue" + idCount;
+        this.issueDescription = issueDescription;
+    }
+
+    // operations
+    int idCount = 0;
+    // TODO: interaction between buyer and seller
 }
