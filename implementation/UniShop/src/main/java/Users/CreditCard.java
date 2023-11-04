@@ -20,4 +20,12 @@ public class CreditCard {
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
     public void setExpiryDate(Date expiaryDate) { this.expiryDate = expiaryDate; }
+
+    // constructor
+    public CreditCard(int cardNumber, String firstName, String lastName, Date expiryDate) {
+        this.cardNumber = cardNumber;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.expiryDate = expiryDate;
+    }
 }
