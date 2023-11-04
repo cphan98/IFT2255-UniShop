@@ -21,4 +21,13 @@ public class Address {
     public void setProvince(String province) { this.province = province; }
     public void setCity(String city) { this.city = city; }
     public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
+
+    // constructor
+    public Address(String addressLine, String country, String province, String city, String postalCode) {
+        this.addressLine = addressLine;
+        this.country = country;
+        this.province = province;
+        this.city = city;
+        this.postalCode = postalCode;
+    }
 }
