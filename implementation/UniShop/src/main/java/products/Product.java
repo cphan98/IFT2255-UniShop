@@ -18,7 +18,7 @@ public abstract class Product {
     //getters and setters
 
     public Product(String title, String description, Category category, float price, int basePoints, Seller seller, int quantity, String sellDate) {
-        this.id = new UUID(1,50).toString();
+        this.id = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;
         this.category = category;
@@ -79,5 +79,15 @@ public abstract class Product {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+    public String toString() {
+        return "Title: " + title + "\n" +
+                "Description: " + description + "\n" +
+                "Category: " + category + "\n" +
+                "Price: " + price + "\n" +
+                "Base Points: " + basePoints + "\n" +
+                "Seller: " + seller.getId() + "\n" +
+                "Quantity: " + quantity + "\n" +
+                "Sell Date: " + sellDate + "\n";
     }
 }

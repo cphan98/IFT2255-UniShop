@@ -34,6 +34,9 @@ public class BuyerMenu extends Menu {
                 case "2":
                     continueLoop = displayOrderHistory();
                     break;
+                case "3":
+                    continueLoop = displayCart();
+                    break;
                 case "6":
                     return false;  // Add this to handle log out
                 default:
@@ -81,6 +84,17 @@ public class BuyerMenu extends Menu {
         String choice = "";
         while (!choice.equals("1")) {
             System.out.println("ORDER HISTORY");
+            System.out.println("1. Return to menu");
+            choice = inputManager.nextLine();
+        }
+        return true;  // continue the loop
+    }
+
+    public boolean displayCart() {
+        InputManager inputManager = InputManager.getInstance();
+        String choice = "";
+        while (!choice.equals("1")) {
+            System.out.println("CART");
             System.out.println("1. Return to menu");
             choice = inputManager.nextLine();
         }
