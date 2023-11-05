@@ -8,7 +8,8 @@ public class Buyer extends User {
     private Cart cart;
     private int points;
     private BuyerMetrics metrics;
-    public Buyer(String firstName, String lastName, String id, String password, String email, int phoneNumber, String address) {
+    private CreditCard card;
+    public Buyer(String firstName, String lastName, String id, String password, String email, int phoneNumber, Address address) {
         super(id, password, email, phoneNumber, address);
         this.metrics = new BuyerMetrics();
         this.firstName = firstName;
@@ -37,5 +38,10 @@ public class Buyer extends User {
     public BuyerMetrics getMetrics() {
         return metrics;
     }
-
+    public CreditCard getCard() {
+        return card;
+    }
+    public void setCard(CreditCard card) {
+        this.card = card;
+    }
 }
