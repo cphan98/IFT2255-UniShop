@@ -5,7 +5,7 @@ import otherUtility.Category;
 import java.util.UUID;
 
 public abstract class Product {
-    private String id;
+    private final String id;
     private String title;
     private String description;
     private Category category;
@@ -13,7 +13,7 @@ public abstract class Product {
     private int basePoints;
     private Seller seller;
     private int quantity;
-    private String sellDate;
+    private final String sellDate;
 
     //getters and setters
 
