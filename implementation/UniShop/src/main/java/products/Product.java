@@ -2,6 +2,7 @@ package products;
 import Users.Seller;
 import otherUtility.Category;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public abstract class Product {
@@ -13,8 +14,12 @@ public abstract class Product {
     private int basePoints;
     private Seller seller;
     private int quantity;
+    private String sellDate;
+    private ArrayList<String> comment;
+    private ArrayList<Float> rating;
+    private Float overallRating;
+    private int likes;
     private final String sellDate;
-
     //getters and setters
 
     public Product(String title, String description, Category category, float price, int basePoints, Seller seller, int quantity, String sellDate) {
@@ -27,6 +32,9 @@ public abstract class Product {
         this.seller = seller;
         this.quantity = quantity;
         this.sellDate = sellDate;
+        this.comment = new ArrayList<String>();
+        this.rating = new ArrayList<Float>();
+        this.overallRating = null;
     }
 
 
@@ -80,6 +88,33 @@ public abstract class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public ArrayList<String> getComment() { return comment; }
+
+    public Float getOverallRating() {
+        return overallRating;
+    }
+    public void setOverallRating(){
+        
+        int mean = 0;
+        for (Float i: rating) {
+            mean += i;
+        }
+        //overallRating = (Float) (mean/(Float)rating.size()); /TODO (i can't convert to float)
+    }
+
+    public ArrayList<Float> getRating() {
+        return this.rating;
+    }
+    public int getLikes()
+    {
+       return this.likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
     public String toString() {
         return "Title: " + title + "\n" +
                 "Description: " + description + "\n" +
