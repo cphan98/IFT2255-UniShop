@@ -1,8 +1,6 @@
 package products;
 
-import Users.Address;
-import Users.Buyer;
-import Users.CreditCard;
+import Users.*;
 import otherUtility.OrderState;
 
 import java.text.SimpleDateFormat;
@@ -152,11 +150,11 @@ public class Order {
         // TODO
     }
 
-    public void sendBuyerNotification() {
-        // TODO
+    public void sendBuyerNotification(Buyer buyer, String title, String summary) {
+        buyer.addNotification(new Notification(title, summary));
     }
 
-    public void sendSellerNotification() {
-        // TODO
+    public void sendSellerNotification(Seller seller, String title, String summary) {
+        seller.addNotification(new Notification(title, summary));
     }
 }
