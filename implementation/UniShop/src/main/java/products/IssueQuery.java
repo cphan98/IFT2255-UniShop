@@ -39,7 +39,7 @@ public class IssueQuery {
 
     // operations
     int idCount = 0;
-    public String makeId() {
+    private String makeId() {
         int zeros = 3 - Integer.toString(idCount).length();
         return("issue" + ("0".repeat(zeros)) + idCount);
     }
