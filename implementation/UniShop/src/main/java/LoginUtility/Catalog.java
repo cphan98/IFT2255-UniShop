@@ -23,7 +23,7 @@ public class Catalog
         sellers_list = new HashSet<>();
     }
 
-    public HashSet<Product> catalogType(Category category)
+    public HashSet<Product> getCatalogType(Category category)
     {
         return switch (category) {
             case BOOKS -> books_catalog;
@@ -36,12 +36,12 @@ public class Catalog
 
     public void addProduct(Category category, Product product)
     {
-        catalogType(category).add(product);
+        getCatalogType(category).add(product);
     }
 
     public void removeProduct(Category category, Product product)
     {
-        catalogType(category).remove(product);
+        getCatalogType(category).remove(product);
     }
 
     public void displayCatalog()
@@ -59,12 +59,33 @@ public class Catalog
         System.out.println("List of Sellers: " + sellers_list);
     }
 
+    public Product searchProduct(Product product)
+    {
+        HashSet<Product> catalog = getCatalogType(product.getCategory());
+        if (catalog.contains(product)) {
+            for (Product obj : catalog) {
+                if (obj.equals(product))
+                    return product;
+            }
+        }
+        return null;
+    }
+    public Seller searchSeller(Seller seller)
+    {
+        HashSet<Seller> listOfSellers = getSellers_list();
+        if (listOfSellers.contains(seller)) {
+            for (Seller person : listOfSellers) {
+                if (person.equals(seller))
+                    return seller;
+            }
+        }
+        return null;
+    }
+    public HashSet<Seller> getSellers_list() {
+        return sellers_list;
+    }
     public void addSellers(Seller seller)
     {
         sellers_list.add(seller);
-    }
-
-    public void searchProduct(Product product)
-    {
     }
 }
