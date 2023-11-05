@@ -1,9 +1,19 @@
 package products;
 
-public class OfficeEquipment {
+import Users.Seller;
+import otherUtility.Category;
+
+public class OfficeEquipment extends Product {
     private String brand;
     private String model;
     private String subCategory;
+
+    public OfficeEquipment(String name, String description, float price, int basePoints, Seller seller, int stock, String brand, String model, String subCategory, String sellDate) {
+        super(name, description, Category.DESKTOP_ACCESSORIES, price, basePoints, seller, stock, sellDate);
+        this.brand = brand;
+        this.model = model;
+        this.subCategory = subCategory;
+    }
 
     public String getBrand() {
         return brand;

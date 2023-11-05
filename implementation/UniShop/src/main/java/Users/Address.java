@@ -30,4 +30,7 @@ public class Address {
         this.city = city;
         this.postalCode = postalCode;
     }
+    public String toString() {
+        return addressLine + ", " + city + ", " + province + ", " + country + ", " + postalCode;
+    }
 }

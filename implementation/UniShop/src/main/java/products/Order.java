@@ -18,7 +18,7 @@ public class Order {
     private String paymentType;
     private CreditCard paymentInfo;
     private Address shippingAddress;
-    private int phoneNumber;
+    private String phoneNumber;
     private String orderDate;
     private HashMap<Product, Integer> products;
     private OrderState status = OrderState.PENDING;
@@ -30,7 +30,7 @@ public class Order {
     public String getPaymentType() { return paymentType; }
     public CreditCard getPaymentInfo() { return paymentInfo; }
     public Address getShippingAddress() { return shippingAddress; }
-    public int getPhoneNumber() { return phoneNumber; }
+    public String getPhoneNumber() { return phoneNumber; }
     public String getOrderDate() { return orderDate; }
     public HashMap<Product, Integer> getProducts() { return products; }
     public OrderState getStatus() { return status; }
@@ -42,7 +42,7 @@ public class Order {
     public void setPaymentType(String paymentType) { this.paymentType = paymentType; }
     public void setPaymentInfo(CreditCard paymentInfo) { this.paymentInfo = paymentInfo; }
     public void setShippingAddress(Address shippingAddress) { this.shippingAddress = shippingAddress; }
-    public void setPhoneNumber(int phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public void setOrderDate(String orderDate) { this.orderDate = orderDate; }
     public void setProducts(HashMap<Product, Integer> products) { this.products = products; }
     public void setStatus(OrderState status) { this.status = status; }
@@ -66,7 +66,7 @@ public class Order {
     }
 
     // constructor with new personal and credit card
-    public Order(Buyer buyer, String paymentType, CreditCard paymentInfo, Address shippingAddress, int phoneNumber, HashMap<Product, Integer> products) {
+    public Order(Buyer buyer, String paymentType, CreditCard paymentInfo, Address shippingAddress, String phoneNumber, HashMap<Product, Integer> products) {
         this.id = makeId();
         this.buyer = buyer;
         this.paymentType = paymentType;
@@ -90,7 +90,7 @@ public class Order {
     }
 
     // constructor with new personal info and points as payment type
-    public Order(Buyer buyer, String paymentType, Address shippingAddress, int phoneNumber, HashMap<Product, Integer> products) {
+    public Order(Buyer buyer, String paymentType, Address shippingAddress, String phoneNumber, HashMap<Product, Integer> products) {
         this.id = makeId();
         this.buyer = buyer;
         this.paymentType = paymentType;
@@ -114,7 +114,7 @@ public class Order {
 
     // operations
     public void displayOrder() {
-        // TODO
+
     }
 
     public void displayProducts() {

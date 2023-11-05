@@ -1,6 +1,9 @@
 package Users;
 
 import Metrics.BuyerMetrics;
+import products.Product;
+
+import java.util.ArrayList;
 
 public class Buyer extends User {
     private String firstName;
@@ -9,13 +12,15 @@ public class Buyer extends User {
     private int points;
     private BuyerMetrics metrics;
     private CreditCard card;
-    public Buyer(String firstName, String lastName, String id, String password, String email, int phoneNumber, Address address) {
+    private ArrayList<Product> wishList;
+    public Buyer(String firstName, String lastName, String id, String password, String email, String phoneNumber, Address address) {
         super(id, password, email, phoneNumber, address);
         this.metrics = new BuyerMetrics();
         this.firstName = firstName;
         this.lastName = lastName;
         this.cart = new Cart();
         this.points = 0;
+        this.wishList = new ArrayList<>();
     }
     public void addPoints(int points) {
         this.points += points;
@@ -43,5 +48,11 @@ public class Buyer extends User {
     }
     public void setCard(CreditCard card) {
         this.card = card;
+    }
+    public ArrayList<Product> getWishList() {
+        return wishList;
+    }
+    public void addToWishList(Product product) {
+        wishList.add(product);
     }
 }

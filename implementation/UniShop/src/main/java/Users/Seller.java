@@ -10,7 +10,7 @@ public class Seller extends User {
     private Category category;
     private ArrayList<Product> products;
     private SellerMetrics metrics;
-    public Seller(String id, String password, String email, int phoneNumber, String address, Category category) {
+    public Seller(String id, String password, String email, String phoneNumber, Address address, Category category) {
         super(id, password, email, phoneNumber, address);
         this.metrics = new SellerMetrics();
         this.category = category;

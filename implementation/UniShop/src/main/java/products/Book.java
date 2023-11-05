@@ -1,13 +1,27 @@
 package products;
 
-public class Book {
+import Users.Seller;
+import otherUtility.Category;
+
+public class Book extends Product {
     private int ISBN;
     private String author;
     private String publishingHouse;
     private String genre;
     private String releaseDate;
     private int edition;
-    private int volumen;
+    private int volume;
+
+    public Book(String name, String description, float price, int basePoints, Seller seller, int stock, int ISBN, String author, String publishingHouse, String genre, String sellDate, String releaseDate, int edition, int volume) {
+        super(name, description, Category.BOOKS, price, basePoints, seller, stock, sellDate);
+        this.ISBN = ISBN;
+        this.author = author;
+        this.publishingHouse = publishingHouse;
+        this.genre = genre;
+        this.releaseDate = releaseDate;
+        this.edition = edition;
+        this.volume = volume;
+    }
 
     public int getISBN() {
         return ISBN;
@@ -53,11 +67,11 @@ public class Book {
         this.edition = edition;
     }
 
-    public int getVolumen() {
-        return volumen;
+    public int getVolume() {
+        return volume;
     }
 
-    public void setVolumen(int volumen) {
-        this.volumen = volumen;
+    public void setVolume(int volume) {
+        this.volume = volume;
     }
 }

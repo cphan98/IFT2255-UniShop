@@ -1,5 +1,7 @@
 package Users;
 
+import products.Order;
+
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -7,19 +9,21 @@ public abstract class User {
     private String id;
     private String password;
     private String email;
-    private int phoneNumber;
+    private String phoneNumber;
     private Address address;
     private ArrayList<Buyer> followers;
     private Stack<Notification> notifications;
+    private ArrayList<Order> orderHistory;
 
     //getters and setters
 
-    public User(String id, String password, String email, int phoneNumber, Address address) {
+    public User(String id, String password, String email, String phoneNumber, Address address) {
         this.id = id;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.orderHistory = new ArrayList<>();
     }
 
     public String getId() {
@@ -52,10 +56,10 @@ public abstract class User {
     public void setEmail(String email) {
         this.email = email;
     }
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
     public Address getAddress() {
@@ -71,6 +75,13 @@ public abstract class User {
     public void addNotification(Notification notification) {
         notifications.add(notification);
     }
+    public ArrayList<Order> getOrderHistory() {
+        return orderHistory;
+    }
+    public void addOrder(Order order) {
+        orderHistory.add(order);
+    }
+
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +

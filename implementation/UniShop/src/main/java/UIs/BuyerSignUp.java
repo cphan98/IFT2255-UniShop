@@ -1,5 +1,6 @@
 package UIs;
 
+import Users.Address;
 import Users.Buyer;
 import Users.User;
 
@@ -16,13 +17,21 @@ public class BuyerSignUp implements SignUpScreen {
         String username = inputManager.nextLine();
         System.out.println("Please enter your password:");
         String password = inputManager.nextLine();
-        System.out.println("Please enter your shipping address:");
+        System.out.println("Please enter your address:");
         String address = inputManager.nextLine();
+        System.out.println("Please enter your country:");
+        String country = inputManager.nextLine();
+        System.out.println("Please enter your province:");
+        String province = inputManager.nextLine();
+        System.out.println("Please enter your city:");
+        String city = inputManager.nextLine();
+        System.out.println("Please enter your postal code:");
+        String postalCode = inputManager.nextLine();
         System.out.println("Please enter your email:");
         String email = inputManager.nextLine();
         System.out.println("Please enter your phone number:");
-        int phoneNumber = parseInt(inputManager.nextLine());
-        return new Buyer(firstName, lastName, username, password, email, phoneNumber, address);
+        String phoneNumber = inputManager.nextLine();
+        return new Buyer(firstName, lastName, username, password, email, phoneNumber, new Address(address, country, province, city, postalCode));
 
     }
 }
