@@ -1,6 +1,7 @@
 package Users;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public abstract class User {
     private String id;
@@ -9,6 +10,7 @@ public abstract class User {
     private int phoneNumber;
     private String address;
     private ArrayList<Buyer> followers;
+    private Stack<Notification> notifications;
 
     //getters and setters
 
@@ -60,6 +62,15 @@ public abstract class User {
         return address;
     }
     public void setAddress(String address) { this.address = address; }
+    public Stack<Notification> getNotifications() {
+        return notifications;
+    }
+    public void setNotifications(Stack<Notification> notifications) {
+        this.notifications = notifications;
+    }
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +
