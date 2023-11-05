@@ -1,18 +1,20 @@
 package Users;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public abstract class User {
     private String id;
     private String password;
     private String email;
     private int phoneNumber;
-    private String address;
+    private Address address;
     private ArrayList<Buyer> followers;
+    private Stack<Notification> notifications;
 
     //getters and setters
 
-    public User(String id, String password, String email, int phoneNumber, String address) {
+    public User(String id, String password, String email, int phoneNumber, Address address) {
         this.id = id;
         this.password = password;
         this.email = email;
@@ -56,10 +58,19 @@ public abstract class User {
     public void setPhoneNumber(int phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
-    public void setAddress(String address) { this.address = address; }
+    public void setAddress(Address address) { this.address = address; }
+    public Stack<Notification> getNotifications() {
+        return notifications;
+    }
+    public void setNotifications(Stack<Notification> notifications) {
+        this.notifications = notifications;
+    }
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +

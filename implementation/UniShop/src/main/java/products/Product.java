@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public abstract class Product {
-    private String id;
+    private final String id;
     private String title;
     private String description;
     private Category category;
@@ -19,6 +19,7 @@ public abstract class Product {
     private ArrayList<Float> rating;
     private Float overallRating;
     private int likes;
+    private final String sellDate;
     //getters and setters
 
     public Product(String title, String description, Category category, float price, int basePoints, Seller seller, int quantity, String sellDate) {
@@ -94,6 +95,7 @@ public abstract class Product {
         return overallRating;
     }
     public void setOverallRating(){
+        
         int mean = 0;
         for (Float i: rating) {
             mean += i;
