@@ -1,26 +1,28 @@
 package products;
 
+import Users.Buyer;
+
 public class Evaluation {
+    private String comment;
+    private Float rating;
+    private Buyer author;
 
-    public void addComment(Product product, String comment)
+    public Evaluation(String comment, Float rating, Buyer author)
     {
-        product.getComment().add(comment);
+        this.comment = comment;
+        this.rating = rating;
+        this.author = author;
+    }
+    //getters (no setters because we don't want to change the comment, rating or author)
+    public String getComment() {
+        return comment;
+    }
+    public float getRating() {
+        return rating;
+    }
+    public Buyer getAuthor() {
+        return author;
     }
 
-    public void addRating(Product product, Float rating)
-    {
-        product.getRating().add(rating);
-    }
 
-    public void addLikes(Product product)
-    {
-        int likes = product.getLikes() + 1;
-        product.setLikes(likes);
-    }
-
-    public void removeLikes(Product product)
-    {
-        int likes = product.getLikes() - 1;
-        product.setLikes(likes);
-    }
 }

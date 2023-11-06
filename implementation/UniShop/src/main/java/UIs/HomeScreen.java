@@ -16,10 +16,12 @@ public class HomeScreen {
     public void initialize() {
         boolean continueLoop = true;
         while (continueLoop) {
+            line();
             System.out.println("HEY!");
             System.out.println("Welcome to UniShop!");
             System.out.println("For further actions, unless prompted to do otherwise, please enter the number corresponding to your choice.");
             System.out.println("For example, if the option is '1. Login', please enter '1' to login.");
+            line();
             System.out.println();
             System.out.println("1. Login");
             System.out.println("2. Signup as a buyer");
@@ -29,7 +31,7 @@ public class HomeScreen {
             String choice = readInput();
             switch (choice) {
                 case "1":
-                    System.out.println("!!!Login!!!");
+                    System.out.println("Login:");
                     boolean successfulLogin = redirectToLoginScreen();
                     if (successfulLogin) {
                         continue; // Instead of breaking out, just continue to show the HomeScreen again
@@ -68,7 +70,7 @@ public class HomeScreen {
             System.out.println("User not found");
             return false;
         }
-        Menu menu = user instanceof Buyer ? new BuyerMenu((Buyer) user) : new SellerMenu((Seller) user);
+        Menu menu = user instanceof Buyer ? new BuyerMenu((Buyer) user, database) : new SellerMenu((Seller) user);
         boolean continueLoop = menu.displayMenu();
         return !continueLoop; // indicates successful login
     }
@@ -82,6 +84,10 @@ public class HomeScreen {
             System.out.println("User not added");
         }
         return false; // Continue loop anyway
+    }
+
+    private static void line() {
+        System.out.println("--------------------------------------------------");
     }
 
 }

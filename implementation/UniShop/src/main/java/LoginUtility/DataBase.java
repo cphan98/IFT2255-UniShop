@@ -1,5 +1,6 @@
 package LoginUtility;
 
+import Users.Seller;
 import Users.User;
 import products.Product;
 
@@ -7,7 +8,6 @@ import java.util.ArrayList;
 
 public class DataBase {
     private ArrayList<User> users;
-    private ArrayList<Product> products;
 
     public DataBase(ArrayList<User> users) {
         this.users = users;
@@ -20,6 +20,15 @@ public class DataBase {
             }
         }
         return null;
+    }
+    public ArrayList<Seller> getSellers() {
+        ArrayList<Seller> sellers = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof Seller) {
+                sellers.add((Seller) user);
+            }
+        }
+        return sellers;
     }
     public boolean addUser(User user) {
         if (validateNewUser(user)) {

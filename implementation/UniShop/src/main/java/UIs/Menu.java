@@ -12,4 +12,8 @@ public abstract class Menu {
     public abstract boolean displayOrderHistory();
     public abstract boolean displayNotifications();
     public abstract void displayMetrics();
+
+    protected static void line() {
+        System.out.println("--------------------------------------------------");
+    }
 }

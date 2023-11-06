@@ -50,5 +50,19 @@ public class Seller extends User {
     public void setMetrics(SellerMetrics metrics) {
         this.metrics = metrics;
     }
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Seller: ").append(getId()).append("\n");
+        sb.append("Category: ").append(getCategory()).append("\n");
+        sb.append("Products: ").append("\n");
+        for (Product product : products) {
+            sb.append(product.smallToString()).append("\n");
+        }
+        return sb.toString();
+    }
 
 }

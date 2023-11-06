@@ -7,6 +7,7 @@ import Users.User;
 public class LoginScreen {
 
     public String[] askCredentials() {
+
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter your id:");
         String id = inputManager.nextLine();

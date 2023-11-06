@@ -16,12 +16,10 @@ public abstract class Product {
     private int quantity;
     private String sellDate;
     private ArrayList<String> comment;
-    private ArrayList<Float> rating;
-    private Float overallRating;
+    private ArrayList<Evaluation> evaluations;
+    private float overallRating;
     private int likes;
-    private final String sellDate;
     //getters and setters
-
     public Product(String title, String description, Category category, float price, int basePoints, Seller seller, int quantity, String sellDate) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
@@ -32,9 +30,9 @@ public abstract class Product {
         this.seller = seller;
         this.quantity = quantity;
         this.sellDate = sellDate;
-        this.comment = new ArrayList<String>();
-        this.rating = new ArrayList<Float>();
-        this.overallRating = null;
+        this.comment = new ArrayList<>();
+        this.evaluations = new ArrayList<>();
+        this.overallRating = 0.0F;
     }
 
 
@@ -94,17 +92,16 @@ public abstract class Product {
     public Float getOverallRating() {
         return overallRating;
     }
-    public void setOverallRating(){
-        
-        int mean = 0;
-        for (Float i: rating) {
-            mean += i;
+    public void updateOverallRating(){
+        float total = 0;
+        for (Evaluation evaluation : evaluations) {
+            total += evaluation.getRating();
         }
-        //overallRating = (Float) (mean/(Float)rating.size()); /TODO (i can't convert to float)
+        this.overallRating = total / evaluations.size();
     }
 
-    public ArrayList<Float> getRating() {
-        return this.rating;
+    public ArrayList<Evaluation> getEvaluations() {
+        return this.evaluations;
     }
     public int getLikes()
     {
@@ -123,6 +120,11 @@ public abstract class Product {
                 "Base Points: " + basePoints + "\n" +
                 "Seller: " + seller.getId() + "\n" +
                 "Quantity: " + quantity + "\n" +
-                "Sell Date: " + sellDate + "\n";
+                "Sell Date: " + sellDate + "\n" +
+                "Likes: " + likes + "\n";
+    }
+
+    public String smallToString() {
+        return "Title: " + title + "\t" + "Price: " + price + "\t" + "Quantity: " + quantity + "\n" ;
     }
 }
