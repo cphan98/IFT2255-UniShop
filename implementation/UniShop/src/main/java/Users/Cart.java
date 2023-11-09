@@ -42,7 +42,7 @@ public class Cart {
                 .append(", Price: ")
                 .append(product.getPrice()).append("$")
                 .append("\n"));
-        sb.append("Total Price: ").append(getTotalPrice()).append("$");
+        sb.append("Total Price: ").append(getTotalPrice()).append("$").append(" (or ").append(getTotalPrice() * 50).append(" points)");
         return sb.toString();
     }
 }

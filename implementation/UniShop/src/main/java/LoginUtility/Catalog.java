@@ -151,7 +151,6 @@ public class Catalog
             System.out.println("\t" + product.smallToString());
         }
     }
-
     public void orderProductsByPrice(boolean ascending) {
         HashMap<Product, Float> productPrices = new HashMap<>();
         for (Product product : books_catalog) {
@@ -182,7 +181,6 @@ public class Catalog
                 System.out.println(entry.getKey().smallToString() + "\n")
         );
     }
-
     public void orderProductsByLikes(boolean ascending) {
         HashMap<Product, Integer> productLikes = new HashMap<>();
         for (Product product : books_catalog) {
@@ -213,7 +211,6 @@ public class Catalog
                 System.out.println(entry.getKey().smallToString() + "\n")
         );
     }
-
     public void orderProductsByAverageNote(boolean ascending) {
         HashMap<Product, Float> productNotes = new HashMap<>();
         for (Product product : books_catalog) {
@@ -244,6 +241,51 @@ public class Catalog
                 System.out.println(entry.getKey().smallToString() + "\n")
         );
     }
+    public void filterSellersByCategory(Category category) {
+        System.out.println("Sellers in category " + category + ":");
+        for (Seller seller : sellers_list) {
+            if (seller.getCategory().equals(category)) {
+                System.out.println("\t" + seller.getId());
+            }
+        }
+    }
+    public void orderSellersByLikes(boolean ascending) {
+        HashMap<Seller, Integer> sellerLikes = new HashMap<>();
+        for (Seller seller : sellers_list) {
+            sellerLikes.put(seller, seller.getLikes());
+        }
+
+        Stream<Map.Entry<Seller, Integer>> sortedStream = sellerLikes.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue());
+
+        if (!ascending) {
+            sortedStream = sortedStream.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+        }
+
+        System.out.println("Sellers ordered by likes:");
+        sortedStream.forEach(entry ->
+                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory() + "\n")
+        );
+    }
+    public void orderSellersByAverageNote(boolean ascending) {
+        HashMap<Seller, Float> sellerNotes = new HashMap<>();
+        for (Seller seller : sellers_list) {
+            sellerNotes.put(seller, seller.getMetrics().getAverageNoteReceived());
+        }
+
+        Stream<Map.Entry<Seller, Float>> sortedStream = sellerNotes.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue());
+
+        if (!ascending) {
+            sortedStream = sortedStream.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+        }
+
+        System.out.println("Sellers ordered by average note:");
+        sortedStream.forEach(entry ->
+                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory() + "\n")
+        );
+    }
+
 
     public void orderProducts(boolean ascending, String filter) {
         switch (filter) {
@@ -256,7 +298,17 @@ public class Catalog
             case "averageNote":
                 orderProductsByAverageNote(ascending);
                 break;
+        }
+    }
 
+    public void orderSellers(boolean ascending, String filter) {
+        switch (filter) {
+            case "likes":
+                orderSellersByLikes(ascending);
+                break;
+            case "averageNote":
+                orderSellersByAverageNote(ascending);
+                break;
         }
     }
 

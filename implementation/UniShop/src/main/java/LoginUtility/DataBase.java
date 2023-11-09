@@ -6,6 +6,7 @@ import products.Order;
 import products.Product;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class DataBase {
     private ArrayList<User> users;
@@ -35,6 +36,8 @@ public class DataBase {
     }
     public void addOrder(Order order) {
         orders.add(order);
+        assignOrders();
+        updateOrderIDCounts();
     }
     public void addProduct(Product product) {
         products.add(product);
@@ -90,6 +93,18 @@ public class DataBase {
     public void updateOrderIDCounts() {
         for (int i = 0; i<orders.size(); i++) {
             orders.get(i).setId(orders.get(i).makeId(i+1));
+        }
+    }
+
+    public void assignOrders() {
+        getUsers().forEach(user -> {
+            user.setOrderHistory(new ArrayList<>());
+        });
+        for (Order order : orders) {
+            order.getBuyer().addOrder(order);
+            Iterator<Product> it = order.getProducts().keySet().iterator();
+            Product thisOne = it.next();
+            thisOne.getSeller().addOrder(order);
         }
     }
     @Override

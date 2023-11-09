@@ -55,6 +55,8 @@ public class Seller extends User {
         likes++;
     }
 
+
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Seller: ").append(getId()).append("\n");

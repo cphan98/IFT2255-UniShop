@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public abstract class User {
-    private String id;
-    private String password;
-    private String email;
-    private String phoneNumber;
-    private Address address;
-    private ArrayList<Buyer> followers;
-    private Stack<Notification> notifications;
-    private ArrayList<Order> orderHistory;
+    protected String id;
+    protected String password;
+    protected String email;
+    protected String phoneNumber;
+    protected Address address;
+    protected ArrayList<Buyer> followers;
+    protected Stack<Notification> notifications;
+    protected ArrayList<Order> orderHistory;
 
     //getters and setters
 
@@ -86,6 +86,9 @@ public abstract class User {
     }
     public ArrayList<Order> getOrderHistory() {
         return orderHistory;
+    }
+    public void setOrderHistory(ArrayList<Order> orderHistory) {
+        this.orderHistory = orderHistory;
     }
     public void addOrder(Order order) {
         orderHistory.add(order);

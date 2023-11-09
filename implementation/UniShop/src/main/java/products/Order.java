@@ -77,8 +77,6 @@ public class Order {
 
     // constructor with new credit card only
     public Order(Buyer buyer, String paymentType, CreditCard paymentInfo, HashMap<Product, Integer> products) {
-        int idCount = buyer.getOrdersMade().size()+1;
-        this.id = makeId(idCount);
         this.buyer = buyer;
         this.paymentType = paymentType;
         this.paymentInfo = new CreditCard(
@@ -97,8 +95,6 @@ public class Order {
 
     // constructor with new personal info and points as payment type
     public Order(Buyer buyer, String paymentType, Address shippingAddress, String phoneNumber, HashMap<Product, Integer> products) {
-        int idCount = buyer.getOrdersMade().size()+1;
-        this.id = makeId(idCount);
         this.buyer = buyer;
         this.paymentType = paymentType;
         this.shippingAddress = shippingAddress;
@@ -110,8 +106,6 @@ public class Order {
 
     // constructor with info from profile
     public Order(Buyer buyer, String paymentType, HashMap<Product, Integer> products) {
-        int idCount = buyer.getOrdersMade().size()+1;
-        this.id = makeId(idCount);
         this.buyer = buyer;
         this.paymentType = paymentType;
         if (Objects.equals(paymentType, "credit card")) this.paymentInfo = buyer.getCard();

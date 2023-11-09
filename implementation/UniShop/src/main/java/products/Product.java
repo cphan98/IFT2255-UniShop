@@ -18,6 +18,7 @@ public abstract class Product {
     private ArrayList<Evaluation> evaluations;
     private float overallRating;
     private int likes;
+    private boolean hasPromotion;
     //getters and setters
     public Product(String title, String description, Category category, float price, int basePoints, Seller seller, int quantity, String sellDate) {
         this.id = UUID.randomUUID().toString();
@@ -31,6 +32,7 @@ public abstract class Product {
         this.sellDate = sellDate;
         this.evaluations = new ArrayList<>();
         this.overallRating = 0.0F;
+        hasPromotion = Math.random() < 0.5;
     }
 
 
@@ -84,6 +86,12 @@ public abstract class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+    public boolean isPromoted() {
+        return hasPromotion;
+    }
+    public void setPromotion(boolean promotion) {
+        hasPromotion = promotion;
+    }
 
     public Float getOverallRating() {
         return overallRating;
@@ -123,11 +131,12 @@ public abstract class Product {
                 "Sell Date: " + sellDate + "\n" +
                 "Likes: " + likes + "\n" + "\n" +
                 "Evaluations: " + "\n" +
-                evaluationsToString() + "\n";
+                evaluationsToString() + "\n" +
+                (hasPromotion ? "This product has a promotion" : "This product does not have a promotion") + "\n";
     }
 
     public String smallToString() {
-        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t" + "Likes: " + likes + "\n";
+        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t" + "Likes: " + likes + "\t\t" + (hasPromotion? "(promoted)" : "") + "\n";
     }
 
     public String evaluationsToString() {

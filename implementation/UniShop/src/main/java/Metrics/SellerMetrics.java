@@ -24,6 +24,15 @@ public class SellerMetrics implements Metrics {
     public void updateAverageNoteReceived(float averageNoteReceived) {
         this.averageNoteReceived = averageNoteReceived;
     }
+    public float getRevenue() {
+        return revenue;
+    }
+    public int getProductsSold() {
+        return productsSold;
+    }
+    public float getAverageNoteReceived() {
+        return averageNoteReceived;
+    }
 
     public String toString() {
         return "Since inception," + "\n" +
