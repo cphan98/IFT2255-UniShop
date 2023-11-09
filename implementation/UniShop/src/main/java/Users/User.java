@@ -25,7 +25,16 @@ public abstract class User {
         this.address = address;
         this.orderHistory = new ArrayList<>();
     }
-
+    public String ordersMadeToString() {
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+        for (Order order : orderHistory) {
+            sb.append(i).append(". ").append(order.toString());
+            sb.append("\n");
+            i++;
+        }
+        return sb.toString();
+    }
     public String getId() {
         return id;
     }

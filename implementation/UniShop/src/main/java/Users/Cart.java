@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Cart {
-    private Map<Product, Integer> productQuantities;
+    private HashMap<Product, Integer> productQuantities;
 
     public Cart() {
         this.productQuantities = new HashMap<>();
@@ -27,18 +27,22 @@ public class Cart {
                 .map(entry -> entry.getKey().getPrice() * entry.getValue())
                 .reduce(0f, Float::sum);
     }
+    public HashMap<Product, Integer> getProducts() {
+        return productQuantities;
+    }
 
     // String representation of the cart
     public String toString() {
+        if (productQuantities.isEmpty()) return ("Cart is empty");
         StringBuilder sb = new StringBuilder();
         sb.append("Cart Contents:\n");
-        productQuantities.forEach((product, quantity) -> sb.append(product.getTitle())
+        productQuantities.forEach((product, quantity) -> sb.append("\t").append(product.getTitle())
                 .append(" - Quantity: ")
                 .append(quantity)
                 .append(", Price: ")
-                .append(product.getPrice())
+                .append(product.getPrice()).append("$")
                 .append("\n"));
-        sb.append("Total Price: ").append(getTotalPrice());
+        sb.append("Total Price: ").append(getTotalPrice()).append("$");
         return sb.toString();
     }
 }

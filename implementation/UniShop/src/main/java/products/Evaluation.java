@@ -24,5 +24,9 @@ public class Evaluation {
         return author;
     }
 
+    public String toString() {
+        return "Evaluation: " + comment + " Rating: " + rating + " Author: " + author.getFirstName() + " " + author.getLastName() + "\n";
+    }
+
 
 }

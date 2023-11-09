@@ -10,22 +10,17 @@ public class Seller extends User {
     private Category category;
     private ArrayList<Product> products;
     private SellerMetrics metrics;
+    private int likes;
     public Seller(String id, String password, String email, String phoneNumber, Address address, Category category) {
         super(id, password, email, phoneNumber, address);
         this.metrics = new SellerMetrics();
         this.category = category;
         this.products = new ArrayList<>();
+        this.likes = 0;
     }
-    public void addProduct(Product product) {
-        // Check if the product already exists
-        Product existingProduct = findProductByTitle(product.getTitle());
-        if (existingProduct != null) {
-            // If exists, increase the quantity
-            existingProduct.setQuantity(existingProduct.getQuantity() + product.getQuantity());
-        } else {
-            // If not, add as a new product
-            products.add(product);
-        }
+
+    public void changeProductQuantity(Product product, int quantity) {
+        product.setQuantity(quantity);
     }
 
     public void removeProduct(Product product) {
@@ -33,7 +28,7 @@ public class Seller extends User {
     }
 
     // Use this method to find a product by title
-    private Product findProductByTitle(String title) {
+    public Product findProductByTitle(String title) {
         for (Product p : products) {
             if (p.getTitle().equals(title)) {
                 return p;
@@ -53,14 +48,21 @@ public class Seller extends User {
     public ArrayList<Product> getProducts() {
         return products;
     }
+    public int getLikes() {
+        return likes;
+    }
+    public void addLike() {
+        likes++;
+    }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Seller: ").append(getId()).append("\n");
         sb.append("Category: ").append(getCategory()).append("\n");
+        sb.append("Likes: ").append(getLikes()).append("\n");
         sb.append("Products: ").append("\n");
         for (Product product : products) {
-            sb.append(product.smallToString()).append("\n");
+            sb.append("\t").append(product.smallToString()).append("\n");
         }
         return sb.toString();
     }

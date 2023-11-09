@@ -70,12 +70,12 @@ public class HomeScreen {
             System.out.println("User not found");
             return false;
         }
-        Menu menu = user instanceof Buyer ? new BuyerMenu((Buyer) user, database) : new SellerMenu((Seller) user);
+        Menu menu = user instanceof Buyer ? new BuyerMenu((Buyer) user, database) : new SellerMenu((Seller) user, database);
         boolean continueLoop = menu.displayMenu();
         return !continueLoop; // indicates successful login
     }
     public boolean redirectToSignupScreen(boolean isSeller) {
-        SignUpScreen signUpScreen = isSeller ? new SellerSignUp() : new BuyerSignUp();
+        SignUpScreen signUpScreen = isSeller ? new SellerSignUp(database) : new BuyerSignUp();
         User user = signUpScreen.getCredentials();
         if (database.addUser(user)) {
             System.out.println("User added successfully");

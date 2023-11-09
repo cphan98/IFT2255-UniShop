@@ -15,7 +15,6 @@ public abstract class Product {
     private Seller seller;
     private int quantity;
     private String sellDate;
-    private ArrayList<String> comment;
     private ArrayList<Evaluation> evaluations;
     private float overallRating;
     private int likes;
@@ -30,7 +29,6 @@ public abstract class Product {
         this.seller = seller;
         this.quantity = quantity;
         this.sellDate = sellDate;
-        this.comment = new ArrayList<>();
         this.evaluations = new ArrayList<>();
         this.overallRating = 0.0F;
     }
@@ -87,8 +85,6 @@ public abstract class Product {
         this.description = description;
     }
 
-    public ArrayList<String> getComment() { return comment; }
-
     public Float getOverallRating() {
         return overallRating;
     }
@@ -103,6 +99,10 @@ public abstract class Product {
     public ArrayList<Evaluation> getEvaluations() {
         return this.evaluations;
     }
+    public void addEvaluation(Evaluation evaluation) {
+        this.evaluations.add(evaluation);
+        updateOverallRating();
+    }
     public int getLikes()
     {
        return this.likes;
@@ -116,15 +116,28 @@ public abstract class Product {
         return "Title: " + title + "\n" +
                 "Description: " + description + "\n" +
                 "Category: " + category + "\n" +
-                "Price: " + price + "\n" +
+                "Price: " + price + "$\n" +
                 "Base Points: " + basePoints + "\n" +
                 "Seller: " + seller.getId() + "\n" +
                 "Quantity: " + quantity + "\n" +
                 "Sell Date: " + sellDate + "\n" +
-                "Likes: " + likes + "\n";
+                "Likes: " + likes + "\n" + "\n" +
+                "Evaluations: " + "\n" +
+                evaluationsToString() + "\n";
     }
 
     public String smallToString() {
-        return "Title: " + title + "\t" + "Price: " + price + "\t" + "Quantity: " + quantity + "\n" ;
+        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t" + "Likes: " + likes + "\n";
+    }
+
+    public String evaluationsToString() {
+        if (evaluations.isEmpty()) {
+            return "No evaluations yet";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Evaluation evaluation : evaluations) {
+            sb.append(evaluation.toString()).append("\n");
+        }
+        return sb.toString();
     }
 }

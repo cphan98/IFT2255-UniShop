@@ -1,5 +1,6 @@
 package UIs;
 
+import LoginUtility.DataBase;
 import Users.Seller;
 import products.*;
 
@@ -8,10 +9,12 @@ import static java.lang.Integer.parseInt;
 
 public class SellerMenu extends Menu {
     private Seller user;
+    private DataBase dataBase;
 
-    public SellerMenu(Seller user) {
+    public SellerMenu(Seller user, DataBase dataBase) {
         super(user);
         this.user = user;
+        this.dataBase = dataBase;
     }
 
     public boolean displayMenu() {
@@ -82,8 +85,15 @@ public class SellerMenu extends Menu {
     }
 
     public boolean displayOrderHistory() {
-        System.out.println("ORDERS PROCESSED");
-        return true;
+        InputManager inputManager = InputManager.getInstance();
+        String choice = "";
+        while (!choice.equals("1")) {
+            System.out.println("ORDER HISTORY");
+            System.out.println(user.ordersMadeToString());
+            System.out.println("1. Return to menu");
+            choice = inputManager.nextLine();
+        }
+        return true;  // continue the loop
     }
 
     public boolean displayNotifications() {
@@ -103,6 +113,7 @@ public class SellerMenu extends Menu {
             System.out.println("Please select an option:");
             System.out.println("1. Add item(s)");
             System.out.println("2. Remove item(s)");
+            System.out.println("3. Change item quantity");
             System.out.println("3. Return to menu");
 
             String choice = inputManager.nextLine();
@@ -110,12 +121,16 @@ public class SellerMenu extends Menu {
             switch (choice) {
                 case "1":
                     System.out.println("Adding item(s)...");
-                    continueLoop = addProduct();
+                    addProduct();
                     break;
                 case "2":
                     System.out.println("Removing item(s)...");
                     break;
                 case "3":
+                    System.out.println("Changing item quantity...");
+                    changeProductQty();
+                    break;
+                case "4":
                     continueLoop = false; // Exit the inventory submenu
                     break;
             }
@@ -123,7 +138,22 @@ public class SellerMenu extends Menu {
         return true;
     }
 
-    public boolean addProduct() {
+    public void changeProductQty() {
+        Product product = null;
+        while (product == null) {
+            System.out.println("Please enter the title of the product:");
+            String title = InputManager.getInstance().nextLine();
+            product = user.findProductByTitle(title);
+        }
+        int quantity = 0;
+        while (quantity <= 0) {
+            System.out.println("Please enter the new quantity of the product:");
+            quantity = parseInt(InputManager.getInstance().nextLine());
+        }
+        user.changeProductQuantity(product, quantity);
+    }
+
+    public void addProduct() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
         String title = inputManager.nextLine();
@@ -200,13 +230,25 @@ public class SellerMenu extends Menu {
                 model = inputManager.nextLine();
                 System.out.println("Please enter the subcategory of the desktop accessory:");
                 subCategory = inputManager.nextLine();
-                System.out.println("Please enter the release date of the desktop accessory:");
-                releaseDate = inputManager.nextLine();
                 product = new OfficeEquipment(title, description, price, basePoints, user, quantity, brand, model, subCategory, sellDate);
                 break;
         }
-        user.addProduct(product);
-        return true;
+        if (verifyNewProduct(product)) {
+            dataBase.addProduct(product);
+        } else {
+            System.out.println("Product already exists");
+        }
+    }
+
+    public boolean verifyNewProduct(Product product) {
+        boolean valid = true;
+        for (Product p : dataBase.getProducts()) {
+            if (p.getTitle().equals(product.getTitle())) {
+                valid = false;
+                break;
+            }
+        }
+        return valid;
     }
 
     public void displayMetrics() {

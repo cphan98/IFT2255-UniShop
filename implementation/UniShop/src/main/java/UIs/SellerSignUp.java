@@ -1,5 +1,6 @@
 package UIs;
 
+import LoginUtility.DataBase;
 import Users.Address;
 import Users.Seller;
 import Users.User;
@@ -10,6 +11,11 @@ import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 
 public class SellerSignUp implements SignUpScreen {
+    private DataBase database;
+
+    public SellerSignUp(DataBase database) {
+        this.database = database;
+    }
     public User getCredentials() {
         System.out.println("Welcome, new seller!");
         InputManager inputManager = InputManager.getInstance();
@@ -148,6 +154,6 @@ public class SellerSignUp implements SignUpScreen {
                 product = new OfficeEquipment(title, description, price, basePoints, seller, quantity, brand, model, subCategory, sellDate);
                 break;
         }
-        seller.addProduct(product);
+        database.addProduct(product);
     }
 }
