@@ -71,6 +71,7 @@ public class SellerMenu extends Menu {
             switch (choice) {
                 case "1":
                     System.out.println("Modifying profile...");
+                    // TODO
                     break;
                 case "2":
                     System.out.println("Returning to menu...");
@@ -82,6 +83,10 @@ public class SellerMenu extends Menu {
             }
         }
         return true;  // continue the loop
+    }
+
+    public void modifyProfile() {
+        // TODO
     }
 
     public boolean displayOrderHistory() {
