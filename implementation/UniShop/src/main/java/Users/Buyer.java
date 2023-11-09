@@ -49,9 +49,6 @@ public class Buyer extends User {
     public int getPoints() {
         return points;
     }
-    public void addOrder(Order order) {
-        orderHistory.add(order);
-    }
     public HashMap<Seller, HashMap<Product, Integer>> splitCartBeforeOrder() {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = new HashMap<>();
         HashMap<Product, Integer> cartProducts = cart.getProducts();

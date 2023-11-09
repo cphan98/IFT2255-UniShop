@@ -29,7 +29,7 @@ public abstract class User {
         StringBuilder sb = new StringBuilder();
         int i = 1;
         for (Order order : orderHistory) {
-            sb.append(i).append(". ").append(order.toString());
+            sb.append(i).append(". ").append(order.smallToString());
             sb.append("\n");
             i++;
         }
@@ -92,6 +92,7 @@ public abstract class User {
     }
     public void addOrder(Order order) {
         orderHistory.add(order);
+        order.getBuyer().getMetrics().setOrdersMade(orderHistory.size());
     }
 
     public String toString() {

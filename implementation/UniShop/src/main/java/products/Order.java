@@ -140,6 +140,7 @@ public class Order {
 
     public void cancelOrder() {
         setStatus(OrderState.CANCELLED);
+        buyer.getMetrics().setOrdersMade(buyer.getMetrics().getOrdersMade() - 1);
     }
 
     public void exchangeOrder() {
@@ -186,7 +187,9 @@ public class Order {
                 "Status: " + status + "\n" +
                 "ETA: " + ETA + "\n";
     }
-
+    public String smallToString() {
+        return "Order ID: " + id + "\n" + productsToString() + "Status: " + status + "\n";
+    }
     public float getTotalPrice() {
         return products.entrySet().stream()
                 .map(entry -> entry.getKey().getPrice() * entry.getValue())

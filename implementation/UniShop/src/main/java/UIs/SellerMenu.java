@@ -9,12 +9,11 @@ import static java.lang.Integer.parseInt;
 
 public class SellerMenu extends Menu {
     private Seller user;
-    private DataBase dataBase;
 
     public SellerMenu(Seller user, DataBase dataBase) {
         super(user);
         this.user = user;
-        this.dataBase = dataBase;
+        this.database = dataBase;
     }
 
     public boolean displayMenu() {
@@ -125,6 +124,7 @@ public class SellerMenu extends Menu {
                     break;
                 case "2":
                     System.out.println("Removing item(s)...");
+                    removeProduct();
                     break;
                 case "3":
                     System.out.println("Changing item quantity...");
@@ -153,6 +153,18 @@ public class SellerMenu extends Menu {
         user.changeProductQuantity(product, quantity);
     }
 
+    public void removeProduct() {
+        Product product = null;
+        while (product == null) {
+            System.out.println("Please enter the title of the product:");
+            String title = InputManager.getInstance().nextLine();
+            product = user.findProductByTitle(title);
+        }
+        System.out.println("Are you sure? (y/n)");
+        String choice = InputManager.getInstance().nextLine();
+        if (choice.equals("y")) {database.removeProduct(product);}
+        else {System.out.println("Product not removed");}
+    }
     public void addProduct() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
@@ -233,23 +245,14 @@ public class SellerMenu extends Menu {
                 product = new OfficeEquipment(title, description, price, basePoints, user, quantity, brand, model, subCategory, sellDate);
                 break;
         }
-        if (verifyNewProduct(product)) {
-            dataBase.addProduct(product);
+        if (database.verifyNewProduct(product)) {
+            database.addProduct(product);
         } else {
             System.out.println("Product already exists");
         }
     }
 
-    public boolean verifyNewProduct(Product product) {
-        boolean valid = true;
-        for (Product p : dataBase.getProducts()) {
-            if (p.getTitle().equals(product.getTitle())) {
-                valid = false;
-                break;
-            }
-        }
-        return valid;
-    }
+
 
     public void displayMetrics() {
         System.out.println(user.getMetrics().toString());

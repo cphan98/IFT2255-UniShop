@@ -81,7 +81,7 @@ public class HomeScreen {
             System.out.println("User added successfully");
             System.out.println(database.toString());
         } else {
-            System.out.println("User not added");
+            System.out.println("User not added! Please try again.");
         }
         return false; // Continue loop anyway
     }

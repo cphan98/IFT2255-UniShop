@@ -47,6 +47,9 @@ public class DataBase {
     }
     public void removeProduct(Product product) {
         products.remove(product);
+        // remove from the seller's product list as well
+        Seller seller = getSeller(product.getSeller());
+        seller.getProducts().remove(product);
     }
     public void removeOrder(Order order) {
         orders.remove(order);
@@ -68,7 +71,7 @@ public class DataBase {
         return sellers;
     }
     public boolean addUser(User user) {
-        if (validateNewUser(user)) {
+        if (validateNewUser(user.getId(), user.getEmail())) {
             users.add(user);
             return true;
         }
@@ -81,9 +84,9 @@ public class DataBase {
         user.setPassword(newPassword);
     }
 
-    public boolean validateNewUser(User user) {
+    public boolean validateNewUser(String id, String email) {
         for (User u : users) {
-            if (u.getId().equals(user.getId())) {
+            if (u.getId().equals(id) || u.getEmail().equals(email)) {
                 return false;
             }
         }
@@ -106,6 +109,17 @@ public class DataBase {
             Product thisOne = it.next();
             thisOne.getSeller().addOrder(order);
         }
+    }
+
+    public boolean verifyNewProduct(Product product) {
+        boolean valid = true;
+        for (Product p : getProducts()) {
+            if (p.getTitle().equals(product.getTitle())) {
+                valid = false;
+                break;
+            }
+        }
+        return valid;
     }
     @Override
     public String toString() {

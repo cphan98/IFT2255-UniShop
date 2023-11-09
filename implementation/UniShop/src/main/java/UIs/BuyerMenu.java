@@ -18,7 +18,6 @@ import static java.lang.Integer.parseInt;
 
 public class BuyerMenu extends Menu {
     private Buyer user;
-    private DataBase database;
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
     private Catalog catalog;
@@ -33,7 +32,7 @@ public class BuyerMenu extends Menu {
         boolean continueLoop = true;
         InputManager inputManager = InputManager.getInstance();
 
-        while(continueLoop) {
+        while (continueLoop) {
             line();
             System.out.println("Welcome to UniShop, " + user.getId() + "!");
             line();
@@ -141,12 +140,20 @@ public class BuyerMenu extends Menu {
         String firstName = InputManager.getInstance().nextLine();
         System.out.println("Enter your last name:");
         String lastName = InputManager.getInstance().nextLine();
+        System.out.println("Enter your new id:");
+        String id = InputManager.getInstance().nextLine();
         System.out.println("Enter your email:");
         String email = InputManager.getInstance().nextLine();
         System.out.println("Enter your phone number:");
         String phoneNumber = InputManager.getInstance().nextLine();
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        if (!database.validateNewUser(id, email)) {
+            System.out.println("This id or email is already taken");
+            System.out.println("Your other infos are changed but your id and email were not changed");
+            return;
+        }
+        user.setId(id);
         user.setEmail(email);
         user.setPhoneNumber(phoneNumber);
         System.out.println("Personal infos modified");
@@ -181,36 +188,79 @@ public class BuyerMenu extends Menu {
             }
         }
     }
-    public void modifyPaymentInfos() {}
-
-    public boolean displayOrderHistory() {
-        InputManager inputManager = InputManager.getInstance();
-        String choice = "";
-        while (!choice.equals("1")) {
-            System.out.println("ORDER HISTORY");
-            System.out.println(user.ordersMadeToString());
-            System.out.println("1. Return to menu");
-            choice = inputManager.nextLine();
-        }
-        return true;  // continue the loop
+    public void modifyPaymentInfos() {
+        System.out.println("Enter your credit card number:");
+        String cardNumber = InputManager.getInstance().nextLine();
+        System.out.println("Enter your credit card expiration date:");
+        String expirationDate = InputManager.getInstance().nextLine();
+        System.out.println("Enter your credit card owner's first name:");
+        String ownerName = InputManager.getInstance().nextLine();
+        System.out.println("Enter your credit card owner's last name:");
+        String ownerLastName = InputManager.getInstance().nextLine();
+        user.setCard(new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate));
+        System.out.println("Payment infos modified");
     }
 
+    public boolean displayOrderHistory() {
+        System.out.println("ORDER HISTORY");
+        System.out.println(user.ordersMadeToString());
+        System.out.println("Write the number of the order you want to see the details of, or write 0 to return to menu");
+        int choice = getUserInputAsInteger();
+        if (choice == 0) {
+            System.out.println("Returning to menu...");
+            return true;  // continue the loop
+        }
+        Order order = null;
+        while (order == null) {
+            order = user.getOrderHistory().get(choice - 1);
+            if (order == null) {
+                System.out.println("Invalid selection. Please try again.");
+                choice = getUserInputAsInteger();
+            }
+        }
+        interactWithOrder(order);
+
+        return true;  // continue the loop
+    }
+    public void interactWithOrder(Order order) {
+        System.out.println(order);
+        System.out.println();
+        System.out.println("1. Cancel order");
+        System.out.println("2. Report a problem");
+        System.out.println("3. Return to order history");
+        int choice = getUserInputAsInteger();
+        switch (choice) {
+            case 1:
+                order.cancelOrder();
+                System.out.println("Order cancelled");
+                break;
+            case 2:
+                System.out.println("Reporting problem...");
+                break;
+            case 3:
+                System.out.println("Returning to order history...");
+                break;
+            default:
+                System.out.println("Invalid selection. Please try again.");
+                break;
+        }
+    }
     public boolean displayCart() {
-        InputManager inputManager = InputManager.getInstance();
-        String choice = "";
         System.out.println(user.getCart().toString());
         System.out.println();
         System.out.println("1. Proceed to checkout");
-        System.out.println("2. Return to menu");
+        System.out.println("2. Remove an item from the cart");
         System.out.println("3. Empty cart");
-        choice = inputManager.nextLine();
+        System.out.println("4. Return to menu");
+        int choice = getUserInputAsInteger();
         switch (choice) {
-            case "1" -> {
+            case 1 -> {
                 System.out.println("Proceeding to checkout...");
                 makeCheckout();
             }
-            case "2" -> System.out.println("Returning to menu...");
-            case "3" -> emptyCart();
+            case 2 -> removeProductFromCart();
+            case 3 -> emptyCart();
+            case 4 -> System.out.println("Returning to menu...");
             default -> {
                 System.out.println("RICKROLL");
                 return false;  // continue the loop
@@ -481,11 +531,31 @@ public class BuyerMenu extends Menu {
                 break;
             case 3:
                 System.out.println("Returning to catalog...");
+                catalog.displayCatalog();
                 break;
             default:
                 System.out.println("Invalid selection. Please try again.");
                 break;
         }
+    }
+    public void removeProductFromCart() {
+        InputManager inputManager = InputManager.getInstance();
+        System.out.println("Enter the name of the product you want to remove:");
+        String title = inputManager.nextLine();
+        Product product = user.getCart().searchProductByName(title);
+        if (product == null) {
+            System.out.println("Product not found");
+            return;
+        }
+        System.out.println("How many of it do you want to remove?");
+        int quantity = parseInt(inputManager.nextLine());
+        if (quantity > product.getQuantity()) {
+            System.out.println("Not enough products in cart");
+            return;
+        }
+        user.getCart().removeProduct(product, quantity);
+        product.setQuantity(product.getQuantity() + quantity);
+        System.out.println("Product removed from cart");
     }
     public void addProductToCart(Product product) {
         System.out.println("How many of it do you want?");
@@ -541,6 +611,7 @@ public class BuyerMenu extends Menu {
                     addEvaluationToProduct(pointedProduct);
                     break;
                 case 4:
+                    catalog.displayCatalog();
                     continueInteraction = false;
                     break;
                 default:
@@ -670,8 +741,6 @@ public class BuyerMenu extends Menu {
 
         }
     }
-
-
     public void emptyCart() {
         InputManager im = InputManager.getInstance();
         System.out.println("Are you sure you want to empty the cart? (y/n)");
@@ -679,6 +748,9 @@ public class BuyerMenu extends Menu {
         boolean continueLoop = true;
         while (continueLoop) {
             if (Objects.equals(input, "y")) {
+                user.getCart().getProducts().forEach((product, integer) -> {
+                    product.setQuantity(product.getQuantity() + integer);
+                });
                 user.getCart().getProducts().clear();
                 System.out.println("Cart emptied");
                 continueLoop = false;

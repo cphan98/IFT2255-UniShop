@@ -1,9 +1,12 @@
 package UIs;
 
+import LoginUtility.DataBase;
 import Users.User;
 
 public abstract class Menu {
     protected User user;
+    protected DataBase database;
+
     public Menu(User user) {
         this.user = user;
     }
