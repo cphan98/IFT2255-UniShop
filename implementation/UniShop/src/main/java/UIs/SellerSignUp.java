@@ -66,9 +66,9 @@ public class SellerSignUp implements SignUpScreen {
                     System.out.println("Invalid choice, try again");
             }
         }
-
         Seller seller = new Seller(username, password, email, phoneNumber, new Address(address, country, province, city, postalCode), category);
         addProductToSeller(seller);
+        System.out.println("WARNING: You must connect within the next 24 hours or else the signup will be cancelled");
         return seller;
     }
 

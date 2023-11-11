@@ -2,8 +2,7 @@ package Users;
 
 import products.Order;
 
-import java.util.ArrayList;
-import java.util.Stack;
+import java.util.*;
 
 public abstract class User {
     protected String id;
@@ -14,7 +13,8 @@ public abstract class User {
     protected ArrayList<Buyer> followers;
     protected Stack<Notification> notifications;
     protected ArrayList<Order> orderHistory;
-
+    protected Date startTime;
+    protected boolean checked24H;
     //getters and setters
 
     public User(String id, String password, String email, String phoneNumber, Address address) {
@@ -24,6 +24,8 @@ public abstract class User {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.orderHistory = new ArrayList<>();
+        this.startTime = Calendar.getInstance().getTime();
+        this.checked24H = false;
     }
     public String ordersMadeToString() {
         StringBuilder sb = new StringBuilder();
@@ -93,6 +95,15 @@ public abstract class User {
     public void addOrder(Order order) {
         orderHistory.add(order);
         order.getBuyer().getMetrics().setOrdersMade(orderHistory.size());
+    }
+    public Date getStartTime(){
+        return startTime;
+    }
+    public boolean getChecked24H(){
+        return checked24H;
+    }
+    public void setChecked24H(boolean check24H){
+        this.checked24H = check24H;
     }
 
     public String toString() {

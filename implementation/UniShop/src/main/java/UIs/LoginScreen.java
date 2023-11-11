@@ -18,10 +18,17 @@ public class LoginScreen {
     public User loginUser(String id, String password, DataBase database) {
         User user = database.getUser(id, password);
         if (user != null) {
-            if (user instanceof Buyer) {
-                System.out.println("Buyer logged in successfully");
+            if (database.check24H(user)) {
+                if (user instanceof Buyer) {
+                    System.out.println("Buyer logged in successfully");
+                } else {
+                    System.out.println("Seller logged in successfully");
+                }
             } else {
-                System.out.println("Seller logged in successfully");
+                System.out.println("Time limit has been passed, your signup has been cancelled. Please signup again.");
+                database.removeUser(user);
+                System.out.println("Database : \n" + database.toString());
+                return null;
             }
             return user;
         }
