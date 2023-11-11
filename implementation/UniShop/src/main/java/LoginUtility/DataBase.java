@@ -6,6 +6,8 @@ import products.Order;
 import products.Product;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 
 public class DataBase {
@@ -71,7 +73,7 @@ public class DataBase {
         return sellers;
     }
     public boolean addUser(User user) {
-        if (validateNewUser(user.getId(), user.getEmail())) {
+        if ( validateNewUser(user.getId(), user.getEmail()) ) {
             users.add(user);
             return true;
         }
@@ -110,7 +112,6 @@ public class DataBase {
             thisOne.getSeller().addOrder(order);
         }
     }
-
     public boolean verifyNewProduct(Product product) {
         boolean valid = true;
         for (Product p : getProducts()) {
@@ -120,6 +121,24 @@ public class DataBase {
             }
         }
         return valid;
+    }
+
+    public boolean check24H(User user) {
+        boolean checked = user.getChecked24H();
+        if (!checked) {
+            Date startTime = user.getStartTime();
+            Date endTime = Calendar.getInstance().getTime();
+            if (startTime != null) {
+                long difference = endTime.getTime() - startTime.getTime();
+                long diffInHrs = difference / 3600000;
+                if (diffInHrs >= 24) {
+                    removeUser(user);
+                    return false;
+                }
+                user.setChecked24H(true);
+            }
+        }
+        return checked;
     }
     @Override
     public String toString() {

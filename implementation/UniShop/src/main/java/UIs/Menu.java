@@ -15,6 +15,10 @@ public abstract class Menu {
     public abstract boolean displayOrderHistory();
     public abstract boolean displayNotifications();
     public abstract void displayMetrics();
+    public abstract void modifyProfile();
+    public abstract void modifyPersonalInfos();
+    public abstract void modifyPassword();
+
 
     protected static void line() {
         System.out.println("--------------------------------------------------");

@@ -1,8 +1,11 @@
 package UIs;
 
 import LoginUtility.DataBase;
+import Users.Address;
 import Users.Seller;
 import products.*;
+
+import java.util.Objects;
 
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
@@ -70,6 +73,7 @@ public class SellerMenu extends Menu {
             switch (choice) {
                 case "1":
                     System.out.println("Modifying profile...");
+                    modifyProfile();
                     break;
                 case "2":
                     System.out.println("Returning to menu...");
@@ -81,6 +85,80 @@ public class SellerMenu extends Menu {
             }
         }
         return true;  // continue the loop
+    }
+
+    public void modifyProfile() {
+        System.out.println("1. Modify personal infos");
+        System.out.println("2. Modify address");
+        System.out.println("3. Modify password");
+        System.out.println("4. Return to menu");
+        int choice = getUserInputAsInteger();
+        switch (choice) {
+            case 1:
+                modifyPersonalInfos();
+                break;
+            case 2:
+                modifyAddress();
+                break;
+            case 3:
+                modifyPassword();
+                break;
+            case 4:
+                System.out.println("Returning to menu...");
+                break;
+            default:
+                System.out.println("Invalid selection. Please try again.");
+                break;
+        }
+    }
+
+    public void modifyPersonalInfos(){
+        System.out.println("Enter your new id:");
+        String id = InputManager.getInstance().nextLine();
+        System.out.println("Enter your email:");
+        String email = InputManager.getInstance().nextLine();
+        System.out.println("Enter your phone number:");
+        String phoneNumber = InputManager.getInstance().nextLine();
+        if (!database.validateNewUser(id, email)) {
+            System.out.println("This id or email is already taken");
+            System.out.println("Your other infos are changed but your id and email were not changed");
+            return;
+        }
+        user.setId(id);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        System.out.println("Personal infos modified");
+    }
+
+    public void modifyAddress(){
+        System.out.println("Enter your street name:");
+        String street = InputManager.getInstance().nextLine();
+        System.out.println("Enter your city:");
+        String city = InputManager.getInstance().nextLine();
+        System.out.println("Enter your province:");
+        String province = InputManager.getInstance().nextLine();
+        System.out.println("Enter your country:");
+        String country = InputManager.getInstance().nextLine();
+        System.out.println("Enter your postal code:");
+        String postalCode = InputManager.getInstance().nextLine();
+        Address shippingAddress = new Address(street, city, province, country, postalCode);
+        user.setAddress(shippingAddress);
+    }
+    public void modifyPassword() {
+        while (true) {
+            System.out.println("Enter your current password:");
+            String currentPassword = InputManager.getInstance().nextLine();
+            if (Objects.equals(currentPassword, user.getPassword())) {
+                System.out.println("Enter your new password:");
+                String newPassword = InputManager.getInstance().nextLine();
+                user.setPassword(newPassword);
+                database.changePassword(user, newPassword);
+                System.out.println("Password modified");
+                break;
+            } else {
+                System.out.println("Wrong password");
+            }
+        }
     }
 
     public boolean displayOrderHistory() {
@@ -251,8 +329,15 @@ public class SellerMenu extends Menu {
             System.out.println("Product already exists");
         }
     }
-
-
+    private int getUserInputAsInteger() {
+        while (true) {
+            try {
+                return Integer.parseInt(InputManager.getInstance().nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+    }
 
     public void displayMetrics() {
         System.out.println(user.getMetrics().toString());
