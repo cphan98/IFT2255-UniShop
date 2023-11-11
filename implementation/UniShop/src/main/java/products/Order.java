@@ -144,7 +144,6 @@ public class Order {
 
     }
 
-
     public void exchangeOrder() {
         // TODO
     }
@@ -179,7 +178,6 @@ public class Order {
         return "Order ID: " + id + "\n" +
                 "Buyer: " + buyer.getId() + "\n" +
                 "Payment Type: " + paymentType + "\n" +
-                "Payment Info: " + paymentInfo.getCardNumber() + "\n" +
                 "Payment Info: " + paymentInfo.getCardNumber() + "\n" +
                 "Shipping Address: " + shippingAddress.toString() + "\n" +
                 "Phone Number: " + phoneNumber + "\n" +

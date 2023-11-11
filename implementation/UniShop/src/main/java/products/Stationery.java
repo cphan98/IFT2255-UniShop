@@ -1,9 +1,19 @@
 package products;
 
-public class Stationary {
+import Users.Seller;
+import otherUtility.Category;
+
+public class Stationery extends Product {
     private String brand;
     private String model;
     private String subCategory;
+
+    public Stationery(String name, String description, float price, int basePoints, Seller seller, int stock, String brand, String model, String subCategory, String releaseDate, String sellDate) {
+        super(name, description, Category.STATIONERY, price, basePoints, seller, stock, sellDate);
+        this.brand = brand;
+        this.model = model;
+        this.subCategory = subCategory;
+    }
     public String getBrand() {
         return brand;
     }

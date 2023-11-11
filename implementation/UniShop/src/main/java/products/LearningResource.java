@@ -1,14 +1,27 @@
 package products;
 
+import Users.Seller;
+import otherUtility.Category;
+
 import java.util.PropertyResourceBundle;
 
-public class LearningResource {
+public class LearningResource extends Product {
     private int ISBN;
     private String author;
     private String organization;
     private String releaseDate;
     private String type;
     private int edition;
+
+    public LearningResource(String name, String description, float price, int basePoints, Seller seller, int stock, int ISBN, String author, String organization, String sellDate, String releaseDate, String type, int edition) {
+        super(name, description, Category.LEARNING_RESOURCES, price, basePoints, seller, stock, sellDate);
+        this.ISBN = ISBN;
+        this.author = author;
+        this.organization = organization;
+        this.releaseDate = releaseDate;
+        this.type = type;
+        this.edition = edition;
+    }
 
     public int getISBN() {
         return ISBN;

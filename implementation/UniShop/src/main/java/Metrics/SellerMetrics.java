@@ -34,10 +34,19 @@ public class SellerMetrics implements Metrics {
         averageNoteReceived = sum / notesReceived.size();
 
     }
+    public float getRevenue() {
+        return revenue;
+    }
+    public int getProductsSold() {
+        return productsSold;
+    }
+    public float getAverageNoteReceived() {
+        return averageNoteReceived;
+    }
 
     public String toString() {
         return "Since inception," + "\n" +
-            "Income: " + revenue + "\n" +
+            "Income: " + revenue + "$\n" +
             "Products sold: " + productsSold + "\n" +
             "Average note received: " + averageNoteReceived + "\n";
     }

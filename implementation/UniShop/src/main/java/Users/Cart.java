@@ -1,13 +1,46 @@
 package Users;
 
+import products.Product;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Cart {
-    private float totalPrice;
+    private HashMap<Product, Integer> productQuantities;
+
     public Cart() {
-        this.totalPrice = 0;
+        this.productQuantities = new HashMap<>();
     }
 
-<<<<<<< Updated upstream
-=======
+    public Product searchProductByName(String name) {
+        for (Map.Entry<Product, Integer> entry : productQuantities.entrySet()) {
+            if (entry.getKey().getTitle().equals(name)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    // Adds a product to the cart or increases the quantity if it already exists
+    public void addProduct(Product product, int quantity) {
+        productQuantities.merge(product, quantity, Integer::sum);
+    }
+
+    // Removes a certain quantity of the product or removes it entirely if quantity drops to 0
+    public void removeProduct(Product product, int quantity) {
+        productQuantities.computeIfPresent(product, (key, val) -> val - quantity > 0 ? val - quantity : null);
+    }
+
+    // Calculate total price based on the quantities of each product
+    public float getTotalPrice() {
+        return productQuantities.entrySet().stream()
+                .map(entry -> entry.getKey().getPrice() * entry.getValue())
+                .reduce(0f, Float::sum);
+    }
+    public HashMap<Product, Integer> getProducts() {
+        return productQuantities;
+    }
+
+
     public Product searchProductByName(String name) {
         for (Map.Entry<Product, Integer> entry : productQuantities.entrySet()) {
             if (entry.getKey().getTitle().equals(name)) {
@@ -39,8 +72,18 @@ public class Cart {
     }
 
     // String representation of the cart
->>>>>>> Stashed changes
+
     public String toString() {
-        return "Total price: " + totalPrice;
+        if (productQuantities.isEmpty()) return ("Cart is empty");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Cart Contents:\n");
+        productQuantities.forEach((product, quantity) -> sb.append("\t").append(product.getTitle())
+                .append(" - Quantity: ")
+                .append(quantity)
+                .append(", Price: ")
+                .append(product.getPrice()).append("$")
+                .append("\n"));
+        sb.append("Total Price: ").append(getTotalPrice()).append("$").append(" (or ").append(getTotalPrice() * 50).append(" points)");
+        return sb.toString();
     }
 }

@@ -2,6 +2,7 @@ package products;
 import Users.Seller;
 import otherUtility.Category;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public abstract class Product {
@@ -13,12 +14,14 @@ public abstract class Product {
     private int basePoints;
     private Seller seller;
     private int quantity;
-    private final String sellDate;
-
+    private String sellDate;
+    private ArrayList<Evaluation> evaluations;
+    private float overallRating;
+    private int likes;
+    private boolean hasPromotion;
     //getters and setters
-
     public Product(String title, String description, Category category, float price, int basePoints, Seller seller, int quantity, String sellDate) {
-        this.id = new UUID(1,50).toString();
+        this.id = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;
         this.category = category;
@@ -27,6 +30,9 @@ public abstract class Product {
         this.seller = seller;
         this.quantity = quantity;
         this.sellDate = sellDate;
+        this.evaluations = new ArrayList<>();
+        this.overallRating = 0.0F;
+        hasPromotion = Math.random() < 0.5;
     }
 
 
@@ -80,8 +86,7 @@ public abstract class Product {
     public void setDescription(String description) {
         this.description = description;
     }
-<<<<<<< Updated upstream
-=======
+
     public boolean isPromoted() {
         return hasPromotion;
     }
@@ -105,7 +110,6 @@ public abstract class Product {
     }
     public void addEvaluation(Evaluation evaluation) {
         this.evaluations.add(evaluation);
-
         updateOverallRating();
     }
     public int getLikes()
@@ -146,5 +150,5 @@ public abstract class Product {
         }
         return sb.toString();
     }
->>>>>>> Stashed changes
+
 }
