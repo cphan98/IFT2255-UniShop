@@ -1,5 +1,12 @@
 package Metrics;
 
+<<<<<<< Updated upstream
+=======
+import products.Product;
+
+import java.util.ArrayList;
+
+>>>>>>> Stashed changes
 public class BuyerMetrics implements Metrics {
     private int ordersMade;
     private int productsBought;

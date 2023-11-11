@@ -10,6 +10,7 @@ public abstract class User {
     private String address;
     private ArrayList<Buyer> followers;
 
+
     //getters and setters
 
     public User(String id, String password, String email, int phoneNumber, String address) {
@@ -59,7 +60,33 @@ public abstract class User {
     public String getAddress() {
         return address;
     }
+<<<<<<< Updated upstream
     public void setAddress(String address) { this.address = address; }
+=======
+    public void setAddress(Address address) { this.address = address; }
+    public Stack<Notification> getNotifications() {
+        return notifications;
+    }
+    public void setNotifications(Stack<Notification> notifications) {
+        this.notifications = notifications;
+    }
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+    public ArrayList<Order> getOrderHistory() {
+        return orderHistory;
+    }
+    public void setOrderHistory(ArrayList<Order> orderHistory) {
+        this.orderHistory = orderHistory;
+    }
+    public void addOrder(Order order) {
+        orderHistory.add(order);
+        order.getBuyer().getMetrics().setOrdersMade(orderHistory.size());
+        order.getBuyer().getMetrics().setProductsBought(order.getProducts().size());
+
+    }
+
+>>>>>>> Stashed changes
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +

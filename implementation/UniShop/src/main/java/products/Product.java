@@ -80,4 +80,71 @@ public abstract class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+<<<<<<< Updated upstream
+=======
+    public boolean isPromoted() {
+        return hasPromotion;
+    }
+    public void setPromotion(boolean promotion) {
+        hasPromotion = promotion;
+    }
+
+    public Float getOverallRating() {
+        return overallRating;
+    }
+    public void updateOverallRating(){
+        float total = 0;
+        for (Evaluation evaluation : evaluations) {
+            total += evaluation.getRating();
+        }
+        this.overallRating = total / evaluations.size();
+    }
+
+    public ArrayList<Evaluation> getEvaluations() {
+        return this.evaluations;
+    }
+    public void addEvaluation(Evaluation evaluation) {
+        this.evaluations.add(evaluation);
+
+        updateOverallRating();
+    }
+    public int getLikes()
+    {
+       return this.likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public String toString() {
+        return "Title: " + title + "\n" +
+                "Description: " + description + "\n" +
+                "Category: " + category + "\n" +
+                "Price: " + price + "$\n" +
+                "Base Points: " + basePoints + "\n" +
+                "Seller: " + seller.getId() + "\n" +
+                "Quantity: " + quantity + "\n" +
+                "Sell Date: " + sellDate + "\n" +
+                "Likes: " + likes + "\n" + "\n" +
+                "Evaluations: " + "\n" +
+                evaluationsToString() + "\n" +
+                (hasPromotion ? "This product has a promotion" : "This product does not have a promotion") + "\n";
+    }
+
+    public String smallToString() {
+        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t" + "Likes: " + likes + "\t\t" + (hasPromotion? "(promoted)" : "") + "\n";
+    }
+
+    public String evaluationsToString() {
+        if (evaluations.isEmpty()) {
+            return "No evaluations yet";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Evaluation evaluation : evaluations) {
+            sb.append(evaluation.toString()).append("\n");
+        }
+        return sb.toString();
+    }
+>>>>>>> Stashed changes
 }
