@@ -125,6 +125,7 @@ public class DataBase {
 
     public boolean check24H(User user) {
         boolean checked = user.getChecked24H();
+        /*
         if (!checked) {
             Date startTime = user.getStartTime();
             Date endTime = Calendar.getInstance().getTime();
@@ -132,12 +133,11 @@ public class DataBase {
                 long difference = endTime.getTime() - startTime.getTime();
                 long diffInHrs = difference / 3600000;
                 if (diffInHrs >= 24) {
-                    removeUser(user);
                     return false;
                 }
                 user.setChecked24H(true);
             }
-        }
+        }*/
         return checked;
     }
     @Override

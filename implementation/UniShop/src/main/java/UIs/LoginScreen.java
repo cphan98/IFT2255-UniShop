@@ -26,6 +26,9 @@ public class LoginScreen {
                 }
             } else {
                 System.out.println("Time limit has been passed, your signup has been cancelled. Please signup again.");
+                database.removeUser(user);
+                System.out.println("Database : \n" + database.toString());
+                return null;
             }
             return user;
         }
