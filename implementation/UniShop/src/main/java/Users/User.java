@@ -15,6 +15,7 @@ public abstract class User {
     protected ArrayList<Order> orderHistory;
     protected Date startTime;
     protected boolean checked24H;
+
     //getters and setters
 
     public User(String id, String password, String email, String phoneNumber, Address address) {
@@ -76,6 +77,7 @@ public abstract class User {
     public Address getAddress() {
         return address;
     }
+
     public void setAddress(Address address) { this.address = address; }
     public Stack<Notification> getNotifications() {
         return notifications;
@@ -95,6 +97,11 @@ public abstract class User {
     public void addOrder(Order order) {
         orderHistory.add(order);
         order.getBuyer().getMetrics().setOrdersMade(orderHistory.size());
+
+        order.getBuyer().getMetrics().setProductsBought(order.getProducts().size());
+
+    }
+
     }
     public Date getStartTime(){
         return startTime;

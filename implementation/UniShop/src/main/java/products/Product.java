@@ -86,6 +86,7 @@ public abstract class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+
     public boolean isPromoted() {
         return hasPromotion;
     }
@@ -149,4 +150,5 @@ public abstract class Product {
         }
         return sb.toString();
     }
+
 }

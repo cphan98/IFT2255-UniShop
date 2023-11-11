@@ -1,6 +1,7 @@
 package UIs;
 
 import LoginUtility.Catalog;
+import Metrics.SellerMetrics;
 import LoginUtility.DataBase;
 import Users.Address;
 import Users.Buyer;
@@ -276,6 +277,7 @@ public class BuyerMenu extends Menu {
     public void displayMetrics() {
         System.out.println(user.getMetrics().toString());
     }
+
     public void filterProducts() {
         System.out.println("1. Filter by category");
         System.out.println("2. Order by price");
@@ -525,6 +527,8 @@ public class BuyerMenu extends Menu {
         switch (choice) {
             case 1:
                 user.addSellerToFollowing(pointedSeller);
+                user.getMetrics().setLikesGiven(+ 1);
+
                 break;
             case 2:
                 user.removeSellerFromFollowing(pointedSeller);
@@ -651,6 +655,8 @@ public class BuyerMenu extends Menu {
         product.addEvaluation(new Evaluation(comment, rating, user));
         user.getMetrics().setEvaluationsMade(user.getMetrics().getEvaluationsMade() + 1);
         user.getMetrics().updateAverageNoteGiven(rating);
+        product.getSeller().getMetrics().updateAverageNoteReceived(rating);
+
     }
     public void makeCheckout() {
         InputManager im = InputManager.getInstance();
@@ -713,8 +719,10 @@ public class BuyerMenu extends Menu {
                 System.out.println("Order successful!");
             }
         }
+
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
+
     }
     private void generateOrders(String paymentType, Address shippingAddress, String phoneNumber) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
@@ -737,6 +745,11 @@ public class BuyerMenu extends Menu {
         for (Seller seller : splitCart.keySet()) {
             HashMap<Product, Integer> products = splitCart.get(seller);
             Seller databaseSeller = database.getSeller(seller);
+
+            for(Product product : user.getCart().getProducts().keySet()){
+                 database.getSeller(seller).sellProduct(product, splitCart.size());
+            }
+
             database.addOrder(new Order(user, "credit card", user.getCard(), products));
 
         }
@@ -773,4 +786,5 @@ public class BuyerMenu extends Menu {
             }
         }
     }
+
 }

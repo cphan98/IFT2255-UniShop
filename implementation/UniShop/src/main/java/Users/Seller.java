@@ -36,6 +36,13 @@ public class Seller extends User {
         }
         return null;
     }
+
+    public void sellProduct(Product product, int quantity) {
+        float totalPrice = product.getPrice() * quantity;
+        metrics.updateRevenue(metrics.getRevenue() + totalPrice);
+        metrics.updateProductsSold(metrics.getProductsSold() + quantity);
+    }
+
     public Category getCategory() {
         return category;
     }

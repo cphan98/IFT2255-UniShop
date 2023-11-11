@@ -1,5 +1,6 @@
 package Metrics;
 
+import products.Product;
 import java.util.ArrayList;
 
 public class BuyerMetrics implements Metrics {

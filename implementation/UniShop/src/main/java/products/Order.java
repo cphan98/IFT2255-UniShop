@@ -141,6 +141,7 @@ public class Order {
     public void cancelOrder() {
         setStatus(OrderState.CANCELLED);
         buyer.getMetrics().setOrdersMade(buyer.getMetrics().getOrdersMade() - 1);
+
     }
 
     public void exchangeOrder() {
