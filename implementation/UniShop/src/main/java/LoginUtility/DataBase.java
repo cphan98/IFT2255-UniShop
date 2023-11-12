@@ -124,21 +124,20 @@ public class DataBase {
     }
 
     public boolean check24H(User user) {
-        boolean checked = user.getChecked24H();
-        /*
-        if (!checked) {
+        if (!user.getChecked24H()) {
             Date startTime = user.getStartTime();
             Date endTime = Calendar.getInstance().getTime();
             if (startTime != null) {
                 long difference = endTime.getTime() - startTime.getTime();
                 long diffInHrs = difference / 3600000;
+                System.out.println(diffInHrs);
                 if (diffInHrs >= 24) {
                     return false;
                 }
                 user.setChecked24H(true);
             }
-        }*/
-        return checked;
+        }
+        return user.getChecked24H();
     }
     @Override
     public String toString() {

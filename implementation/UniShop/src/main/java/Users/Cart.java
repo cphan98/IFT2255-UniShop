@@ -10,7 +10,7 @@ public class Cart {
     public Cart() {
         this.productQuantities = new HashMap<>();
     }
-
+  
     public Product searchProductByName(String name) {
         for (Map.Entry<Product, Integer> entry : productQuantities.entrySet()) {
             if (entry.getKey().getTitle().equals(name)) {
@@ -35,6 +35,7 @@ public class Cart {
         return productQuantities.entrySet().stream()
                 .map(entry -> entry.getKey().getPrice() * entry.getValue())
                 .reduce(0f, Float::sum);
+
     }
     public HashMap<Product, Integer> getProducts() {
         return productQuantities;
