@@ -8,6 +8,7 @@ import Users.Buyer;
 import Users.CreditCard;
 import Users.Seller;
 import otherUtility.Category;
+import otherUtility.OrderState;
 import products.Evaluation;
 import products.Order;
 import products.Product;
@@ -250,6 +251,7 @@ public class BuyerMenu extends Menu {
         System.out.println();
         System.out.println("1. Cancel order");
         System.out.println("2. Report a problem");
+        System.out.println("3. Confirm order receipt");
         System.out.println("3. Return to order history");
         int choice = getUserInputAsInteger();
         switch (choice) {
@@ -261,6 +263,9 @@ public class BuyerMenu extends Menu {
                 System.out.println("Reporting problem...");
                 break;
             case 3:
+                order.changeStatus(OrderState.DELIVERED);
+                System.out.println("Order confirmed");
+            case 4:
                 System.out.println("Returning to order history...");
                 break;
             default:
@@ -758,7 +763,6 @@ public class BuyerMenu extends Menu {
                 CreditCard creditCard = new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate);
                 generateOrders(creditCard, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
-
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
                 if (user.getPoints() < user.getCart().getTotalPrice() * 50) {
