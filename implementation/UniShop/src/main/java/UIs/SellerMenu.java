@@ -24,14 +24,16 @@ public class SellerMenu extends Menu {
         InputManager inputManager = InputManager.getInstance();
 
         while (continueLoop) {
-            System.out.println("WELCOME DEAR SELLERRRRRRRRR");
+            line();
+            System.out.println("Welcome to UniShop, " + user.getId() + "!");
+            line();
             System.out.println();
             System.out.println("Please select an option:");
+
             System.out.println("1. Display Profile");
             System.out.println("2. Display Order History");
-            System.out.println("3. Modify Inventory");
+            System.out.println("3. Display Inventory");
             System.out.println("4. Log out");
-
             String choice = inputManager.nextLine();
 
             switch (choice) {
