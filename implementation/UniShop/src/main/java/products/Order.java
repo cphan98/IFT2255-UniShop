@@ -21,7 +21,7 @@ public class Order {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private String orderDate = today.format(formatter);
     private HashMap<Product, Integer> products;
-    private OrderState status = OrderState.PENDING;
+    private OrderState status = OrderState.INPRODUCTION;
     private String ETA;
 
     // getters
@@ -142,18 +142,6 @@ public class Order {
         setStatus(OrderState.CANCELLED);
         buyer.getMetrics().setOrdersMade(buyer.getMetrics().getOrdersMade() - 1);
 
-    }
-
-    public void exchangeOrder() {
-        // TODO
-    }
-
-    public void returnOrder() {
-        // TODO
-    }
-
-    public void reportIssue() {
-        // TODO
     }
 
     public void sendBuyerNotification(Buyer buyer, String title, String summary) {
