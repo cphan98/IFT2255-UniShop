@@ -10,7 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Order {
-    // attributes
+    // ATTRIBUTES
+
     private String id;
     private Buyer buyer;
     private String paymentType;
@@ -24,7 +25,8 @@ public class Order {
     private OrderState status = OrderState.INPRODUCTION;
     private String ETA;
 
-    // getters
+    // GETTERS
+
     public String getId() { return id; }
     public Buyer getBuyer() { return buyer; }
     public String getPaymentType() { return paymentType; }
@@ -38,11 +40,9 @@ public class Order {
     public HashMap<Product, Integer> getProductsList() {
         return products;
     }
-    // setters
-    public String makeRandomETA() {
-        int day = (int) (Math.random() * 30);
-        return "Within " + day + " days";
-    }
+
+    // SETTERS
+
     public void setId(String id) { this.id = id; }
     public void setBuyer(Buyer buyer) { this.buyer = buyer; }
     public void setPaymentType(String paymentType) { this.paymentType = paymentType; }
@@ -57,6 +57,8 @@ public class Order {
         int zeros = 3 - Integer.toString(idCount).length();
         return("order" + ("0".repeat(zeros)) + idCount);
     }
+
+    // CONSTRUCTORS
 
     // constructor with new personal and credit card
     public Order(Buyer buyer, String paymentType, CreditCard paymentInfo, Address shippingAddress, String phoneNumber, HashMap<Product, Integer> products) {
@@ -116,33 +118,27 @@ public class Order {
         this.ETA = makeRandomETA();
     }
 
-    // operations
-    public void displayOrder() {
+    // FUNCTIONS & METHODS
 
-    }
+    // ORDER STATUS
 
-    public void displayProducts() {
-        // TODO
-    }
-
-    public void confirmReceipt() {
-        setStatus(OrderState.DELIVERED);
-    }
-
-    public void changeStatus(String status) {
+    public void changeStatus(OrderState status) {
         switch (status) {
-            case "accepted" -> setStatus(OrderState.ACCEPTED);
-            case "rejected" -> setStatus(OrderState.REJECTED);
-            case "in production" -> setStatus(OrderState.INPRODUCTION);
-            case "in delivery" -> setStatus(OrderState.INDELIVERY);
+            case PENDING -> setStatus(OrderState.PENDING);
+            case ACCEPTED -> setStatus(OrderState.ACCEPTED);
+            case REJECTED -> setStatus(OrderState.REJECTED);
+            case INPRODUCTION -> setStatus(OrderState.INPRODUCTION);
+            case INDELIVERY -> setStatus(OrderState.INDELIVERY);
+            case DELIVERED -> setStatus(OrderState.DELIVERED);
         }
     }
 
     public void cancelOrder() {
         setStatus(OrderState.CANCELLED);
         buyer.getMetrics().setOrdersMade(buyer.getMetrics().getOrdersMade() - 1);
-
     }
+
+    // NOTIFICATIONS
 
     public void sendBuyerNotification(Buyer buyer, String title, String summary) {
         buyer.addNotification(new Notification(title, summary));
@@ -162,6 +158,7 @@ public class Order {
                 .append("\n"));
         return sb.toString();
     }
+
     public String toString() {
         return "Order ID: " + id + "\n" +
                 "Buyer: " + buyer.getId() + "\n" +
@@ -179,9 +176,15 @@ public class Order {
     public String smallToString() {
         return "Order ID: " + id + "\n" + productsToString() + "Status: " + status + "\n";
     }
+
     public float getTotalPrice() {
         return products.entrySet().stream()
                 .map(entry -> entry.getKey().getPrice() * entry.getValue())
                 .reduce(0f, Float::sum);
+    }
+
+    public String makeRandomETA() {
+        int day = (int) (Math.random() * 30);
+        return "Within " + day + " days";
     }
 }
