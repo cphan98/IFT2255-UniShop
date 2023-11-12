@@ -3,6 +3,7 @@ package UIs;
 import LoginUtility.DataBase;
 import Users.Address;
 import Users.Seller;
+import otherUtility.OrderState;
 import products.*;
 
 import java.util.Objects;
@@ -12,6 +13,8 @@ import static java.lang.Integer.parseInt;
 
 public class SellerMenu extends Menu {
     private Seller user;
+
+    // MENU
 
     public SellerMenu(Seller user, DataBase dataBase) {
         super(user);
@@ -55,6 +58,18 @@ public class SellerMenu extends Menu {
         }
         return true;
     }
+
+    private int getUserInputAsInteger() {
+        while (true) {
+            try {
+                return Integer.parseInt(InputManager.getInstance().nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+    }
+
+    // PROFILE
 
     public boolean displayProfile() {
         boolean continueLoop = true;
@@ -146,6 +161,7 @@ public class SellerMenu extends Menu {
         Address shippingAddress = new Address(street, city, province, country, postalCode);
         user.setAddress(shippingAddress);
     }
+
     public void modifyPassword() {
         while (true) {
             System.out.println("Enter your current password:");
@@ -163,15 +179,29 @@ public class SellerMenu extends Menu {
         }
     }
 
+    // ORDERS
+
+    // TODO: display one order and be able to interact with it
+
     public boolean displayOrderHistory() {
-        InputManager inputManager = InputManager.getInstance();
-        String choice = "";
-        while (!choice.equals("1")) {
-            System.out.println("ORDER HISTORY");
-            System.out.println(user.ordersMadeToString());
-            System.out.println("1. Return to menu");
-            choice = inputManager.nextLine();
+        System.out.println("ORDER HISTORY");
+        System.out.println(user.ordersMadeToString());
+        System.out.println("Write the number of the order you want to see the details of, or write 0 to return to menu");
+        int choice = getUserInputAsInteger();
+        if (choice == 0) {
+            System.out.println("Returning to menu...");
+            return true;  // continue the loop
         }
+        Order order = null;
+        while (order == null) {
+            order = user.getOrderHistory().get(choice - 1);
+            if (order == null) {
+                System.out.println("Invalid selection. Please try again.");
+                choice = getUserInputAsInteger();
+            }
+        }
+        interactWithOrder(order);
+
         return true;  // continue the loop
     }
 
@@ -292,8 +322,11 @@ public class SellerMenu extends Menu {
 
     public boolean displayNotifications() {
         System.out.println("NOTIFICATIONS");
+        // TODO
         return true;
     }
+
+    // INVENTORY
 
     public boolean displayInventory() {
         boolean continueLoop = true;
@@ -360,6 +393,7 @@ public class SellerMenu extends Menu {
         if (choice.equals("y")) {database.removeProduct(product);}
         else {System.out.println("Product not removed");}
     }
+
     public void addProduct() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
@@ -446,15 +480,8 @@ public class SellerMenu extends Menu {
             System.out.println("Product already exists");
         }
     }
-    private int getUserInputAsInteger() {
-        while (true) {
-            try {
-                return Integer.parseInt(InputManager.getInstance().nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
-            }
-        }
-    }
+
+    // METRICS
 
     public void displayMetrics() {
         System.out.println(user.getMetrics().toString());
