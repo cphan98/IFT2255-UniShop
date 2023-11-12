@@ -101,8 +101,6 @@ public abstract class User {
         order.getBuyer().getMetrics().setProductsBought(order.getProducts().size());
 
     }
-
-    }
     public Date getStartTime(){
         return startTime;
     }
