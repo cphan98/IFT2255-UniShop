@@ -175,6 +175,121 @@ public class SellerMenu extends Menu {
         return true;  // continue the loop
     }
 
+    public void interactWithOrder(Order order) {
+        System.out.println(order);
+        System.out.println();
+        System.out.println("1. Prepare order");
+        System.out.println("2. Handle problem");
+        System.out.println("3. Confirm return receipt");
+        System.out.println("4. Return to order history");
+
+        int choice = getUserInputAsInteger();
+        switch (choice) {
+            case 1:
+                if (order.getStatus() == OrderState.INDELIVERY) {
+                    System.out.println("This order has already been prepared.");
+                    break;
+                } else if (order.getStatus() == OrderState.INPRODUCTION) {
+                    printLabel(user, order);
+                    InputManager im = InputManager.getInstance();
+                    System.out.println("Please enter shipping information.");
+                    System.out.println("Shipping company:");
+                    String company = im.nextLine();
+                    order.setShippingCompany(company);
+                    System.out.println("Shipping number:");
+                    String number = im.nextLine();
+                    order.setShippingNumber(Integer.parseInt(number));
+
+                    order.changeStatus(OrderState.INDELIVERY);
+                    System.out.println("Your order is ready to be shipped!");
+                    break;
+                }
+            case 2:
+                if (order.getIssue() == null) {
+                    System.out.println("No query in process.");
+                    break;
+                } else {
+                    displayIssue(order);
+                }
+                break;
+            case 3:
+                // TODO
+                break;
+            case 4:
+                System.out.println("Returning to order history...");
+                break;
+            default:
+                System.out.println("Invalid selection. Please try again.");
+                break;
+        }
+    }
+
+    public void printLabel(Seller user, Order order) {
+        System.out.println("Printing label...");
+        System.out.println();
+        System.out.println("--------------------------------------------------");
+        System.out.println();
+        System.out.println("FROM: " + user.getId());
+        System.out.println("      " + user.getAddress().getAddressLine());
+        System.out.println("      " + user.getAddress().getCity() + ", " + user.getAddress().getProvince() + ", " + user.getAddress().getCountry());
+        System.out.println("      " + user.getAddress().getPostalCode());
+        System.out.println();
+        System.out.println("TO:   " + order.getBuyer().getFirstName() + order.getBuyer().getLastName());
+        System.out.println("      " + order.getBuyer().getAddress().getAddressLine());
+        System.out.println("      " + order.getBuyer().getAddress().getCity() + ", " + order.getBuyer().getAddress().getProvince() + ", " + order.getBuyer().getAddress().getCountry());
+        System.out.println("      " + order.getBuyer().getAddress().getPostalCode());
+        System.out.println();
+        System.out.println("--------------------------------------------------");
+        System.out.println();
+        System.out.println("Label printed!");
+        System.out.println();
+    }
+
+    // ISSUES
+
+    public void displayIssue(Order order) {
+        System.out.println("Issue ID: " + order.getIssue().getId());
+        System.out.println("Description: " + order.getIssue().getIssueDescription());
+
+        if (order.getIssue().getSolutionDescription().isEmpty()) {
+            System.out.println("Solution: waiting for a solution...");
+        } else {
+            System.out.println("Solution: " + order.getIssue().getSolutionDescription());
+        }
+
+        if (order.getIssue().getReshipmentTrackingNum() == 0) {
+            System.out.println("Reshipment tracking #: N/A");
+        } else {
+            System.out.println("Reshipment tracking #: " + order.getIssue().getReshipmentTrackingNum());
+        }
+
+        if (!order.getIssue().getReshipmentReceived()) {
+            System.out.println("Reshipment received: N/A"); // TODO: change status according to order status
+        } else {
+            System.out.println("Reshipment received: yes");
+        }
+
+        if (order.getIssue().getReplacementProduct() == null) {
+            System.out.println("Replacement product: N/A");
+        } else {
+            System.out.println("Replacement product: " + order.getIssue().getReplacementProduct().getTitle());
+        }
+
+        if (order.getIssue().getReplacementTrackingNum() == 0) {
+            System.out.println("Replacement tracking #: N/A");
+        } else {
+            System.out.println("Replacement tracking #: " + order.getIssue().getReplacementTrackingNum());
+        }
+
+        if (!order.getIssue().getReplacementReceived()) {
+            System.out.println("Replacement received: N/A"); // TODO: change status according to order status
+        } else {
+            System.out.println("Replacement received: yes");
+        }
+    }
+
+    // NOTIFICATIONS
+
     public boolean displayNotifications() {
         System.out.println("NOTIFICATIONS");
         return true;
