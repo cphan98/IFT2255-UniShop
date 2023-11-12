@@ -102,7 +102,6 @@ public abstract class User {
 
     }
 
-    }
     public Date getStartTime(){
         return startTime;
     }
