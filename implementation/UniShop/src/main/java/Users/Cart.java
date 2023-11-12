@@ -10,6 +10,7 @@ public class Cart {
     public Cart() {
         this.productQuantities = new HashMap<>();
     }
+  
     public Product searchProductByName(String name) {
         for (Map.Entry<Product, Integer> entry : productQuantities.entrySet()) {
             if (entry.getKey().getTitle().equals(name)) {
@@ -18,6 +19,7 @@ public class Cart {
         }
         return null;
     }
+
     // Adds a product to the cart or increases the quantity if it already exists
     public void addProduct(Product product, int quantity) {
         productQuantities.merge(product, quantity, Integer::sum);

@@ -1,13 +1,13 @@
 package UIs;
 
 import LoginUtility.Catalog;
-import Metrics.SellerMetrics;
 import LoginUtility.DataBase;
 import Users.Address;
 import Users.Buyer;
 import Users.CreditCard;
 import Users.Seller;
 import otherUtility.Category;
+import otherUtility.OrderState;
 import products.Evaluation;
 import products.Order;
 import products.Product;
@@ -22,6 +22,8 @@ public class BuyerMenu extends Menu {
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
     private Catalog catalog;
+
+    // MENU
 
     public BuyerMenu(Buyer user, DataBase database) {
         super(user);
@@ -49,30 +51,31 @@ public class BuyerMenu extends Menu {
             String choice = inputManager.nextLine();
 
             switch (choice) {
-                case "1":
-                    continueLoop = displayProfile();
-                    break;
-                case "2":
-                    continueLoop = displayOrderHistory();
-                    break;
-                case "3":
-                    continueLoop = displayCart();
-                    break;
-                case "4":
-                    continueLoop = displayWishList();
-                    break;
-                case "5":
-                    continueLoop = displayCatalog();
-                    break;
-                case "6":
+                case "1" -> continueLoop = displayProfile();
+                case "2" -> continueLoop = displayOrderHistory();
+                case "3" -> continueLoop = displayCart();
+                case "4" -> continueLoop = displayWishList();
+                case "5" -> continueLoop = displayCatalog();
+                case "6" -> {
                     return false;  // Add this to handle log out
-                default:
-                    System.out.println("RICKROLL");
-                    break;
+                }
+                default -> System.out.println("RICKROLL");
             }
         }
         return true;
     }
+
+    private int getUserInputAsInteger() {
+        while (true) {
+            try {
+                return Integer.parseInt(InputManager.getInstance().nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+    }
+
+    // PROFILE
 
     public boolean displayProfile() {
         boolean continueLoop = true;
@@ -93,21 +96,23 @@ public class BuyerMenu extends Menu {
             String choice = inputManager.nextLine();
 
             switch (choice) {
-                case "1":
+                case "1" -> {
                     System.out.println("Modifying profile...");
                     modifyProfile();
-                    break;
-                case "2":
+                }
+                case "2" -> {
                     System.out.println("Returning to menu...");
                     continueLoop = false;
-                    break;
-                default:
+                }
+                default -> {
                     System.out.println("RICKROLL");
                     return false;  // continue the loop
+                }
             }
         }
         return true;  // continue the loop
     }
+
     public void modifyProfile() {
         System.out.println("1. Modify personal infos");
         System.out.println("2. Modify shipping address");
@@ -116,26 +121,15 @@ public class BuyerMenu extends Menu {
         System.out.println("5. Return to menu");
         int choice = getUserInputAsInteger();
         switch (choice) {
-            case 1:
-                modifyPersonalInfos();
-                break;
-            case 2:
-                modifyShippingAddress();
-                break;
-            case 3:
-                modifyPassword();
-                break;
-            case 4:
-                modifyPaymentInfos();
-                break;
-            case 5:
-                System.out.println("Returning to menu...");
-                break;
-            default:
-                System.out.println("Invalid selection. Please try again.");
-                break;
+            case 1 -> modifyPersonalInfos();
+            case 2 -> modifyShippingAddress();
+            case 3 -> modifyPassword();
+            case 4 -> modifyPaymentInfos();
+            case 5 -> System.out.println("Returning to menu...");
+            default -> System.out.println("Invalid selection. Please try again.");
         }
     }
+
     public void modifyPersonalInfos() {
         System.out.println("Enter your first name:");
         String firstName = InputManager.getInstance().nextLine();
@@ -159,6 +153,7 @@ public class BuyerMenu extends Menu {
         user.setPhoneNumber(phoneNumber);
         System.out.println("Personal infos modified");
     }
+
     public void modifyShippingAddress() {
         System.out.println("Enter your street name:");
         String street = InputManager.getInstance().nextLine();
@@ -173,6 +168,7 @@ public class BuyerMenu extends Menu {
         Address shippingAddress = new Address(street, city, province, country, postalCode);
         user.setAddress(shippingAddress);
     }
+
     public void modifyPassword() {
         while (true) {
             System.out.println("Enter your current password:");
@@ -189,6 +185,7 @@ public class BuyerMenu extends Menu {
             }
         }
     }
+
     public void modifyPaymentInfos() {
         System.out.println("Enter your credit card number:");
         String cardNumber = InputManager.getInstance().nextLine();
@@ -201,6 +198,8 @@ public class BuyerMenu extends Menu {
         user.setCard(new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate));
         System.out.println("Payment infos modified");
     }
+
+    // ORDER HISTORY
 
     public boolean displayOrderHistory() {
         System.out.println("ORDER HISTORY");
@@ -223,11 +222,13 @@ public class BuyerMenu extends Menu {
 
         return true;  // continue the loop
     }
+
     public void interactWithOrder(Order order) {
         System.out.println(order);
         System.out.println();
         System.out.println("1. Cancel order");
         System.out.println("2. Report a problem");
+        System.out.println("3. Confirm order receipt");
         System.out.println("3. Return to order history");
         int choice = getUserInputAsInteger();
         switch (choice) {
@@ -239,6 +240,9 @@ public class BuyerMenu extends Menu {
                 System.out.println("Reporting problem...");
                 break;
             case 3:
+                order.changeStatus(OrderState.DELIVERED);
+                System.out.println("Order confirmed");
+            case 4:
                 System.out.println("Returning to order history...");
                 break;
             default:
@@ -246,6 +250,9 @@ public class BuyerMenu extends Menu {
                 break;
         }
     }
+
+    // SHOPPING CART
+
     public boolean displayCart() {
         System.out.println(user.getCart().toString());
         System.out.println();
@@ -270,12 +277,127 @@ public class BuyerMenu extends Menu {
         return true;  // continue the loop
     }
 
+    // NOTIFICATIONS
+
     public boolean displayNotifications() {
+        System.out.println("NOTIFICATIONS");
         //TODO
         return true;  // this can be changed depending on the outcome of the TODO
     }
+
+    // METRICS
+
     public void displayMetrics() {
         System.out.println(user.getMetrics().toString());
+    }
+
+    // CATALOG
+
+    public boolean displayCatalog() {
+        line();
+        System.out.println("CATALOG");
+        catalog = new Catalog(database.getSellers());
+        catalog.displayCatalog();
+        line();
+
+        boolean continueLoop = true;
+        while (continueLoop) {
+            System.out.println("1. Get a product");
+            System.out.println("2. Get a seller's infos and products");
+            System.out.println("3. Filter products");
+            System.out.println("4. Filter sellers");
+            System.out.println("5. Return to menu");
+
+            int choice = getUserInputAsInteger();
+
+            switch (choice) {
+                case 1 -> searchAndDisplayProduct();
+                case 2 -> displaySellerInfo();
+                case 3 -> filterProducts();
+                case 4 -> filterSellers();
+                case 5 -> {
+                    System.out.println("Returning to menu...");
+                    continueLoop = false;
+                }
+                default -> System.out.println("Invalid selection. Please try again.");
+            }
+        }
+        return true;
+    }
+
+    private void searchAndDisplayProduct() {
+        if (searchProduct(catalog)) {
+            System.out.println(pointedProduct);
+            interactWithProduct();
+        } else {
+            System.out.println("Product not found. Please try again.");
+        }
+    }
+
+    public boolean searchProduct(Catalog catalog) {
+        boolean continueLoop = true;
+        InputManager im = InputManager.getInstance();
+        while (continueLoop) {
+            System.out.println("Enter the name of the product you want to search:");
+            String title = im.nextLine();
+            pointedProduct = catalog.searchProductByName(title);
+            continueLoop = pointedProduct == null;
+        }
+        return true;  // continue the loop
+    }
+
+    private void interactWithProduct() {
+        boolean continueInteraction = true;
+        while (continueInteraction) {
+            System.out.println("\n1. Add product to cart");
+            System.out.println("2. Like the product (add it to the wishlist)");
+            System.out.println("3. Make an evaluation");
+            System.out.println("4. Return to catalog");
+
+            int choice = getUserInputAsInteger();
+
+            switch (choice) {
+                case 1 -> addProductToCart(pointedProduct);
+                case 2 -> addProductToWishlist(pointedProduct);
+                case 3 -> addEvaluationToProduct(pointedProduct);
+                case 4 -> {
+                    catalog.displayCatalog();
+                    continueInteraction = false;
+                }
+                default -> System.out.println("Invalid selection. Please try again.");
+            }
+        }
+    }
+
+    private void displaySellerInfo() {
+        System.out.println("Enter the name of the seller you want to check out:");
+        String id = InputManager.getInstance().nextLine();
+        pointedSeller = catalog.searchSellerByName(id);
+        if (pointedSeller == null) {
+            System.out.println("Seller not found.");
+        } else {
+            System.out.println(pointedSeller);
+        }
+        interactWithSeller();
+    }
+
+    private void interactWithSeller() {
+        System.out.println("1. Like the seller (add him to your favorite sellers)");
+        System.out.println("2. Dislike the seller");
+        System.out.println("3. Return to catalog");
+        int choice = getUserInputAsInteger();
+        switch (choice) {
+            case 1 -> {
+                user.addSellerToFollowing(pointedSeller);
+                user.getMetrics().setLikesGiven(+1);
+            }
+            case 2 -> user.removeSellerFromFollowing(pointedSeller);
+            case 3 -> {
+                System.out.println("Returning to catalog...");
+                catalog.displayCatalog();
+            }
+            default -> System.out.println("Invalid selection. Please try again.");
+        }
     }
 
     public void filterProducts() {
@@ -286,7 +408,7 @@ public class BuyerMenu extends Menu {
         System.out.println("5. Return to menu");
         int choice = getUserInputAsInteger();
         switch (choice) {
-            case 1:
+            case 1 -> {
                 System.out.println("1. Books");
                 System.out.println("2. Learning resources");
                 System.out.println("3. Stationery");
@@ -295,90 +417,54 @@ public class BuyerMenu extends Menu {
                 System.out.println("6. Return to menu");
                 int choice2 = getUserInputAsInteger();
                 switch (choice2) {
-                    case 1:
-                        catalog.filterProductsByCategory(Category.BOOKS);
-                        break;
-                    case 2:
-                        catalog.filterProductsByCategory(Category.LEARNING_RESOURCES);
-                        break;
-                    case 3:
-                        catalog.filterProductsByCategory(Category.STATIONERY);
-                        break;
-                    case 4:
-                        catalog.filterProductsByCategory(Category.ELECTRONICS);
-                        break;
-                    case 5:
-                        catalog.filterProductsByCategory(Category.DESKTOP_ACCESSORIES);
-                        break;
-                    case 6:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.filterProductsByCategory(Category.BOOKS);
+                    case 2 -> catalog.filterProductsByCategory(Category.LEARNING_RESOURCES);
+                    case 3 -> catalog.filterProductsByCategory(Category.STATIONERY);
+                    case 4 -> catalog.filterProductsByCategory(Category.ELECTRONICS);
+                    case 5 -> catalog.filterProductsByCategory(Category.DESKTOP_ACCESSORIES);
+                    case 6 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
-                break;
-            case 2:
+            }
+            case 2 -> {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
                 int choice3 = getUserInputAsInteger();
                 switch (choice3) {
-                    case 1:
-                        catalog.orderProducts(true, "price");
-                        break;
-                    case 2:
-                        catalog.orderProducts(false, "price");
-                        break;
-                    case 3:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.orderProducts(true, "price");
+                    case 2 -> catalog.orderProducts(false, "price");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
-                break;
-            case 3:
+            }
+            case 3 -> {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
                 int choice4 = getUserInputAsInteger();
                 switch (choice4) {
-                    case 1:
-                        catalog.orderProducts(true, "likes");
-                        break;
-                    case 2:
-                        catalog.orderProducts(false, "likes");
-                        break;
-                    case 3:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.orderProducts(true, "likes");
+                    case 2 -> catalog.orderProducts(false, "likes");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
-                break;
-            case 4:
+            }
+            case 4 -> {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
                 int choice5 = getUserInputAsInteger();
                 switch (choice5) {
-                    case 1:
-                        catalog.orderProducts(true, "averageNote");
-                        break;
-                    case 2:
-                        catalog.orderProducts(false, "averageNote");
-                        break;
-                    case 3:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.orderProducts(true, "averageNote");
+                    case 2 -> catalog.orderProducts(false, "averageNote");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
+            }
         }
     }
+
     public void filterSellers() {
         System.out.println("1. Filter by category");
         System.out.println("2. Order by likes");
@@ -444,135 +530,16 @@ public class BuyerMenu extends Menu {
                 System.out.println("3. Return to menu");
                 int choice5 = getUserInputAsInteger();
                 switch (choice5) {
-                    case 1:
-                        catalog.orderSellers(true, "averageNote");
-                        break;
-                    case 2:
-                        catalog.orderSellers(false, "averageNote");
-                        break;
-                    case 3:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.orderSellers(true, "averageNote");
+                    case 2 -> catalog.orderSellers(false, "averageNote");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
         }
     }
-    public boolean displayCatalog() {
-        line();
-        System.out.println("CATALOG");
-        catalog = new Catalog(database.getSellers());
-        catalog.displayCatalog();
-        line();
 
-        boolean continueLoop = true;
-        while (continueLoop) {
-            System.out.println("1. Get a product");
-            System.out.println("2. Get a seller's infos and products");
-            System.out.println("3. Filter products");
-            System.out.println("4. Filter sellers");
-            System.out.println("5. Return to menu");
+    // WISH LIST
 
-            int choice = getUserInputAsInteger();
-
-            switch (choice) {
-                case 1:
-                    searchAndDisplayProduct();
-                    break;
-                case 2:
-                    displaySellerInfo();
-                    break;
-                case 3:
-                    filterProducts();
-                    break;
-                case 4:
-                    filterSellers();
-                    break;
-                case 5:
-                    System.out.println("Returning to menu...");
-                    continueLoop = false;
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please try again.");
-                    break;
-            }
-        }
-        return true;
-    }
-    private void searchAndDisplayProduct() {
-        if (searchProduct(catalog)) {
-            System.out.println(pointedProduct);
-            interactWithProduct();
-        } else {
-            System.out.println("Product not found. Please try again.");
-        }
-    }
-    private void displaySellerInfo() {
-        System.out.println("Enter the name of the seller you want to check out:");
-        String id = InputManager.getInstance().nextLine();
-        pointedSeller = catalog.searchSellerByName(id);
-        if (pointedSeller == null) {
-            System.out.println("Seller not found.");
-        } else {
-            System.out.println(pointedSeller);
-        }
-        interactWithSeller();
-    }
-    private void interactWithSeller() {
-        System.out.println("1. Like the seller (add him to your favorite sellers)");
-        System.out.println("2. Dislike the seller");
-        System.out.println("3. Return to catalog");
-        int choice = getUserInputAsInteger();
-        switch (choice) {
-            case 1:
-                user.addSellerToFollowing(pointedSeller);
-                user.getMetrics().setLikesGiven(+ 1);
-
-                break;
-            case 2:
-                user.removeSellerFromFollowing(pointedSeller);
-                break;
-            case 3:
-                System.out.println("Returning to catalog...");
-                catalog.displayCatalog();
-                break;
-            default:
-                System.out.println("Invalid selection. Please try again.");
-                break;
-        }
-    }
-    public void removeProductFromCart() {
-        InputManager inputManager = InputManager.getInstance();
-        System.out.println("Enter the name of the product you want to remove:");
-        String title = inputManager.nextLine();
-        Product product = user.getCart().searchProductByName(title);
-        if (product == null) {
-            System.out.println("Product not found");
-            return;
-        }
-        System.out.println("How many of it do you want to remove?");
-        int quantity = parseInt(inputManager.nextLine());
-        if (quantity > product.getQuantity()) {
-            System.out.println("Not enough products in cart");
-            return;
-        }
-        user.getCart().removeProduct(product, quantity);
-        product.setQuantity(product.getQuantity() + quantity);
-        System.out.println("Product removed from cart");
-    }
-    public void addProductToCart(Product product) {
-        System.out.println("How many of it do you want?");
-        InputManager inputManager = InputManager.getInstance();
-        int quantity = parseInt(inputManager.nextLine());
-        if (quantity > product.getQuantity()) {
-            System.out.println("Not enough products in stock");
-            return;
-        }
-        user.getCart().addProduct(product, quantity);
-        product.setQuantity(product.getQuantity() - quantity);
-        System.out.println("Product added to cart");
-    }
     public void addProductToWishlist(Product product) {
         if (user.getWishList().contains(product)) {
             System.out.println("Product already in wishlist");
@@ -583,47 +550,7 @@ public class BuyerMenu extends Menu {
         user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() + 1);
         user.addToWishList(product);
     }
-    public boolean searchProduct(Catalog catalog) {
-        boolean continueLoop = true;
-        InputManager im = InputManager.getInstance();
-        while (continueLoop) {
-            System.out.println("Enter the name of the product you want to search:");
-            String title = im.nextLine();
-            pointedProduct = catalog.searchProductByName(title);
-            continueLoop = pointedProduct == null;
-        }
-        return true;  // continue the loop
-    }
-    private void interactWithProduct() {
-        boolean continueInteraction = true;
-        while (continueInteraction) {
-            System.out.println("\n1. Add product to cart");
-            System.out.println("2. Like the product (add it to the wishlist)");
-            System.out.println("3. Make an evaluation");
-            System.out.println("4. Return to catalog");
 
-            int choice = getUserInputAsInteger();
-
-            switch (choice) {
-                case 1:
-                    addProductToCart(pointedProduct);
-                    break;
-                case 2:
-                    addProductToWishlist(pointedProduct);
-                    break;
-                case 3:
-                    addEvaluationToProduct(pointedProduct);
-                    break;
-                case 4:
-                    catalog.displayCatalog();
-                    continueInteraction = false;
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please try again.");
-                    break;
-            }
-        }
-    }
     public boolean displayWishList() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("WISHLIST");
@@ -646,6 +573,9 @@ public class BuyerMenu extends Menu {
         }
         return true;
     }
+
+    // EVALUATIONS
+
     public void addEvaluationToProduct(Product product) {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter a comment:");
@@ -656,8 +586,43 @@ public class BuyerMenu extends Menu {
         user.getMetrics().setEvaluationsMade(user.getMetrics().getEvaluationsMade() + 1);
         user.getMetrics().updateAverageNoteGiven(rating);
         product.getSeller().getMetrics().updateAverageNoteReceived(rating);
-
     }
+
+    // SHOPPING CART
+
+    public void removeProductFromCart() {
+        InputManager inputManager = InputManager.getInstance();
+        System.out.println("Enter the name of the product you want to remove:");
+        String title = inputManager.nextLine();
+        Product product = user.getCart().searchProductByName(title);
+        if (product == null) {
+            System.out.println("Product not found");
+            return;
+        }
+        System.out.println("How many of it do you want to remove?");
+        int quantity = parseInt(inputManager.nextLine());
+        if (quantity > product.getQuantity()) {
+            System.out.println("Not enough products in cart");
+            return;
+        }
+        user.getCart().removeProduct(product, quantity);
+        product.setQuantity(product.getQuantity() + quantity);
+        System.out.println("Product removed from cart");
+    }
+
+    public void addProductToCart(Product product) {
+        System.out.println("How many of it do you want?");
+        InputManager inputManager = InputManager.getInstance();
+        int quantity = parseInt(inputManager.nextLine());
+        if (quantity > product.getQuantity()) {
+            System.out.println("Not enough products in stock");
+            return;
+        }
+        user.getCart().addProduct(product, quantity);
+        product.setQuantity(product.getQuantity() - quantity);
+        System.out.println("Product added to cart");
+    }
+
     public void makeCheckout() {
         InputManager im = InputManager.getInstance();
         System.out.println("You currently have " + user.getPoints() + "points\n");
@@ -708,7 +673,6 @@ public class BuyerMenu extends Menu {
                 CreditCard creditCard = new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate);
                 generateOrders(creditCard, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
-
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
                 if (user.getPoints() < user.getCart().getTotalPrice() * 50) {
@@ -722,8 +686,8 @@ public class BuyerMenu extends Menu {
 
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
-
     }
+
     private void generateOrders(String paymentType, Address shippingAddress, String phoneNumber) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
         for (Seller seller : splitCart.keySet()) {
@@ -732,6 +696,7 @@ public class BuyerMenu extends Menu {
             database.addOrder(new Order(user, paymentType, shippingAddress, phoneNumber, sellerProducts));
         }
     }
+
     private void generateOrders(CreditCard creditCard, Address shippingAddress, String phoneNumber) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
         for (Seller seller : splitCart.keySet()) {
@@ -740,6 +705,7 @@ public class BuyerMenu extends Menu {
             database.addOrder(new Order(user, "credit card", creditCard, shippingAddress, phoneNumber, sellerProducts));
         }
     }
+
     private void generateOrders() {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
         for (Seller seller : splitCart.keySet()) {
@@ -751,9 +717,9 @@ public class BuyerMenu extends Menu {
             }
 
             database.addOrder(new Order(user, "credit card", user.getCard(), products));
-
         }
     }
+
     public void emptyCart() {
         InputManager im = InputManager.getInstance();
         System.out.println("Are you sure you want to empty the cart? (y/n)");
@@ -777,14 +743,4 @@ public class BuyerMenu extends Menu {
             }
         }
     }
-    private int getUserInputAsInteger() {
-        while (true) {
-            try {
-                return Integer.parseInt(InputManager.getInstance().nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
-            }
-        }
-    }
-
 }

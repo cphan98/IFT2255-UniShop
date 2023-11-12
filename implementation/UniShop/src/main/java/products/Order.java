@@ -10,21 +10,28 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Order {
-    // attributes
+    // ATTRIBUTES
+
     private String id;
     private Buyer buyer;
     private String paymentType;
     private CreditCard paymentInfo;
     private Address shippingAddress;
     private String phoneNumber;
-    LocalDate today = LocalDate.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private LocalDate today = LocalDate.now();
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private String orderDate = today.format(formatter);
     private HashMap<Product, Integer> products;
-    private OrderState status = OrderState.PENDING;
+    private OrderState status = OrderState.INPRODUCTION;
     private String ETA;
+    private Boolean isReturn = false;
+    private IssueQuery issue;
+    private String shippingCompany;
+    private int shippingNumber;
+    private float totalCost;
 
-    // getters
+    // GETTERS
+
     public String getId() { return id; }
     public Buyer getBuyer() { return buyer; }
     public String getPaymentType() { return paymentType; }
@@ -35,14 +42,14 @@ public class Order {
     public HashMap<Product, Integer> getProducts() { return products; }
     public OrderState getStatus() { return status; }
     public String getETA() { return ETA; }
-    public HashMap<Product, Integer> getProductsList() {
-        return products;
-    }
-    // setters
-    public String makeRandomETA() {
-        int day = (int) (Math.random() * 30);
-        return "Within " + day + " days";
-    }
+    public Boolean getIsReturn() { return isReturn; }
+    public IssueQuery getIssue() { return issue; }
+    public String getShippingCompany() { return shippingCompany; }
+    public int getShippingNumber() { return shippingNumber; }
+    public float getTotalCost() { return totalCost; }
+
+    // SETTERS
+
     public void setId(String id) { this.id = id; }
     public void setBuyer(Buyer buyer) { this.buyer = buyer; }
     public void setPaymentType(String paymentType) { this.paymentType = paymentType; }
@@ -53,9 +60,23 @@ public class Order {
     public void setProducts(HashMap<Product, Integer> products) { this.products = products; }
     public void setStatus(OrderState status) { this.status = status; }
     public void setETA(String ETA) { this.ETA = ETA; }
+    public void setIsReturn(Boolean isReturn) { this.isReturn = isReturn; }
+    public void setIssue(IssueQuery issue) { this.issue = issue; }
+    public void setShippingCompany(String company) {this.shippingCompany = company; }
+    public void setShippingNumber(int number) { this.shippingNumber = number; }
+    public void setTotalCost(float cost) { this.totalCost = cost; }
+
+    // CONSTRUCTORS
+
     public String makeId(int idCount) {
         int zeros = 3 - Integer.toString(idCount).length();
         return("order" + ("0".repeat(zeros)) + idCount);
+    }
+
+    public float getTotalPrice() {
+        return products.entrySet().stream()
+                .map(entry -> entry.getKey().getPrice() * entry.getValue())
+                .reduce(0f, Float::sum);
     }
 
     // constructor with new personal and credit card
@@ -73,6 +94,7 @@ public class Order {
         this.products = new HashMap<>();
         this.products.putAll(products);
         this.ETA = makeRandomETA();
+        this.totalCost = getTotalPrice();
     }
 
     // constructor with new credit card only
@@ -90,7 +112,7 @@ public class Order {
         this.products = new HashMap<>();
         this.products.putAll(products);
         this.ETA = makeRandomETA();
-
+        this.totalCost = getTotalPrice();
     }
 
     // constructor with new personal info and points as payment type
@@ -102,6 +124,7 @@ public class Order {
         this.products = new HashMap<>();
         this.products.putAll(products);
         this.ETA = makeRandomETA();
+        this.totalCost = getTotalPrice();
     }
 
     // constructor with info from profile
@@ -114,47 +137,30 @@ public class Order {
         this.products = new HashMap<>();
         this.products.putAll(products);
         this.ETA = makeRandomETA();
+        this.totalCost = getTotalPrice();
     }
 
-    // operations
-    public void displayOrder() {
+    // OPERATIONS
 
-    }
+    // ORDER STATUS
 
-    public void displayProducts() {
-        // TODO
-    }
-
-    public void confirmReceipt() {
-        setStatus(OrderState.DELIVERED);
-    }
-
-    public void changeStatus(String status) {
+    public void changeStatus(OrderState status) {
         switch (status) {
-            case "accepted" -> setStatus(OrderState.ACCEPTED);
-            case "rejected" -> setStatus(OrderState.REJECTED);
-            case "in production" -> setStatus(OrderState.INPRODUCTION);
-            case "in delivery" -> setStatus(OrderState.INDELIVERY);
+            case PENDING -> setStatus(OrderState.PENDING);
+            case ACCEPTED -> setStatus(OrderState.ACCEPTED);
+            case REJECTED -> setStatus(OrderState.REJECTED);
+            case INPRODUCTION -> setStatus(OrderState.INPRODUCTION);
+            case INDELIVERY -> setStatus(OrderState.INDELIVERY);
+            case DELIVERED -> setStatus(OrderState.DELIVERED);
         }
     }
 
     public void cancelOrder() {
         setStatus(OrderState.CANCELLED);
         buyer.getMetrics().setOrdersMade(buyer.getMetrics().getOrdersMade() - 1);
-
     }
 
-    public void exchangeOrder() {
-        // TODO
-    }
-
-    public void returnOrder() {
-        // TODO
-    }
-
-    public void reportIssue() {
-        // TODO
-    }
+    // NOTIFICATIONS
 
     public void sendBuyerNotification(Buyer buyer, String title, String summary) {
         buyer.addNotification(new Notification(title, summary));
@@ -163,6 +169,15 @@ public class Order {
     public void sendSellerNotification(Seller seller, String title, String summary) {
         seller.addNotification(new Notification(title, summary));
     }
+
+    // ETA
+
+    public String makeRandomETA() {
+        int day = (int) (Math.random() * 30);
+        return "Within " + day + " days";
+    }
+
+    // TO STRING
 
     public String productsToString() {
         StringBuilder sb = new StringBuilder();
@@ -174,6 +189,7 @@ public class Order {
                 .append("\n"));
         return sb.toString();
     }
+
     public String toString() {
         return "Order ID: " + id + "\n" +
                 "Buyer: " + buyer.getId() + "\n" +
@@ -188,12 +204,8 @@ public class Order {
                 "Status: " + status + "\n" +
                 "ETA: " + ETA + "\n";
     }
+
     public String smallToString() {
         return "Order ID: " + id + "\n" + productsToString() + "Status: " + status + "\n";
-    }
-    public float getTotalPrice() {
-        return products.entrySet().stream()
-                .map(entry -> entry.getKey().getPrice() * entry.getValue())
-                .reduce(0f, Float::sum);
     }
 }

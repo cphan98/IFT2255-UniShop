@@ -1,7 +1,8 @@
 package products;
 
 public class IssueQuery {
-    // attributes
+    // ATTRIBUTES
+
     private String id;
     private String issueDescription;
     private String solutionDescription;
@@ -11,7 +12,8 @@ public class IssueQuery {
     private int replacementTrackingNum;
     private Boolean replacementReceived = false;
 
-    // getters
+    // GETTERS
+
     public String getId() { return id; }
     public String getIssueDescription() { return issueDescription; }
     public String getSolutionDescription() { return solutionDescription; }
@@ -21,7 +23,8 @@ public class IssueQuery {
     public int getReplacementTrackingNum() { return replacementTrackingNum; }
     public Boolean getReplacementReceived() { return replacementReceived; }
 
-    // setters
+    // SETTERS
+
     public void setId(String id) { this.id = id; }
     public void setIssueDescription(String issueDescription) { this.issueDescription = issueDescription; }
     public void setSolutionDescription(String solutionDescription) { this.solutionDescription = solutionDescription; }
@@ -31,17 +34,18 @@ public class IssueQuery {
     public void setReplacementTrackingNum(int replacementTrackingNum) { this.replacementTrackingNum = replacementTrackingNum; }
     public void setReplacementReceived(Boolean replacementReceived) { this.replacementReceived = replacementReceived; }
 
-    // constructor
-    public IssueQuery(String issueDescription) {
-        this.id = makeId();
-        this.issueDescription = issueDescription;
-    }
+    // CONSTRUCTOR
 
-    // operations
     int idCount = 0;
     private String makeId() {
         int zeros = 3 - Integer.toString(idCount).length();
         return("issue" + ("0".repeat(zeros)) + idCount);
     }
-    // TODO: interaction between buyer and seller
+
+    public IssueQuery(String issueDescription) {
+        this.id = makeId();
+        this.issueDescription = issueDescription;
+    }
+
+    // OPERATIONS
 }
