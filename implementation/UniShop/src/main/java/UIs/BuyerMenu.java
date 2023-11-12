@@ -1,7 +1,6 @@
 package UIs;
 
 import LoginUtility.Catalog;
-import Metrics.SellerMetrics;
 import LoginUtility.DataBase;
 import Users.Address;
 import Users.Buyer;
@@ -52,26 +51,15 @@ public class BuyerMenu extends Menu {
             String choice = inputManager.nextLine();
 
             switch (choice) {
-                case "1":
-                    continueLoop = displayProfile();
-                    break;
-                case "2":
-                    continueLoop = displayOrderHistory();
-                    break;
-                case "3":
-                    continueLoop = displayCart();
-                    break;
-                case "4":
-                    continueLoop = displayWishList();
-                    break;
-                case "5":
-                    continueLoop = displayCatalog();
-                    break;
-                case "6":
+                case "1" -> continueLoop = displayProfile();
+                case "2" -> continueLoop = displayOrderHistory();
+                case "3" -> continueLoop = displayCart();
+                case "4" -> continueLoop = displayWishList();
+                case "5" -> continueLoop = displayCatalog();
+                case "6" -> {
                     return false;  // Add this to handle log out
-                default:
-                    System.out.println("RICKROLL");
-                    break;
+                }
+                default -> System.out.println("RICKROLL");
             }
         }
         return true;
@@ -108,17 +96,18 @@ public class BuyerMenu extends Menu {
             String choice = inputManager.nextLine();
 
             switch (choice) {
-                case "1":
+                case "1" -> {
                     System.out.println("Modifying profile...");
                     modifyProfile();
-                    break;
-                case "2":
+                }
+                case "2" -> {
                     System.out.println("Returning to menu...");
                     continueLoop = false;
-                    break;
-                default:
+                }
+                default -> {
                     System.out.println("RICKROLL");
                     return false;  // continue the loop
+                }
             }
         }
         return true;  // continue the loop
@@ -132,24 +121,12 @@ public class BuyerMenu extends Menu {
         System.out.println("5. Return to menu");
         int choice = getUserInputAsInteger();
         switch (choice) {
-            case 1:
-                modifyPersonalInfos();
-                break;
-            case 2:
-                modifyShippingAddress();
-                break;
-            case 3:
-                modifyPassword();
-                break;
-            case 4:
-                modifyPaymentInfos();
-                break;
-            case 5:
-                System.out.println("Returning to menu...");
-                break;
-            default:
-                System.out.println("Invalid selection. Please try again.");
-                break;
+            case 1 -> modifyPersonalInfos();
+            case 2 -> modifyShippingAddress();
+            case 3 -> modifyPassword();
+            case 4 -> modifyPaymentInfos();
+            case 5 -> System.out.println("Returning to menu...");
+            default -> System.out.println("Invalid selection. Please try again.");
         }
     }
 
@@ -334,25 +311,15 @@ public class BuyerMenu extends Menu {
             int choice = getUserInputAsInteger();
 
             switch (choice) {
-                case 1:
-                    searchAndDisplayProduct();
-                    break;
-                case 2:
-                    displaySellerInfo();
-                    break;
-                case 3:
-                    filterProducts();
-                    break;
-                case 4:
-                    filterSellers();
-                    break;
-                case 5:
+                case 1 -> searchAndDisplayProduct();
+                case 2 -> displaySellerInfo();
+                case 3 -> filterProducts();
+                case 4 -> filterSellers();
+                case 5 -> {
                     System.out.println("Returning to menu...");
                     continueLoop = false;
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please try again.");
-                    break;
+                }
+                default -> System.out.println("Invalid selection. Please try again.");
             }
         }
         return true;
@@ -390,22 +357,14 @@ public class BuyerMenu extends Menu {
             int choice = getUserInputAsInteger();
 
             switch (choice) {
-                case 1:
-                    addProductToCart(pointedProduct);
-                    break;
-                case 2:
-                    addProductToWishlist(pointedProduct);
-                    break;
-                case 3:
-                    addEvaluationToProduct(pointedProduct);
-                    break;
-                case 4:
+                case 1 -> addProductToCart(pointedProduct);
+                case 2 -> addProductToWishlist(pointedProduct);
+                case 3 -> addEvaluationToProduct(pointedProduct);
+                case 4 -> {
                     catalog.displayCatalog();
                     continueInteraction = false;
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please try again.");
-                    break;
+                }
+                default -> System.out.println("Invalid selection. Please try again.");
             }
         }
     }
@@ -428,20 +387,16 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Return to catalog");
         int choice = getUserInputAsInteger();
         switch (choice) {
-            case 1:
+            case 1 -> {
                 user.addSellerToFollowing(pointedSeller);
-                user.getMetrics().setLikesGiven(+ 1);
-                break;
-            case 2:
-                user.removeSellerFromFollowing(pointedSeller);
-                break;
-            case 3:
+                user.getMetrics().setLikesGiven(+1);
+            }
+            case 2 -> user.removeSellerFromFollowing(pointedSeller);
+            case 3 -> {
                 System.out.println("Returning to catalog...");
                 catalog.displayCatalog();
-                break;
-            default:
-                System.out.println("Invalid selection. Please try again.");
-                break;
+            }
+            default -> System.out.println("Invalid selection. Please try again.");
         }
     }
 
@@ -453,7 +408,7 @@ public class BuyerMenu extends Menu {
         System.out.println("5. Return to menu");
         int choice = getUserInputAsInteger();
         switch (choice) {
-            case 1:
+            case 1 -> {
                 System.out.println("1. Books");
                 System.out.println("2. Learning resources");
                 System.out.println("3. Stationery");
@@ -462,88 +417,51 @@ public class BuyerMenu extends Menu {
                 System.out.println("6. Return to menu");
                 int choice2 = getUserInputAsInteger();
                 switch (choice2) {
-                    case 1:
-                        catalog.filterProductsByCategory(Category.BOOKS);
-                        break;
-                    case 2:
-                        catalog.filterProductsByCategory(Category.LEARNING_RESOURCES);
-                        break;
-                    case 3:
-                        catalog.filterProductsByCategory(Category.STATIONERY);
-                        break;
-                    case 4:
-                        catalog.filterProductsByCategory(Category.ELECTRONICS);
-                        break;
-                    case 5:
-                        catalog.filterProductsByCategory(Category.DESKTOP_ACCESSORIES);
-                        break;
-                    case 6:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.filterProductsByCategory(Category.BOOKS);
+                    case 2 -> catalog.filterProductsByCategory(Category.LEARNING_RESOURCES);
+                    case 3 -> catalog.filterProductsByCategory(Category.STATIONERY);
+                    case 4 -> catalog.filterProductsByCategory(Category.ELECTRONICS);
+                    case 5 -> catalog.filterProductsByCategory(Category.DESKTOP_ACCESSORIES);
+                    case 6 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
-                break;
-            case 2:
+            }
+            case 2 -> {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
                 int choice3 = getUserInputAsInteger();
                 switch (choice3) {
-                    case 1:
-                        catalog.orderProducts(true, "price");
-                        break;
-                    case 2:
-                        catalog.orderProducts(false, "price");
-                        break;
-                    case 3:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.orderProducts(true, "price");
+                    case 2 -> catalog.orderProducts(false, "price");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
-                break;
-            case 3:
+            }
+            case 3 -> {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
                 int choice4 = getUserInputAsInteger();
                 switch (choice4) {
-                    case 1:
-                        catalog.orderProducts(true, "likes");
-                        break;
-                    case 2:
-                        catalog.orderProducts(false, "likes");
-                        break;
-                    case 3:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.orderProducts(true, "likes");
+                    case 2 -> catalog.orderProducts(false, "likes");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
-                break;
-            case 4:
+            }
+            case 4 -> {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
                 int choice5 = getUserInputAsInteger();
                 switch (choice5) {
-                    case 1:
-                        catalog.orderProducts(true, "averageNote");
-                        break;
-                    case 2:
-                        catalog.orderProducts(false, "averageNote");
-                        break;
-                    case 3:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.orderProducts(true, "averageNote");
+                    case 2 -> catalog.orderProducts(false, "averageNote");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
+            }
         }
     }
 
@@ -612,18 +530,10 @@ public class BuyerMenu extends Menu {
                 System.out.println("3. Return to menu");
                 int choice5 = getUserInputAsInteger();
                 switch (choice5) {
-                    case 1:
-                        catalog.orderSellers(true, "averageNote");
-                        break;
-                    case 2:
-                        catalog.orderSellers(false, "averageNote");
-                        break;
-                    case 3:
-                        System.out.println("Returning to menu...");
-                        break;
-                    default:
-                        System.out.println("Invalid selection. Please try again.");
-                        break;
+                    case 1 -> catalog.orderSellers(true, "averageNote");
+                    case 2 -> catalog.orderSellers(false, "averageNote");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
                 }
         }
     }
