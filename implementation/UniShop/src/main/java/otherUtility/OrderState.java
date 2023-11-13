@@ -4,8 +4,8 @@ public enum OrderState {
     PENDING,
     ACCEPTED,
     REJECTED,
-    INPRODUCTION,
-    INDELIVERY,
+    IN_PRODUCTION,
+    IN_DELIVERY,
     DELIVERED,
     CANCELLED
 }

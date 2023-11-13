@@ -23,10 +23,16 @@ public class SellerSignUp implements SignUpScreen {
         String username = inputManager.nextLine();
         System.out.println("Please enter your password:");
         String password = inputManager.nextLine();
-        System.out.println("Please enter your email:");
-        String email = inputManager.nextLine();
-        System.out.println("Please enter your phone number:");
-        String phoneNumber = inputManager.nextLine();
+        String email = "";
+        while (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            System.out.println("Please enter your email:");
+            email = inputManager.nextLine();
+        }
+        String phoneNumber = "a";
+        while (!phoneNumber.matches("[0-9]+")) {
+            System.out.println("Enter your phone number:");
+            phoneNumber = InputManager.getInstance().nextLine();
+        }
         System.out.println("Please enter your address:");
         String address = inputManager.nextLine();
         System.out.println("Please enter your country:");

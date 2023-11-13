@@ -27,10 +27,16 @@ public class BuyerSignUp implements SignUpScreen {
         String city = inputManager.nextLine();
         System.out.println("Please enter your postal code:");
         String postalCode = inputManager.nextLine();
-        System.out.println("Please enter your email:");
-        String email = inputManager.nextLine();
-        System.out.println("Please enter your phone number:");
-        String phoneNumber = inputManager.nextLine();
+        String email = "";
+        while (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            System.out.println("Please enter your email:");
+            email = inputManager.nextLine();
+        }
+        String phoneNumber = "a";
+        while (!phoneNumber.matches("[0-9]+")) {
+            System.out.println("Enter your phone number:");
+            phoneNumber = InputManager.getInstance().nextLine();
+        }
         System.out.println("WARNING: You must connect within the next 24 hours or else the signup will be cancelled");
         return new Buyer(firstName, lastName, username, password, email, phoneNumber, new Address(address, country, province, city, postalCode));
 

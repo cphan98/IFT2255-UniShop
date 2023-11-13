@@ -18,13 +18,13 @@ public class InputManager {
     }
 
     public String nextLine() {
-        return scanner.nextLine();
+        String nextLine = scanner.nextLine();
+        while (nextLine.isEmpty()) {
+            System.out.println("Please enter a non-empty input");
+            nextLine = scanner.nextLine();
+        }
+        return nextLine;
     }
-
-    public int nextInt() {
-        return scanner.nextInt();
-    }
-
     // Add other input methods as needed
 }
 

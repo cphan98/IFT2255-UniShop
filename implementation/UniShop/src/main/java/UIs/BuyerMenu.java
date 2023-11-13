@@ -138,10 +138,16 @@ public class BuyerMenu extends Menu {
         String lastName = InputManager.getInstance().nextLine();
         System.out.println("Enter your new id:");
         String id = InputManager.getInstance().nextLine();
-        System.out.println("Enter your email:");
-        String email = InputManager.getInstance().nextLine();
-        System.out.println("Enter your phone number:");
-        String phoneNumber = InputManager.getInstance().nextLine();
+        String email = "";
+        while (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            System.out.println("Please enter your email:");
+            email = InputManager.getInstance().nextLine();
+        }
+        String phoneNumber = "a";
+        while (!phoneNumber.matches("[0-9]+")) {
+            System.out.println("Enter your phone number:");
+            phoneNumber = InputManager.getInstance().nextLine();
+        }
         user.setFirstName(firstName);
         user.setLastName(lastName);
         if (!database.validateNewUser(id, email)) {

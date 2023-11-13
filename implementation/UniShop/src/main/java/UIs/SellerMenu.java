@@ -122,10 +122,16 @@ public class SellerMenu extends Menu {
     public void modifyPersonalInfo(){
         System.out.println("Enter your new id:");
         String id = InputManager.getInstance().nextLine();
-        System.out.println("Enter your email:");
-        String email = InputManager.getInstance().nextLine();
-        System.out.println("Enter your phone number:");
-        String phoneNumber = InputManager.getInstance().nextLine();
+        String email = "";
+        while (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            System.out.println("Please enter your email:");
+            email = InputManager.getInstance().nextLine();
+        }
+        String phoneNumber = "a";
+        while (!phoneNumber.matches("[0-9]+")) {
+            System.out.println("Enter your phone number:");
+            phoneNumber = InputManager.getInstance().nextLine();
+        }
         if (!database.validateNewUser(id, email)) {
             System.out.println("This id or email is already taken");
             System.out.println("Your other infos are changed but your id and email were not changed");
@@ -206,21 +212,24 @@ public class SellerMenu extends Menu {
         int choice = getUserInputAsInteger();
         switch (choice) {
             case 1:
-                if (order.getStatus() == OrderState.INDELIVERY) {
+                if (order.getStatus() == OrderState.IN_DELIVERY) {
                     System.out.println("This order has already been prepared.");
                     break;
-                } else if (order.getStatus() == OrderState.INPRODUCTION) {
+                } else if (order.getStatus() == OrderState.IN_PRODUCTION) {
                     printLabel(user, order);
                     InputManager im = InputManager.getInstance();
                     System.out.println("Please enter shipping information.");
                     System.out.println("Shipping company:");
                     String company = im.nextLine();
                     order.setShippingCompany(company);
-                    System.out.println("Shipping number:");
-                    String number = im.nextLine();
-                    order.setShippingNumber(Integer.parseInt(number));
+                    String number = "a";
+                    while (!number.matches("\\d+")) {
+                        System.out.println("Shipping number:");
+                        number = im.nextLine();
+                    }
+                    order.setShippingNumber(number);
 
-                    order.changeStatus(OrderState.INDELIVERY);
+                    order.changeStatus(OrderState.IN_DELIVERY);
                     System.out.println("Your order is ready to be shipped!");
                     break;
                 }
@@ -331,31 +340,54 @@ public class SellerMenu extends Menu {
             System.out.println("1. Add item(s)");
             System.out.println("2. Remove item(s)");
             System.out.println("3. Change item quantity");
-            System.out.println("3. Return to menu");
+            System.out.println("4. Modify additional points of product");
+            System.out.println("5. Return to menu");
 
-            String choice = inputManager.nextLine();
+            int choice = getUserInputAsInteger();
 
             switch (choice) {
-                case "1":
+                case 1:
                     System.out.println("Adding item(s)...");
                     addProduct();
                     break;
-                case "2":
+                case 2:
                     System.out.println("Removing item(s)...");
                     removeProduct();
                     break;
-                case "3":
+                case 3:
                     System.out.println("Changing item quantity...");
                     changeProductQty();
                     break;
-                case "4":
+                case 4:
+                    System.out.println("Modifying additional points of product...");
+                    modifyAdditionalPoints();
+                    break;
+                case 5:
                     continueLoop = false; // Exit the inventory submenu
                     break;
             }
         }
         return true;
     }
+    public void modifyAdditionalPoints() {
+        Product product = null;
+        while (product == null) {
+            System.out.println("Please enter the title of the product:");
+            String title = InputManager.getInstance().nextLine();
+            product = user.findProductByTitle(title);
+        }
+        product.setBasePoints((int) Math.floor(product.getPrice()));
+        int additionalPoints = -1;
+        String additionalPointsText = "a";
+        while (!additionalPointsText.matches("\\d+")) {
+            System.out.println("Please enter the additional points of the product:");
+            additionalPointsText = InputManager.getInstance().nextLine();
+            additionalPoints = parseInt(additionalPointsText);
 
+        }
+        product.setBasePoints(product.getBasePoints()+additionalPoints);
+
+    }
     public void changeProductQty() {
         Product product = null;
         while (product == null) {
@@ -370,7 +402,6 @@ public class SellerMenu extends Menu {
         }
         user.changeProductQuantity(product, quantity);
     }
-
     public void removeProduct() {
         Product product = null;
         while (product == null) {
@@ -383,25 +414,36 @@ public class SellerMenu extends Menu {
         if (choice.equals("y")) {database.removeProduct(product);}
         else {System.out.println("Product not removed");}
     }
-
     public void addProduct() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
         String title = inputManager.nextLine();
         System.out.println("Please enter the description of the product:");
         String description = inputManager.nextLine();
-        System.out.println("Please enter the price of the product:");
-        float price = parseFloat(inputManager.nextLine());
-        System.out.println("Please enter the additional points of the product:");
-        int bonusPoints = parseInt(inputManager.nextLine());
+        String priceText = "a";
+        while (!priceText.matches("\\d+(\\.\\d+)?")) {
+            System.out.println("Please enter the price of the product:");
+            priceText = inputManager.nextLine();
+        }
+        float price = parseFloat(priceText);
+        String bonusPointsText = "a";
+        while (!bonusPointsText.matches("\\d+")) {
+            System.out.println("Please enter the bonus points of the product:");
+            bonusPointsText = inputManager.nextLine();
+        }
+        int bonusPoints = parseInt(bonusPointsText);
         if (bonusPoints < 0) {
             bonusPoints = 0;
         }
         if (Math.floor(price)*20 < Math.floor(price) + bonusPoints) {
             bonusPoints = (int) Math.floor(price)*19;
         }
-        System.out.println("Please enter the quantity of the product:");
-        int quantity = parseInt(inputManager.nextLine());
+        String quantityText = "a";
+        while (!quantityText.matches("\\d+")) {
+            System.out.println("Please enter the quantity of the product:");
+            quantityText = inputManager.nextLine();
+        }
+        int quantity = parseInt(quantityText);
         System.out.println("Please enter the sell date of the product:");
         String sellDate = inputManager.nextLine();
         Product product = null;
@@ -411,16 +453,28 @@ public class SellerMenu extends Menu {
                 String author = inputManager.nextLine();
                 System.out.println("Please enter the publisher of the book:");
                 String publisher = inputManager.nextLine();
-                System.out.println("Please enter the ISBN of the book:");
-                int ISBN = parseInt(inputManager.nextLine());
+                String ISBNText = "a";
+                while (!ISBNText.matches("\\d+")) {
+                    System.out.println("Please enter the ISBN of the book:");
+                    ISBNText = inputManager.nextLine();
+                }
+                int ISBN = parseInt(ISBNText);
                 System.out.println("Please enter the genre of the book:");
                 String genre = inputManager.nextLine();
                 System.out.println("Please enter the release date of the book:");
                 String releaseDate = inputManager.nextLine();
-                System.out.println("Please enter the edition of the book:");
-                int edition = parseInt(inputManager.nextLine());
-                System.out.println("Please enter the volume of the book:");
-                int volume = parseInt(inputManager.nextLine());
+                String editionText = "a";
+                while (!editionText.matches("\\d+")) {
+                    System.out.println("Please enter the edition of the book:");
+                    editionText = inputManager.nextLine();
+                }
+                int edition = parseInt(editionText);
+                String volumeText = "a";
+                while (!volumeText.matches("\\d+")) {
+                    System.out.println("Please enter the volume of the book:");
+                    volumeText = inputManager.nextLine();
+                }
+                int volume = parseInt(volumeText);
                 product = new Book(title, description, price, (int) Math.floor(price) + bonusPoints , user, quantity, ISBN, author, publisher, genre, releaseDate, sellDate, edition, volume);
                 break;
             case LEARNING_RESOURCES:
@@ -428,14 +482,22 @@ public class SellerMenu extends Menu {
                 author = inputManager.nextLine();
                 System.out.println("Please enter the organization of the learning resource:");
                 String organization = inputManager.nextLine();
-                System.out.println("Please enter the ISBN of the learning resource:");
-                ISBN = parseInt(inputManager.nextLine());
+                ISBNText = "a";
+                while (!ISBNText.matches("\\d+")) {
+                    System.out.println("Please enter the ISBN of the learning resource:");
+                    ISBNText = inputManager.nextLine();
+                }
+                ISBN = parseInt(ISBNText);
                 System.out.println("Please enter the release date of the learning resource:");
                 releaseDate = inputManager.nextLine();
                 System.out.println("Please enter the type of the learning resource:");
                 String type = inputManager.nextLine();
-                System.out.println("Please enter the edition of the learning resource:");
-                edition = parseInt(inputManager.nextLine());
+                editionText = "a";
+                while (!editionText.matches("\\d+")) {
+                    System.out.println("Please enter the edition of the learning resource:");
+                    editionText = inputManager.nextLine();
+                }
+                edition = parseInt(editionText);
                 product = new LearningResource(title, description, price, (int) Math.floor(price) + bonusPoints, user, quantity, ISBN, author, organization, releaseDate, sellDate, type, edition);
                 break;
             case STATIONERY:

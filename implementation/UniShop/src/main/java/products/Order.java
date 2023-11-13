@@ -22,12 +22,12 @@ public class Order {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private String orderDate = today.format(formatter);
     private HashMap<Product, Integer> products;
-    private OrderState status = OrderState.INPRODUCTION;
+    private OrderState status = OrderState.IN_PRODUCTION;
     private String ETA;
     private Boolean isReturn = false;
     private IssueQuery issue;
     private String shippingCompany;
-    private int shippingNumber;
+    private String shippingNumber;
     private float totalCost;
 
     // GETTERS
@@ -45,7 +45,7 @@ public class Order {
     public Boolean getIsReturn() { return isReturn; }
     public IssueQuery getIssue() { return issue; }
     public String getShippingCompany() { return shippingCompany; }
-    public int getShippingNumber() { return shippingNumber; }
+    public String getShippingNumber() { return shippingNumber; }
     public float getTotalCost() { return totalCost; }
 
     // SETTERS
@@ -63,7 +63,7 @@ public class Order {
     public void setIsReturn(Boolean isReturn) { this.isReturn = isReturn; }
     public void setIssue(IssueQuery issue) { this.issue = issue; }
     public void setShippingCompany(String company) {this.shippingCompany = company; }
-    public void setShippingNumber(int number) { this.shippingNumber = number; }
+    public void setShippingNumber(String number) { this.shippingNumber = number; }
     public void setTotalCost(float cost) { this.totalCost = cost; }
 
     // CONSTRUCTORS
@@ -149,8 +149,8 @@ public class Order {
             case PENDING -> setStatus(OrderState.PENDING);
             case ACCEPTED -> setStatus(OrderState.ACCEPTED);
             case REJECTED -> setStatus(OrderState.REJECTED);
-            case INPRODUCTION -> setStatus(OrderState.INPRODUCTION);
-            case INDELIVERY -> setStatus(OrderState.INDELIVERY);
+            case IN_PRODUCTION -> setStatus(OrderState.IN_PRODUCTION);
+            case IN_DELIVERY -> setStatus(OrderState.IN_DELIVERY);
             case DELIVERED -> setStatus(OrderState.DELIVERED);
         }
     }

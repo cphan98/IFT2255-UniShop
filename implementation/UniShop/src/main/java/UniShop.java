@@ -48,15 +48,15 @@ public class UniShop {
     }
 
     private static void putFakeUsers(ArrayList<User> users) {
-        users.add(new Buyer("Nathan","Razaf","Asp3rity", "J2s3jAsd", "abc@def", "2003", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
-        users.add(new Buyer("Cynthia","Phan","cphan98", "1234", "ghi@jkl", "2005", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
-        users.add(new Buyer("Lucas","Ranaivo","sacul", "1234", "luc@g.com", "2005", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
-        users.add(new Buyer("Nathan","Rasami","monpote20", "1234", "nat@g.com", "2005", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
-        users.add(new Buyer("Aaron","Leong","zhuyi", "1234", "zhuyi@g.com", "2005", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
-        users.add(new Seller("Trinh", "1234", "def@abc", "2004", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.ELECTRONICS));
-        users.add(new Seller("Laura", "1234", "jkl@ghi", "2006", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.BOOKS));
-        users.add(new Seller("mno", "1234", "mno@pqr", "2007", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.DESKTOP_ACCESSORIES));
-        users.add(new Seller("pqr", "1234", "pqr@mno", "2008", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.LEARNING_RESOURCES));
-        users.add(new Seller("stu", "1234", "stu@vwx", "2009", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.STATIONERY));
+        users.add(new Buyer("Nathan","Razaf","Asp3rity", "J2s3jAsd", "abc@def", "2003950384", new Address("1234 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A2")));
+        users.add(new Buyer("Cynthia","Phan","cphan98", "1234", "ghi@jkl", "2005748362", new Address("1567 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A3")));
+        users.add(new Buyer("Lucas","Ranaivo","sacul", "1234", "luc@g.com", "2005102948", new Address("1345 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
+        users.add(new Buyer("Nathan","Rasami","monpote20", "1234", "nat@g.com", "2005583927", new Address("1153 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A4")));
+        users.add(new Buyer("Aaron","Leong","zhuyi", "1234", "zhuyi@g.com", "2005406976", new Address("1166 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A5")));
+        users.add(new Seller("Trinh", "1234", "def@abc", "2004456745", new Address("1156 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A6"), Category.ELECTRONICS));
+        users.add(new Seller("Laura", "1234", "jkl@ghi", "2006294850", new Address("1990 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A7"), Category.BOOKS));
+        users.add(new Seller("mno", "1234", "mno@pqr", "2007103948", new Address("1432 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A8"), Category.DESKTOP_ACCESSORIES));
+        users.add(new Seller("pqr", "1234", "pqr@mno", "2008103985", new Address("1845 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A9"), Category.LEARNING_RESOURCES));
+        users.add(new Seller("stu", "1234", "stu@vwx", "2009304958", new Address("1764 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1B1"), Category.STATIONERY));
     }
 }
