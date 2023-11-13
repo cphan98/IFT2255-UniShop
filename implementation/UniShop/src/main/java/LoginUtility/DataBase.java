@@ -72,12 +72,13 @@ public class DataBase {
         }
         return sellers;
     }
-    public boolean addUser(User user) {
+    public void addUser(User user) {
         if ( validateNewUser(user.getId(), user.getEmail()) ) {
             users.add(user);
-            return true;
+            System.out.println("User added successfully");
+            return;
         }
-        return false;
+        System.out.println("User already exists");
     }
     public void removeUser(User user) {
         users.remove(user);

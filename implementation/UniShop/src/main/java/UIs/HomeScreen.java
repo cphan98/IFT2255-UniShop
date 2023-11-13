@@ -79,14 +79,9 @@ public class HomeScreen {
         return !continueLoop; // indicates successful login
     }
     public boolean redirectToSignupScreen(boolean isSeller) {
-        SignUpScreen signUpScreen = isSeller ? new SellerSignUp(database) : new BuyerSignUp();
-        User user = signUpScreen.getCredentials();
-        if (database.addUser(user)) {
-            System.out.println("User added successfully");
-            System.out.println(database.toString());
-        } else {
-            System.out.println("User not added! Please try again.");
-        }
+        SignUpScreen signUpScreen = isSeller ? new SellerSignUp(database) : new BuyerSignUp(database);
+        signUpScreen.getCredentialsAndSignUp();
+
         return false; // Continue loop anyway
     }
 

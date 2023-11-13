@@ -10,12 +10,12 @@ import products.*;
 import static java.lang.Float.parseFloat;
 
 public class SellerSignUp implements SignUpScreen {
-    private DataBase database;
+    private final DataBase database;
 
     public SellerSignUp(DataBase database) {
         this.database = database;
     }
-    public User getCredentials() {
+    public void getCredentialsAndSignUp() {
         System.out.println("Welcome, new seller!");
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter your username:");
@@ -72,15 +72,19 @@ public class SellerSignUp implements SignUpScreen {
             }
         }
         Seller seller = new Seller(username, password, email, phoneNumber, new Address(address, country, province, city, postalCode), category);
+        database.addUser(seller);
         addProductToSeller(seller);
         System.out.println("WARNING: You must connect within the next 24 hours or else the signup will be cancelled");
-        return seller;
     }
 
     private void addProductToSeller(Seller seller) {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
         String title = inputManager.nextLine();
+        while (!database.verifyNewProduct(new Book(title, "", 0, 0, seller, 1, 55, "a", "a", "a", "a", "a", 1, 1))) {
+            System.out.println("Invalid input. Please enter a unique title.");
+            title = inputManager.nextLine();
+        }
         System.out.println("Please enter the description of the product:");
         String description = inputManager.nextLine();
         float price = -1F;
@@ -92,7 +96,7 @@ public class SellerSignUp implements SignUpScreen {
                 System.out.println("Invalid input. Please enter a number.");
             }
         }
-        System.out.println("Please enter the base points of the product:");
+        System.out.println("Please enter the additional points of the product:");
         int basePoints = getUserInputAsInteger();
         System.out.println("Please enter the quantity of the product:");
         int quantity = getUserInputAsInteger();
@@ -161,8 +165,6 @@ public class SellerSignUp implements SignUpScreen {
                 model = inputManager.nextLine();
                 System.out.println("Please enter the subcategory of the desktop accessory:");
                 subCategory = inputManager.nextLine();
-                System.out.println("Please enter the release date of the desktop accessory:");
-                releaseDate = inputManager.nextLine();
                 product = new OfficeEquipment(title, description, price, basePoints, seller, quantity, brand, model, subCategory, sellDate);
                 break;
         }
