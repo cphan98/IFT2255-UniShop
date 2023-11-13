@@ -63,10 +63,16 @@ public abstract class Menu {
     protected int getUserInputAsInteger() {
         while (true) {
             try {
-                return Integer.parseInt(InputManager.getInstance().nextLine());
+                int returned = Integer.parseInt(InputManager.getInstance().nextLine());
+                if (returned < 0) {
+                    System.out.println("Invalid input. Please enter a positive number.");
+                } else {
+                    return returned;
+                }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");
             }
+
         }
     }
     protected static void line() {

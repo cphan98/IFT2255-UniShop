@@ -9,7 +9,6 @@ import products.*;
 import java.util.Objects;
 
 import static java.lang.Float.parseFloat;
-import static java.lang.Integer.parseInt;
 
 public class SellerMenu extends Menu {
     private Seller user;
@@ -377,13 +376,8 @@ public class SellerMenu extends Menu {
             product = user.findProductByTitle(title);
         }
         product.setBasePoints((int) Math.floor(product.getPrice()));
-        int additionalPoints = 0;
-        String additionalPointsText = "a";
-        while (!additionalPointsText.matches("\\d+")) {
-            System.out.println("Please enter the additional points of the product:");
-            additionalPointsText = InputManager.getInstance().nextLine();
-            additionalPoints = parseInt(additionalPointsText);
-        }
+        System.out.println("Please enter the additional points of the product:");
+        int additionalPoints = getUserInputAsInteger();
         if (additionalPoints > Math.floor(product.getPrice())*19) {
             additionalPoints = (int) Math.floor(product.getPrice())*19;
         }
@@ -396,13 +390,9 @@ public class SellerMenu extends Menu {
             String title = InputManager.getInstance().nextLine();
             product = user.findProductByTitle(title);
         }
-        int quantity = 0;
-        String quantityText = "a";
-        while (!quantityText.matches("\\d+")) {
-            System.out.println("Please enter the quantity of the product:");
-            quantityText = InputManager.getInstance().nextLine();
-            quantity = parseInt(quantityText);
-        }
+
+        System.out.println("Please enter the quantity of the product:");
+        int quantity = getUserInputAsInteger();
         if (quantity == 0) {
             database.removeProduct(product);
         }
@@ -432,24 +422,16 @@ public class SellerMenu extends Menu {
             priceText = inputManager.nextLine();
         }
         float price = parseFloat(priceText);
-        String bonusPointsText = "a";
-        while (!bonusPointsText.matches("\\d+")) {
-            System.out.println("Please enter the bonus points of the product:");
-            bonusPointsText = inputManager.nextLine();
-        }
-        int bonusPoints = parseInt(bonusPointsText);
+        System.out.println("Please enter the bonus points of the product:");
+        int bonusPoints = getUserInputAsInteger();
         if (bonusPoints < 0) {
             bonusPoints = 0;
         }
         if (Math.floor(price)*20 < Math.floor(price) + bonusPoints) {
             bonusPoints = (int) Math.floor(price)*19;
         }
-        String quantityText = "a";
-        while (!quantityText.matches("\\d+")) {
-            System.out.println("Please enter the quantity of the product:");
-            quantityText = inputManager.nextLine();
-        }
-        int quantity = parseInt(quantityText);
+        System.out.println("Please enter the quantity of the product:");
+        int quantity = getUserInputAsInteger();
         System.out.println("Please enter the sell date of the product:");
         String sellDate = inputManager.nextLine();
         Product product = null;
@@ -459,28 +441,16 @@ public class SellerMenu extends Menu {
                 String author = inputManager.nextLine();
                 System.out.println("Please enter the publisher of the book:");
                 String publisher = inputManager.nextLine();
-                String ISBNText = "a";
-                while (!ISBNText.matches("\\d+")) {
-                    System.out.println("Please enter the ISBN of the book:");
-                    ISBNText = inputManager.nextLine();
-                }
-                int ISBN = parseInt(ISBNText);
+                System.out.println("Please enter the ISBN of the book:");
+                int ISBN = getUserInputAsInteger();
                 System.out.println("Please enter the genre of the book:");
                 String genre = inputManager.nextLine();
                 System.out.println("Please enter the release date of the book:");
                 String releaseDate = inputManager.nextLine();
-                String editionText = "a";
-                while (!editionText.matches("\\d+")) {
-                    System.out.println("Please enter the edition of the book:");
-                    editionText = inputManager.nextLine();
-                }
-                int edition = parseInt(editionText);
-                String volumeText = "a";
-                while (!volumeText.matches("\\d+")) {
-                    System.out.println("Please enter the volume of the book:");
-                    volumeText = inputManager.nextLine();
-                }
-                int volume = parseInt(volumeText);
+                System.out.println("Please enter the edition of the book:");
+                int edition = getUserInputAsInteger();
+                System.out.println("Please enter the volume of the book:");
+                int volume = getUserInputAsInteger();
                 product = new Book(title, description, price, (int) Math.floor(price) + bonusPoints , user, quantity, ISBN, author, publisher, genre, releaseDate, sellDate, edition, volume);
                 break;
             case LEARNING_RESOURCES:
@@ -488,22 +458,14 @@ public class SellerMenu extends Menu {
                 author = inputManager.nextLine();
                 System.out.println("Please enter the organization of the learning resource:");
                 String organization = inputManager.nextLine();
-                ISBNText = "a";
-                while (!ISBNText.matches("\\d+")) {
-                    System.out.println("Please enter the ISBN of the learning resource:");
-                    ISBNText = inputManager.nextLine();
-                }
-                ISBN = parseInt(ISBNText);
+                System.out.println("Please enter the ISBN of the learning resource:");
+                ISBN = getUserInputAsInteger();
                 System.out.println("Please enter the release date of the learning resource:");
                 releaseDate = inputManager.nextLine();
                 System.out.println("Please enter the type of the learning resource:");
                 String type = inputManager.nextLine();
-                editionText = "a";
-                while (!editionText.matches("\\d+")) {
-                    System.out.println("Please enter the edition of the learning resource:");
-                    editionText = inputManager.nextLine();
-                }
-                edition = parseInt(editionText);
+                System.out.println("Please enter the edition of the learning resource:");
+                edition = getUserInputAsInteger();
                 product = new LearningResource(title, description, price, (int) Math.floor(price) + bonusPoints, user, quantity, ISBN, author, organization, releaseDate, sellDate, type, edition);
                 break;
             case STATIONERY:

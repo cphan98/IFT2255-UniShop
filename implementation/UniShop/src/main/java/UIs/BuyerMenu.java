@@ -15,8 +15,6 @@ import products.Product;
 import java.util.HashMap;
 import java.util.Objects;
 
-import static java.lang.Integer.parseInt;
-
 public class BuyerMenu extends Menu {
     private final Buyer user;
     private Product pointedProduct = null;
@@ -552,7 +550,7 @@ public class BuyerMenu extends Menu {
             System.out.println(user.wishListToString());
             System.out.println("0. Return to menu");
             System.out.println("Type the number of the product you want to add to the cart:");
-            int choice = parseInt(inputManager.nextLine());
+            int choice = getUserInputAsInteger();
             if (choice < 0 || choice > user.getWishList().size()) {
                 System.out.println("Invalid choice");
             }
@@ -591,7 +589,7 @@ public class BuyerMenu extends Menu {
             return;
         }
         System.out.println("How many of it do you want to remove?");
-        int quantity = parseInt(inputManager.nextLine());
+        int quantity = getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in cart");
             return;
@@ -604,7 +602,7 @@ public class BuyerMenu extends Menu {
     public void addProductToCart(Product product) {
         System.out.println("How many of it do you want?");
         InputManager inputManager = InputManager.getInstance();
-        int quantity = parseInt(inputManager.nextLine());
+        int quantity = getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in stock");
             return;
