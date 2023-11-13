@@ -7,6 +7,7 @@ import Users.User;
 import otherUtility.Category;
 import products.*;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ public class UniShop {
     }
 
     private static void makeFakeData() {
+        String[] prompts = {"terrible", "bad", "average", "good", "fantastic"};
         ArrayList<User> users = new ArrayList<>();
         putFakeUsers(users);
         database = new DataBase(users);
@@ -26,7 +28,12 @@ public class UniShop {
             Product product = putFakeProduct(seller);
             database.addProduct(product);
             product.setLikes(Math.round(new Random().nextFloat() * 1000));
-            product.addEvaluation(new Evaluation("This is a great product!", 4.3F, (Buyer) users.get(0)));
+            float randomRating;
+            for (int i=0; i<5; i++) {
+                randomRating = (float) Math.round(Math.random()*50)/10;
+                String comment = "This is a " + prompts[Math.max(0,Math.round(randomRating)-1)] + " " + product.getTitle().toLowerCase() + "!";
+                product.addEvaluation(new Evaluation(comment, randomRating, (Buyer) users.get(i)));
+            }
         });
     }
 

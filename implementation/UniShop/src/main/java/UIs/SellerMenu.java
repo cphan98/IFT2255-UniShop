@@ -392,8 +392,14 @@ public class SellerMenu extends Menu {
         String description = inputManager.nextLine();
         System.out.println("Please enter the price of the product:");
         float price = parseFloat(inputManager.nextLine());
-        System.out.println("Please enter the base points of the product:");
-        int basePoints = parseInt(inputManager.nextLine());
+        System.out.println("Please enter the additional points of the product:");
+        int bonusPoints = parseInt(inputManager.nextLine());
+        if (bonusPoints < 0) {
+            bonusPoints = 0;
+        }
+        if (Math.floor(price)*20 < Math.floor(price) + bonusPoints) {
+            bonusPoints = (int) Math.floor(price)*19;
+        }
         System.out.println("Please enter the quantity of the product:");
         int quantity = parseInt(inputManager.nextLine());
         System.out.println("Please enter the sell date of the product:");
@@ -415,7 +421,7 @@ public class SellerMenu extends Menu {
                 int edition = parseInt(inputManager.nextLine());
                 System.out.println("Please enter the volume of the book:");
                 int volume = parseInt(inputManager.nextLine());
-                product = new Book(title, description, price, basePoints, user, quantity, ISBN, author, publisher, genre, releaseDate, sellDate, edition, volume);
+                product = new Book(title, description, price, (int) Math.floor(price) + bonusPoints , user, quantity, ISBN, author, publisher, genre, releaseDate, sellDate, edition, volume);
                 break;
             case LEARNING_RESOURCES:
                 System.out.println("Please enter the author of the learning resource:");
@@ -430,7 +436,7 @@ public class SellerMenu extends Menu {
                 String type = inputManager.nextLine();
                 System.out.println("Please enter the edition of the learning resource:");
                 edition = parseInt(inputManager.nextLine());
-                product = new LearningResource(title, description, price, basePoints, user, quantity, ISBN, author, organization, releaseDate, sellDate, type, edition);
+                product = new LearningResource(title, description, price, (int) Math.floor(price) + bonusPoints, user, quantity, ISBN, author, organization, releaseDate, sellDate, type, edition);
                 break;
             case STATIONERY:
                 System.out.println("Please enter the brand of the stationery:");
@@ -441,7 +447,7 @@ public class SellerMenu extends Menu {
                 String subCategory = inputManager.nextLine();
                 System.out.println("Please enter the release date of the stationery:");
                 releaseDate = inputManager.nextLine();
-                product = new Stationery(title, description, price, basePoints, user, quantity, brand, model, subCategory, releaseDate, sellDate);
+                product = new Stationery(title, description, price, (int) Math.floor(price) + bonusPoints, user, quantity, brand, model, subCategory, releaseDate, sellDate);
                 break;
             case ELECTRONICS:
                 System.out.println("Please enter the brand of the electronics:");
@@ -452,7 +458,7 @@ public class SellerMenu extends Menu {
                 subCategory = inputManager.nextLine();
                 System.out.println("Please enter the release date of the electronics:");
                 releaseDate = inputManager.nextLine();
-                product = new Hardware(title, description, price, basePoints, user, quantity, brand, model, releaseDate, subCategory, sellDate);
+                product = new Hardware(title, description, price,(int) Math.floor(price) + bonusPoints , user, quantity, brand, model, releaseDate, subCategory, sellDate);
                 break;
             case DESKTOP_ACCESSORIES:
                 System.out.println("Please enter the brand of the desktop accessory:");
@@ -461,7 +467,7 @@ public class SellerMenu extends Menu {
                 model = inputManager.nextLine();
                 System.out.println("Please enter the subcategory of the desktop accessory:");
                 subCategory = inputManager.nextLine();
-                product = new OfficeEquipment(title, description, price, basePoints, user, quantity, brand, model, subCategory, sellDate);
+                product = new OfficeEquipment(title, description, price, (int) Math.floor(price) + bonusPoints, user, quantity, brand, model, subCategory, sellDate);
                 break;
         }
         if (database.verifyNewProduct(product)) {

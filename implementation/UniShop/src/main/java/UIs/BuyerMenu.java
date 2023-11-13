@@ -21,7 +21,6 @@ public class BuyerMenu extends Menu {
     private final Buyer user;
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
-    private Evaluation pointedEvaluation = null;
     private Catalog catalog;
 
     // MENU
@@ -336,7 +335,7 @@ public class BuyerMenu extends Menu {
         } else if (choice > pointedProduct.getEvaluations().size()) {
             System.out.println("Invalid selection. Please try again.");
         } else {
-            pointedEvaluation = pointedProduct.getEvaluations().get(choice - 1);
+            Evaluation pointedEvaluation = pointedProduct.getEvaluations().get(choice - 1);
             System.out.println(pointedEvaluation);
             if (user.getEvaluationsLiked().contains(pointedEvaluation)) {
                 System.out.println("1. Unlike this evaluation");
@@ -566,8 +565,11 @@ public class BuyerMenu extends Menu {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter a comment:");
         String comment = inputManager.nextLine();
-        System.out.println("Enter a rating between 0 and 5:");
-        float rating = Float.parseFloat(inputManager.nextLine());
+        float rating = -1F;
+        while (rating < 0 || rating > 5) {
+            System.out.println("Enter a rating between 0 and 5:");
+            rating = Float.parseFloat(inputManager.nextLine());
+        }
         product.addEvaluation(new Evaluation(comment, rating, user));
     }
 
