@@ -11,9 +11,9 @@ import java.util.Date;
 import java.util.Iterator;
 
 public class DataBase {
-    private ArrayList<User> users;
-    private ArrayList<Product> products = new ArrayList<>();
-    private ArrayList<Order> orders = new ArrayList<>();
+    private final ArrayList<User> users;
+    private final ArrayList<Product> products = new ArrayList<>();
+    private final ArrayList<Order> orders = new ArrayList<>();
 
     public DataBase(ArrayList<User> users) {
         this.users = users;

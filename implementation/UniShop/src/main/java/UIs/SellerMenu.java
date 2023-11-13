@@ -59,16 +59,6 @@ public class SellerMenu extends Menu {
         return true;
     }
 
-    private int getUserInputAsInteger() {
-        while (true) {
-            try {
-                return Integer.parseInt(InputManager.getInstance().nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
-            }
-        }
-    }
-
     // PROFILE
 
     public boolean displayProfile() {
@@ -112,7 +102,7 @@ public class SellerMenu extends Menu {
         int choice = getUserInputAsInteger();
         switch (choice) {
             case 1:
-                modifyPersonalInfos();
+                modifyPersonalInfo();
                 break;
             case 2:
                 modifyAddress();
@@ -129,7 +119,7 @@ public class SellerMenu extends Menu {
         }
     }
 
-    public void modifyPersonalInfos(){
+    public void modifyPersonalInfo(){
         System.out.println("Enter your new id:");
         String id = InputManager.getInstance().nextLine();
         System.out.println("Enter your email:");

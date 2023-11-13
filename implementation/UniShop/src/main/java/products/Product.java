@@ -109,16 +109,20 @@ public abstract class Product {
         return this.evaluations;
     }
     public void addEvaluation(Evaluation evaluation) {
+        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() + 1);
+        evaluation.getAuthor().getMetrics().updateAverageNoteGiven(evaluation.getRating());
         this.evaluations.add(evaluation);
+        this.seller.getMetrics().updateAverageNoteReceived(evaluation.getRating());
         updateOverallRating();
     }
     public int getLikes()
     {
        return this.likes;
     }
-
     public void setLikes(int likes) {
+        this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() - this.likes);
         this.likes = likes;
+        this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() + this.likes);
     }
 
     public String toString() {
@@ -145,8 +149,9 @@ public abstract class Product {
             return "No evaluations yet";
         }
         StringBuilder sb = new StringBuilder();
+        int i = 1;
         for (Evaluation evaluation : evaluations) {
-            sb.append(evaluation.toString()).append("\n");
+            sb.append(i).append(". ").append(evaluation.toString()).append("\n");
         }
         return sb.toString();
     }

@@ -11,7 +11,7 @@ public abstract class User {
     protected String phoneNumber;
     protected Address address;
     protected ArrayList<Buyer> followers;
-    protected Stack<Notification> notifications;
+    protected Queue<Notification> notifications;
     protected ArrayList<Order> orderHistory;
     protected Date startTime;
     protected boolean checked24H;
@@ -27,6 +27,8 @@ public abstract class User {
         this.orderHistory = new ArrayList<>();
         this.startTime = Calendar.getInstance().getTime();
         this.checked24H = false;
+        this.followers = new ArrayList<>();
+        this.notifications = new LinkedList<>();
     }
     public String ordersMadeToString() {
         StringBuilder sb = new StringBuilder();
@@ -77,12 +79,11 @@ public abstract class User {
     public Address getAddress() {
         return address;
     }
-
     public void setAddress(Address address) { this.address = address; }
-    public Stack<Notification> getNotifications() {
+    public Queue<Notification> getNotifications() {
         return notifications;
     }
-    public void setNotifications(Stack<Notification> notifications) {
+    public void setNotifications(Queue<Notification> notifications) {
         this.notifications = notifications;
     }
     public void addNotification(Notification notification) {
@@ -109,6 +110,19 @@ public abstract class User {
     }
     public void setChecked24H(boolean check24H){
         this.checked24H = check24H;
+    }
+    public String notificationsToString() {
+        if (notifications.isEmpty()) {
+            return "You have no notifications!";
+        }
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+        for (Notification notification : notifications) {
+            sb.append(i).append(". ").append(notification.toString());
+            sb.append("\n");
+            i++;
+        }
+        return sb.toString();
     }
 
     public String toString() {

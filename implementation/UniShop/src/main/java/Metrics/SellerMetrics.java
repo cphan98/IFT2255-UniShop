@@ -6,6 +6,7 @@ public class SellerMetrics implements Metrics {
     private float revenue;
     private int productsSold;
     private float averageNoteReceived;
+    private int likes;
     protected ArrayList<Float> notesReceived;
     public SellerMetrics() {
         revenue = 0;
@@ -32,7 +33,9 @@ public class SellerMetrics implements Metrics {
             sum += n;
         }
         averageNoteReceived = sum / notesReceived.size();
-
+    }
+    public void updateLikes(int likes) {
+        this.likes = likes;
     }
     public float getRevenue() {
         return revenue;
@@ -43,11 +46,15 @@ public class SellerMetrics implements Metrics {
     public float getAverageNoteReceived() {
         return averageNoteReceived;
     }
+    public int getLikes() {
+        return likes;
+    }
 
     public String toString() {
         return "Since inception," + "\n" +
             "Income: " + revenue + "$\n" +
             "Products sold: " + productsSold + "\n" +
-            "Average note received: " + averageNoteReceived + "\n";
+            "Average note received: " + averageNoteReceived + "\n" +
+            "Total of likes received on products: " + likes + "\n";
     }
 }

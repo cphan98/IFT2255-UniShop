@@ -300,7 +300,12 @@ public class Catalog
                 break;
         }
     }
-
+    public void filterSellersByFollowing(Buyer user) {
+        System.out.println("Sellers you are following:");
+        for (Seller seller : user.getSellersFollowed()) {
+            System.out.println("\t" + seller.getId() + ": " + seller.getCategory());
+        }
+    }
     public void orderSellers(boolean ascending, String filter) {
         switch (filter) {
             case "likes":

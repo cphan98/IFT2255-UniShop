@@ -58,8 +58,8 @@ public class Seller extends User {
     public int getLikes() {
         return likes;
     }
-    public void addLike() {
-        likes++;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
 

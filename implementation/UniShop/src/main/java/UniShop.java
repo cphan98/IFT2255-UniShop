@@ -26,7 +26,7 @@ public class UniShop {
             Product product = putFakeProduct(seller);
             database.addProduct(product);
             product.setLikes(Math.round(new Random().nextFloat() * 1000));
-
+            product.addEvaluation(new Evaluation("This is a great product!", 4.3F, (Buyer) users.get(0)));
         });
     }
 
@@ -42,8 +42,11 @@ public class UniShop {
 
     private static void putFakeUsers(ArrayList<User> users) {
         users.add(new Buyer("Nathan","Razaf","Asp3rity", "J2s3jAsd", "abc@def", "2003", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
-        users.add(new Seller("Trinh", "1234", "def@abc", "2004", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.ELECTRONICS));
         users.add(new Buyer("Cynthia","Phan","cphan98", "1234", "ghi@jkl", "2005", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
+        users.add(new Buyer("Lucas","Ranaivo","sacul", "1234", "luc@g.com", "2005", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
+        users.add(new Buyer("Nathan","Rasami","monpote20", "1234", "nat@g.com", "2005", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
+        users.add(new Buyer("Aaron","Leong","zhuyi", "1234", "zhuyi@g.com", "2005", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1")));
+        users.add(new Seller("Trinh", "1234", "def@abc", "2004", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.ELECTRONICS));
         users.add(new Seller("Laura", "1234", "jkl@ghi", "2006", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.BOOKS));
         users.add(new Seller("mno", "1234", "mno@pqr", "2007", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.DESKTOP_ACCESSORIES));
         users.add(new Seller("pqr", "1234", "pqr@mno", "2008", new Address("1111 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A1"), Category.LEARNING_RESOURCES));
