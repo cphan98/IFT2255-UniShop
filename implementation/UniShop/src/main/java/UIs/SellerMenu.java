@@ -377,16 +377,17 @@ public class SellerMenu extends Menu {
             product = user.findProductByTitle(title);
         }
         product.setBasePoints((int) Math.floor(product.getPrice()));
-        int additionalPoints = -1;
+        int additionalPoints = 0;
         String additionalPointsText = "a";
         while (!additionalPointsText.matches("\\d+")) {
             System.out.println("Please enter the additional points of the product:");
             additionalPointsText = InputManager.getInstance().nextLine();
             additionalPoints = parseInt(additionalPointsText);
-
+        }
+        if (additionalPoints > Math.floor(product.getPrice())*19) {
+            additionalPoints = (int) Math.floor(product.getPrice())*19;
         }
         product.setBasePoints(product.getBasePoints()+additionalPoints);
-
     }
     public void changeProductQty() {
         Product product = null;
@@ -396,9 +397,14 @@ public class SellerMenu extends Menu {
             product = user.findProductByTitle(title);
         }
         int quantity = 0;
-        while (quantity <= 0) {
-            System.out.println("Please enter the new quantity of the product:");
-            quantity = parseInt(InputManager.getInstance().nextLine());
+        String quantityText = "a";
+        while (!quantityText.matches("\\d+")) {
+            System.out.println("Please enter the quantity of the product:");
+            quantityText = InputManager.getInstance().nextLine();
+            quantity = parseInt(quantityText);
+        }
+        if (quantity == 0) {
+            database.removeProduct(product);
         }
         user.changeProductQuantity(product, quantity);
     }

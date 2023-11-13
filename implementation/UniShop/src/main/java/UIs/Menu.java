@@ -69,8 +69,6 @@ public abstract class Menu {
             }
         }
     }
-
-
     protected static void line() {
         System.out.println("--------------------------------------------------");
     }
