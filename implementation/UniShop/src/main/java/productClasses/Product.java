@@ -1,6 +1,7 @@
-package products;
+package productClasses;
 import Users.Seller;
-import otherUtility.Category;
+import BackEndUtility.Category;
+import productClasses.Usages.Evaluation;
 
 import java.util.ArrayList;
 import java.util.UUID;

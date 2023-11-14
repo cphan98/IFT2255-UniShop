@@ -1,11 +1,11 @@
-package LoginUtility;
+package BackEndUtility;
 
 import Users.Buyer;
-import Users.Notification;
+import UtilityObjects.Notification;
 import Users.Seller;
 import Users.User;
-import products.Order;
-import products.Product;
+import productClasses.Usages.Order;
+import productClasses.Product;
 
 import java.util.ArrayList;
 import java.util.Calendar;

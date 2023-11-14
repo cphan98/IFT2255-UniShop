@@ -1,6 +1,7 @@
 package UIs;
 
-import LoginUtility.DataBase;
+import BackEndUtility.DataBase;
+import BackEndUtility.InputManager;
 import Users.Buyer;
 import Users.User;
 

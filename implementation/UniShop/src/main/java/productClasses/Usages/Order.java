@@ -1,7 +1,11 @@
-package products;
+package productClasses.Usages;
 
 import Users.*;
-import otherUtility.OrderState;
+import UtilityObjects.Address;
+import UtilityObjects.CreditCard;
+import UtilityObjects.Notification;
+import BackEndUtility.OrderState;
+import productClasses.Product;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

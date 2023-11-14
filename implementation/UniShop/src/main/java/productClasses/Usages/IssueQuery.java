@@ -1,4 +1,6 @@
-package products;
+package productClasses.Usages;
+
+import productClasses.Product;
 
 public class IssueQuery {
     // ATTRIBUTES

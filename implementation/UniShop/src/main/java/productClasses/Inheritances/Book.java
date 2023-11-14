@@ -1,7 +1,8 @@
-package products;
+package productClasses.Inheritances;
 
 import Users.Seller;
-import otherUtility.Category;
+import BackEndUtility.Category;
+import productClasses.Product;
 
 public class Book extends Product {
     private int ISBN;

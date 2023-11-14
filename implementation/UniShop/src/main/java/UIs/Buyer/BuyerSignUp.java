@@ -1,9 +1,10 @@
-package UIs;
+package UIs.Buyer;
 
-import LoginUtility.DataBase;
-import Users.Address;
+import BackEndUtility.DataBase;
+import BackEndUtility.InputManager;
+import UIs.SignUpScreen;
+import UtilityObjects.Address;
 import Users.Buyer;
-import Users.User;
 
 import static java.lang.Integer.parseInt;
 

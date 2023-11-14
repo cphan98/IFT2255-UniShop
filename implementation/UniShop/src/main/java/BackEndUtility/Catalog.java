@@ -1,8 +1,7 @@
-package LoginUtility;
+package BackEndUtility;
 import Users.Buyer;
 import Users.Seller;
-import otherUtility.Category;
-import products.Product;
+import productClasses.Product;
 
 import java.util.*;
 import java.util.stream.Stream;

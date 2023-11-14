@@ -1,11 +1,13 @@
-package UIs;
+package UIs.Seller;
 
-import LoginUtility.DataBase;
-import Users.Address;
+import BackEndUtility.DataBase;
+import BackEndUtility.InputManager;
+import UIs.SignUpScreen;
+import UtilityObjects.Address;
 import Users.Seller;
-import Users.User;
-import otherUtility.Category;
-import products.*;
+import BackEndUtility.Category;
+import productClasses.*;
+import productClasses.Inheritances.*;
 
 import static java.lang.Float.parseFloat;
 

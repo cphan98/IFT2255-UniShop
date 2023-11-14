@@ -1,8 +1,9 @@
 package Users;
 
 import Metrics.SellerMetrics;
-import otherUtility.Category;
-import products.Product;
+import UtilityObjects.Address;
+import BackEndUtility.Category;
+import productClasses.Product;
 
 import java.util.ArrayList;
 

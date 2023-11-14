@@ -1,4 +1,4 @@
-package Users;
+package UtilityObjects;
 
 public class Address {
     // attributes

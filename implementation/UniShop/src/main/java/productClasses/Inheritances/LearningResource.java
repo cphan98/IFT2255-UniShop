@@ -1,9 +1,8 @@
-package products;
+package productClasses.Inheritances;
 
 import Users.Seller;
-import otherUtility.Category;
-
-import java.util.PropertyResourceBundle;
+import BackEndUtility.Category;
+import productClasses.Product;
 
 public class LearningResource extends Product {
     private int ISBN;

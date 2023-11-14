@@ -1,8 +1,12 @@
 package Users;
 
 import Metrics.BuyerMetrics;
-import products.Evaluation;
-import products.Product;
+import UtilityObjects.Address;
+import productClasses.Usages.Cart;
+import UtilityObjects.CreditCard;
+import UtilityObjects.Notification;
+import productClasses.Usages.Evaluation;
+import productClasses.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;

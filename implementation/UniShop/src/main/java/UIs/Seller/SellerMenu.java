@@ -1,10 +1,14 @@
-package UIs;
+package UIs.Seller;
 
-import LoginUtility.DataBase;
-import Users.Address;
+import BackEndUtility.DataBase;
+import BackEndUtility.InputManager;
+import UIs.Menu;
+import UtilityObjects.Address;
 import Users.Seller;
-import otherUtility.OrderState;
-import products.*;
+import productClasses.Usages.Order;
+import BackEndUtility.OrderState;
+import productClasses.*;
+import productClasses.Inheritances.*;
 
 import java.util.Objects;
 

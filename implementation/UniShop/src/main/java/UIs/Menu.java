@@ -1,9 +1,10 @@
 package UIs;
 
-import LoginUtility.DataBase;
-import Users.Notification;
+import BackEndUtility.DataBase;
+import BackEndUtility.InputManager;
+import UtilityObjects.Notification;
 import Users.User;
-import products.Order;
+import productClasses.Usages.Order;
 
 public abstract class Menu {
     protected User user;

@@ -1,13 +1,18 @@
-package UIs;
+package UIs.Buyer;
 
-import LoginUtility.Catalog;
-import LoginUtility.DataBase;
+import BackEndUtility.Catalog;
+import BackEndUtility.DataBase;
+import BackEndUtility.InputManager;
+import UIs.Menu;
 import Users.*;
-import otherUtility.Category;
-import otherUtility.OrderState;
-import products.Evaluation;
-import products.Order;
-import products.Product;
+import UtilityObjects.Address;
+import UtilityObjects.CreditCard;
+import UtilityObjects.Notification;
+import BackEndUtility.Category;
+import BackEndUtility.OrderState;
+import productClasses.Usages.Evaluation;
+import productClasses.Usages.Order;
+import productClasses.Product;
 
 import java.util.HashMap;
 import java.util.Objects;

@@ -1,6 +1,6 @@
-package Users;
+package productClasses.Usages;
 
-import products.Product;
+import productClasses.Product;
 import java.util.HashMap;
 import java.util.Map;
 

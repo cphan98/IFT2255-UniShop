@@ -1,4 +1,4 @@
-package products;
+package productClasses.Usages;
 
 import Users.Buyer;
 
