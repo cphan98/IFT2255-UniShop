@@ -9,10 +9,12 @@ import java.util.stream.Stream;
 
 public class Catalog
 {
-    private HashSet<Product> books_catalog, learningRes_catalog, stationery_catalog,
-            electronics_catalog, desktopAcc_catalog;
-    private HashSet<Seller> sellers_list;
-    private HashSet<Buyer> buyers_list;
+    private final HashSet<Product> books_catalog;
+    private final HashSet<Product> learningRes_catalog;
+    private final HashSet<Product> stationery_catalog;
+    private final HashSet<Product> electronics_catalog;
+    private final HashSet<Product> desktopAcc_catalog;
+    private final HashSet<Seller> sellers_list;
 
     public Catalog(ArrayList<Seller> sellers) {
         this.books_catalog = new HashSet<>();
@@ -29,7 +31,6 @@ public class Catalog
             }
         }
     }
-
     public HashSet<Product> getCatalogType(Category category)
     {
         return switch (category) {
@@ -40,21 +41,14 @@ public class Catalog
             case DESKTOP_ACCESSORIES -> desktopAcc_catalog;
         };
     }
-
     public void addProduct(Category category, Product product)
     {
         getCatalogType(category).add(product);
     }
-
-    public void removeProduct(Category category, Product product)
-    {
-        getCatalogType(category).remove(product);
-    }
-
     public void displayCatalog()
     {
         System.out.println("Books: \n" + categoryCatalogToString(books_catalog) + "\n");
-        System.out.println("Learning Ressources: \n" + categoryCatalogToString(learningRes_catalog) + "\n");
+        System.out.println("Learning Resources: \n" + categoryCatalogToString(learningRes_catalog) + "\n");
         System.out.println("Stationery: \n" + categoryCatalogToString(stationery_catalog) + "\n");
         System.out.println("Electronics: \n" + categoryCatalogToString(electronics_catalog) + "\n");
         System.out.println("Desktop Accessories: \n" + categoryCatalogToString(desktopAcc_catalog) + "\n");
@@ -67,28 +61,6 @@ public class Catalog
         System.out.println("List of Sellers: \n" + sellersToString() + "\n");
     }
 
-    public Product searchProduct(Product product)
-    {
-        HashSet<Product> catalog = getCatalogType(product.getCategory());
-        if (catalog.contains(product)) {
-            for (Product obj : catalog) {
-                if (obj.equals(product))
-                    return product;
-            }
-        }
-        return null;
-    }
-    public Seller searchSeller(Seller seller)
-    {
-        HashSet<Seller> listOfSellers = getSellers_list();
-        if (listOfSellers.contains(seller)) {
-            for (Seller person : listOfSellers) {
-                if (person.equals(seller))
-                    return seller;
-            }
-        }
-        return null;
-    }
 
     public Product searchProductByName(String title) {
         for (Product product : books_catalog) {
@@ -121,13 +93,6 @@ public class Catalog
         }
         return null;
     }
-    public HashSet<Seller> getSellers_list() {
-        return sellers_list;
-    }
-    public void addSellers(Seller seller)
-    {
-        sellers_list.add(seller);
-    }
     public String categoryCatalogToString(HashSet<Product> catalog) {
         StringBuilder result = new StringBuilder();
         for (Product product : catalog) {
@@ -135,15 +100,13 @@ public class Catalog
         }
         return result.toString();
     }
-
     public String sellersToString() {
         StringBuilder result = new StringBuilder();
         for (Seller seller : sellers_list) {
-            result.append("\t").append(seller.getId()).append(": ").append(seller.getCategory()).append("\n");
+            result.append("\t").append(seller.getId()).append(": ").append(seller.getCategory()).append("\t\t").append("Likes: ").append(seller.getMetrics().getLikes()).append("\n");
         }
         return result.toString();
     }
-
     public void filterProductsByCategory(Category category) {
         HashSet<Product> catalog = getCatalogType(category);
         System.out.println("Products in category " + category + ":");
@@ -245,14 +208,14 @@ public class Catalog
         System.out.println("Sellers in category " + category + ":");
         for (Seller seller : sellers_list) {
             if (seller.getCategory().equals(category)) {
-                System.out.println("\t" + seller.getId());
+                System.out.println("\t" + seller.getId() + ": " + seller.getCategory() + "\t\tLikes: " + seller.getMetrics().getLikes() + "\n");
             }
         }
     }
     public void orderSellersByLikes(boolean ascending) {
         HashMap<Seller, Integer> sellerLikes = new HashMap<>();
         for (Seller seller : sellers_list) {
-            sellerLikes.put(seller, seller.getLikes());
+            sellerLikes.put(seller, seller.getMetrics().getLikes());
         }
 
         Stream<Map.Entry<Seller, Integer>> sortedStream = sellerLikes.entrySet().stream()
@@ -264,7 +227,7 @@ public class Catalog
 
         System.out.println("Sellers ordered by likes:");
         sortedStream.forEach(entry ->
-                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory() + "\n")
+                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory() + "\t\tLikes: " + entry.getKey().getMetrics().getLikes() + "\n")
         );
     }
     public void orderSellersByAverageNote(boolean ascending) {
@@ -282,11 +245,9 @@ public class Catalog
 
         System.out.println("Sellers ordered by average note:");
         sortedStream.forEach(entry ->
-                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory() + "\n")
+                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory() + "\t\tAverage note: " + entry.getKey().getMetrics().getAverageNoteReceived() + "\n")
         );
     }
-
-
     public void orderProducts(boolean ascending, String filter) {
         switch (filter) {
             case "price":
@@ -303,7 +264,7 @@ public class Catalog
     public void filterSellersByFollowing(Buyer user) {
         System.out.println("Sellers you are following:");
         for (Seller seller : user.getSellersFollowed()) {
-            System.out.println("\t" + seller.getId() + ": " + seller.getCategory());
+            System.out.println("\t" + seller.getId() + ": " + seller.getCategory() + "\t\tLikes: " + seller.getMetrics().getLikes() + "\n");
         }
     }
     public void orderSellers(boolean ascending, String filter) {
@@ -316,5 +277,4 @@ public class Catalog
                 break;
         }
     }
-
 }

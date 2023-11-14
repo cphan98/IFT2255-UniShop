@@ -11,7 +11,7 @@ import java.util.Objects;
 import static java.lang.Float.parseFloat;
 
 public class SellerMenu extends Menu {
-    private Seller user;
+    private final Seller user;
 
     // MENU
 
@@ -23,7 +23,6 @@ public class SellerMenu extends Menu {
 
     public boolean displayMenu() {
         boolean continueLoop = true;
-        InputManager inputManager = InputManager.getInstance();
 
         while (continueLoop) {
             line();
@@ -36,22 +35,22 @@ public class SellerMenu extends Menu {
             System.out.println("2. Display Order History");
             System.out.println("3. Display Inventory");
             System.out.println("4. Log out");
-            String choice = inputManager.nextLine();
+            int choice = getUserInputAsInteger();
 
             switch (choice) {
-                case "1":
+                case 1:
                     continueLoop = displayProfile();
                     break;
-                case "2":
+                case 2:
                     continueLoop = displayOrderHistory();
                     break;
-                case "3":
+                case 3:
                     continueLoop = displayInventory();
                     break;
-                case "4":
+                case 4:
                     return false;  // Add this to handle log out
                 default:
-                    System.out.println("RICKROLL");
+                    System.out.println("Invalid selection. Please try again.");
                     break;
             }
         }
@@ -64,7 +63,6 @@ public class SellerMenu extends Menu {
         boolean continueLoop = true;
         while (continueLoop) {
             System.out.println("PROFILE");
-            InputManager inputManager = InputManager.getInstance();
             System.out.println("Name: " + user.getId());
             System.out.println("Email: " + user.getEmail());
             System.out.println();
@@ -74,19 +72,19 @@ public class SellerMenu extends Menu {
             System.out.println("1. Modify profile");
             System.out.println("2. Return to menu");
             System.out.println("3. Delete account");
-            String choice = inputManager.nextLine();
+            int choice = getUserInputAsInteger();
 
             switch (choice) {
-                case "1":
+                case 1:
                     System.out.println("Modifying profile...");
                     modifyProfile();
                     break;
-                case "2":
+                case 2:
                     System.out.println("Returning to menu...");
                     continueLoop = false;
                     break;
                 default:
-                    System.out.println("RICKROLL");
+                    System.out.println("Invalid selection. Please try again.");
                     return false;  // continue the loop
             }
         }
@@ -94,7 +92,7 @@ public class SellerMenu extends Menu {
     }
 
     public void modifyProfile() {
-        System.out.println("1. Modify personal infos");
+        System.out.println("1. Modify personal info");
         System.out.println("2. Modify address");
         System.out.println("3. Modify password");
         System.out.println("4. Return to menu");
@@ -133,13 +131,13 @@ public class SellerMenu extends Menu {
         }
         if (!database.validateNewUser(id, email)) {
             System.out.println("This id or email is already taken");
-            System.out.println("Your other infos are changed but your id and email were not changed");
+            System.out.println("Your other info are changed but your id and email were not changed");
             return;
         }
         user.setId(id);
         user.setEmail(email);
         user.setPhoneNumber(phoneNumber);
-        System.out.println("Personal infos modified");
+        System.out.println("Personal info modified");
     }
 
     public void modifyAddress(){
@@ -328,7 +326,6 @@ public class SellerMenu extends Menu {
 
     public boolean displayInventory() {
         boolean continueLoop = true;
-        InputManager inputManager = InputManager.getInstance();
 
         while (continueLoop) {
             System.out.println("INVENTORY");

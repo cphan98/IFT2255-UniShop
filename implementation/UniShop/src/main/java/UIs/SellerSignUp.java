@@ -183,7 +183,6 @@ public class SellerSignUp implements SignUpScreen {
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a number.");
             }
-
         }
     }
 }

@@ -33,19 +33,15 @@ public class IssueQuery {
     public void setReplacementProduct(Product replacementProduct) { this.replacementProduct = replacementProduct; }
     public void setReplacementTrackingNum(int replacementTrackingNum) { this.replacementTrackingNum = replacementTrackingNum; }
     public void setReplacementReceived(Boolean replacementReceived) { this.replacementReceived = replacementReceived; }
-
     // CONSTRUCTOR
-
     int idCount = 0;
     private String makeId() {
         int zeros = 3 - Integer.toString(idCount).length();
         return("issue" + ("0".repeat(zeros)) + idCount);
     }
-
     public IssueQuery(String issueDescription) {
         this.id = makeId();
         this.issueDescription = issueDescription;
     }
-
     // OPERATIONS
 }

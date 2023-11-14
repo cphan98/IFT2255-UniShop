@@ -71,7 +71,7 @@ public class HomeScreen {
         String[] credentials = loginScreen.askCredentials();
         User user = loginScreen.loginUser(credentials[0], credentials[1], database);
         if (user == null) {
-            System.out.println("User not found");
+            System.out.println("The username or password is incorrect.");
             return false;
         }
         Menu menu = user instanceof Buyer ? new BuyerMenu((Buyer) user, database) : new SellerMenu((Seller) user, database);
