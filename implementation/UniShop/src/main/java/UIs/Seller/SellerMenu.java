@@ -38,7 +38,8 @@ public class SellerMenu extends Menu {
             System.out.println("1. Display Profile");
             System.out.println("2. Display Order History");
             System.out.println("3. Display Inventory");
-            System.out.println("4. Log out");
+            System.out.println("4. Display Notifications");
+            System.out.println("5. Log out");
             int choice = getUserInputAsInteger();
 
             switch (choice) {
@@ -52,6 +53,9 @@ public class SellerMenu extends Menu {
                     continueLoop = displayInventory();
                     break;
                 case 4:
+                    continueLoop = displayNotifications();
+                    break;
+                case 5:
                     return false;  // Add this to handle log out
                 default:
                     System.out.println("Invalid selection. Please try again.");
@@ -316,14 +320,6 @@ public class SellerMenu extends Menu {
         } else {
             System.out.println("Replacement received: yes");
         }
-    }
-
-    // NOTIFICATIONS
-
-    public boolean displayNotifications() {
-        System.out.println("NOTIFICATIONS");
-        // TODO
-        return true;
     }
 
     // INVENTORY

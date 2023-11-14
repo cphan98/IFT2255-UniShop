@@ -61,11 +61,15 @@ public class Buyer extends User {
             }
             sellerProducts.put(product, cartProducts.get(product));
             splitCart.put(seller, sellerProducts);
-            for ( Seller sellers : splitCart.keySet())
+
+        }
+        for ( Seller seller : splitCart.keySet())
+        {
+            for (Product product : splitCart.get(seller).keySet())
             {
                 String title = "New order!";
                 String summary = this.getId() + " just bought your " + product.getTitle() + "!";
-                sellers.addNotification(new Notification(title, summary));
+                seller.addNotification(new Notification(title, summary));
             }
         }
         return splitCart;
@@ -169,7 +173,7 @@ public class Buyer extends User {
             buyer.getFollowers().add(this);
             this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
             String title = "You have a new follower!";
-            String summary = getId() + "is now following you !";
+            String summary = getId() + " is now following you !";
             buyer.addNotification(new Notification(title, summary));
             System.out.println("You are now following " + buyer.getId() + "!");
         } else {

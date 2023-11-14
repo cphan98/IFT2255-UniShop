@@ -30,6 +30,6 @@ public class Notification {
         this.read = false;
     }
     public String toString() {
-        return "Title: " + title + "\nSummary: " + summary + "\nDate: " + date + (read ? "\t\t(new)" : "");
+        return "Title: " + title + "\nSummary: " + summary + "\nDate: " + date + (!read ? "\t\t(new)" : "");
     }
 }
