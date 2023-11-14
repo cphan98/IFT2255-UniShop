@@ -12,13 +12,8 @@ public class SellerMetrics implements Metrics {
         revenue = 0;
         productsSold = 0;
         averageNoteReceived = 0;
+        notesReceived = new ArrayList<>();
     }
-    public SellerMetrics(float revenue, int productsSold, float averageNoteReceived) {
-        this.revenue = revenue;
-        this.productsSold = productsSold;
-        this.averageNoteReceived = averageNoteReceived;
-    }
-
     public void updateRevenue(float revenue) {
         this.revenue = revenue;
     }
@@ -26,13 +21,12 @@ public class SellerMetrics implements Metrics {
         this.productsSold = productsSold;
     }
     public void updateAverageNoteReceived(float note) {
-        notesReceived = new ArrayList<>();
         notesReceived.add(note);
         float sum = 0;
         for (float n : notesReceived) {
             sum += n;
         }
-        averageNoteReceived = sum / notesReceived.size();
+        averageNoteReceived = Math.round((sum / notesReceived.size()) * 10) / 10f;
     }
     public void updateLikes(int likes) {
         this.likes = likes;

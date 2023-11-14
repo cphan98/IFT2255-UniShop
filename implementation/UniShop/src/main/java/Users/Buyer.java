@@ -43,6 +43,10 @@ public class Buyer extends User {
     public HashMap<Seller, HashMap<Product, Integer>> splitCartBeforeOrder() {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = new HashMap<>();
         HashMap<Product, Integer> cartProducts = cart.getProducts();
+        for (Product product : cart.getProducts().keySet()) {
+            addPoints(product.getBasePoints()*cart.getProducts().get(product));
+            System.out.println("With this purchase, you won " + product.getBasePoints()*cart.getProducts().get(product) + " buying points!\n");
+        }
         for (Product product : cartProducts.keySet()) {
             Seller seller = product.getSeller();
             HashMap<Product, Integer> sellerProducts;
@@ -121,14 +125,14 @@ public class Buyer extends User {
     public void toggleSellerToFollowing(Seller seller) {
         if (!sellersFollowed.contains(seller)) {
             sellersFollowed.add(seller);
-            seller.setLikes(seller.getLikes() + 1);
+            seller.getMetrics().updateLikes(seller.getMetrics().getLikes() + 1);
             this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
             seller.addFollower(this);   //seller has a new follower
             addSellersFollowers(seller);        // keep track of buyer's following
             System.out.println("You are now following " + seller.getId() + "!");
         } else {
             sellersFollowed.remove(seller);
-            seller.setLikes(seller.getLikes() - 1);
+            seller.getMetrics().updateLikes(seller.getMetrics().getLikes() - 1);
             this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
             seller.removeFollower(this);
             System.out.println("You are no longer following " + seller.getId() + "!");
@@ -172,6 +176,9 @@ public class Buyer extends User {
         }
     }
     public String wishListToString() {
+        if (wishList.isEmpty()) {
+            return "Your wish list is empty!";
+        }
         StringBuilder sb = new StringBuilder();
         int i = 1;
         for (Product product : wishList) {

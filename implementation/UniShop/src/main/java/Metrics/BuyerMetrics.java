@@ -1,6 +1,5 @@
 package Metrics;
 
-import products.Product;
 import java.util.ArrayList;
 
 public class BuyerMetrics implements Metrics {
@@ -9,10 +8,9 @@ public class BuyerMetrics implements Metrics {
     private int likesReceived;
     private int likesGiven;
     private int evaluationsMade;
-    private ArrayList<Float> notesGiven;
+    private final ArrayList<Float> notesGiven;
     private float averageNoteGiven;
-    private int points;
-
+    private int expPoints;
     public BuyerMetrics() {
         ordersMade = 0;
         productsBought = 0;
@@ -20,21 +18,9 @@ public class BuyerMetrics implements Metrics {
         likesGiven = 0;
         evaluationsMade = 0;
         averageNoteGiven = 0;
-        points = 0;
+        expPoints = 0;
         notesGiven = new ArrayList<>();
     }
-
-    public BuyerMetrics(int ordersMade, int productsBought, int likesReceived, int likesGiven, int evaluationsMade, float averageNoteGiven, ArrayList<Float> notesGiven) {
-        this.ordersMade = ordersMade;
-        this.productsBought = productsBought;
-        this.likesReceived = likesReceived;
-        this.likesGiven = likesGiven;
-        this.evaluationsMade = evaluationsMade;
-        this.averageNoteGiven = averageNoteGiven;
-        this.notesGiven = notesGiven;
-        this.points = 0;
-    }
-
     public void setOrdersMade(int ordersMade) {
         this.ordersMade = ordersMade;
     }
@@ -71,13 +57,6 @@ public class BuyerMetrics implements Metrics {
     public float getAverageNoteGiven() {
         return averageNoteGiven;
     }
-    public int getPoints() {
-        return points;
-    }
-    public void addPoints(int points) {
-        this.points += points;
-    }
-
     public void updateAverageNoteGiven(float note) {
         notesGiven.add(note);
         float sum = 0;
@@ -86,7 +65,6 @@ public class BuyerMetrics implements Metrics {
         }
         averageNoteGiven = sum / notesGiven.size();
     }
-
     public String toString() {
         return
                 "Since inception," + "\n" +
@@ -95,7 +73,7 @@ public class BuyerMetrics implements Metrics {
             "Likes received on their evaluations: " + likesReceived + "\n" +
             "Likes given: " + likesGiven + "\n" +
             "Evaluations made: " + evaluationsMade + "\n" +
-            "Average note given: " + averageNoteGiven + "\n" + "\n" +
-            "Points: " + points + "\n";
+            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" + "\n" +
+            "Experience: " + expPoints + " points\n";
     }
 }

@@ -7,11 +7,13 @@ import products.Product;
 import java.util.ArrayList;
 
 public class Seller extends User {
+
     private Category category;
     private ArrayList<Product> products;
     private ArrayList<Buyer> followers;
     private SellerMetrics metrics;
     private int likes;
+
     public Seller(String id, String password, String email, String phoneNumber, Address address, Category category) {
         super(id, password, email, phoneNumber, address);
         this.metrics = new SellerMetrics();
@@ -19,6 +21,7 @@ public class Seller extends User {
         this.products = new ArrayList<>();
         this.followers = new ArrayList<>();
         this.likes = 0;
+
     }
 
     public void changeProductQuantity(Product product, int quantity) {
@@ -51,12 +54,10 @@ public class Seller extends User {
     public SellerMetrics getMetrics() {
         return metrics;
     }
-    public void setMetrics(SellerMetrics metrics) {
-        this.metrics = metrics;
-    }
     public ArrayList<Product> getProducts() {
         return products;
     }
+
     public int getLikes() {
         return likes;
     }
@@ -64,12 +65,11 @@ public class Seller extends User {
         this.likes = likes;
     }
 
-
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Seller: ").append(getId()).append("\n");
         sb.append("Category: ").append(getCategory()).append("\n");
-        sb.append("Likes: ").append(getLikes()).append("\n");
+        sb.append("Likes: ").append(metrics.getLikes()).append("\n");
         sb.append("Products: ").append("\n");
         for (Product product : products) {
             sb.append("\t").append(product.smallToString()).append("\n");

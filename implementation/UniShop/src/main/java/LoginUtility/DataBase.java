@@ -35,13 +35,32 @@ public class DataBase {
     public ArrayList<Product> getProducts() {
         return products;
     }
-    public ArrayList<Order> getOrders() {
-        return orders;
-    }
     public void addOrder(Order order) {
         orders.add(order);
         assignOrders();
         updateOrderIDCounts();
+
+        order.getBuyer().getMetrics().setOrdersMade(order.getBuyer().getOrderHistory().size());
+        int buyerProductsBought = 0;
+        for (Order o : order.getBuyer().getOrderHistory()) {
+            for (Product p : o.getProducts().keySet()) {
+                buyerProductsBought += o.getProducts().get(p);
+            }
+        }
+        order.getBuyer().getMetrics().setProductsBought(buyerProductsBought);
+
+        Seller seller = order.getProducts().keySet().iterator().next().getSeller();
+        int sellerProductsSold = 0;
+        int sellerRevenue = 0;
+        for (Order o: seller.getOrderHistory()) {
+            for (Product p : o.getProducts().keySet()) {
+                sellerProductsSold += o.getProducts().get(p);
+                sellerRevenue += (int) (p.getPrice() * o.getProducts().get(p));
+            }
+        }
+        seller.getMetrics().updateProductsSold(sellerProductsSold);
+        seller.getMetrics().updateRevenue(sellerRevenue);
+
     }
     public void addProduct(Product product) {
         products.add(product);
@@ -60,9 +79,6 @@ public class DataBase {
         Seller seller = getSeller(product.getSeller());
         seller.getProducts().remove(product);
     }
-    public void removeOrder(Order order) {
-        orders.remove(order);
-    }
     public Seller getSeller(Seller seller) {
         for (User person : users) {
             if (person.equals(seller))
@@ -79,12 +95,13 @@ public class DataBase {
         }
         return sellers;
     }
-    public boolean addUser(User user) {
+    public void addUser(User user) {
         if ( validateNewUser(user.getId(), user.getEmail()) ) {
             users.add(user);
-            return true;
+            System.out.println("User added successfully");
+            return;
         }
-        return false;
+        System.out.println("User already exists");
     }
     public void removeUser(User user) {
         users.remove(user);
@@ -109,15 +126,14 @@ public class DataBase {
     }
 
     public void assignOrders() {
-        getUsers().forEach(user -> {
-            user.setOrderHistory(new ArrayList<>());
-        });
+        getUsers().forEach(user -> user.setOrderHistory(new ArrayList<>()));
         for (Order order : orders) {
             order.getBuyer().addOrder(order);
             Iterator<Product> it = order.getProducts().keySet().iterator();
             Product thisOne = it.next();
             thisOne.getSeller().addOrder(order);
         }
+        System.out.println(orders.size());
     }
     public boolean verifyNewProduct(Product product) {
         boolean valid = true;

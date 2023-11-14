@@ -71,7 +71,7 @@ public class HomeScreen {
         String[] credentials = loginScreen.askCredentials();
         User user = loginScreen.loginUser(credentials[0], credentials[1], database);
         if (user == null) {
-            System.out.println("User not found");
+            System.out.println("The username or password is incorrect.");
             return false;
         }
         Menu menu = user instanceof Buyer ? new BuyerMenu((Buyer) user, database) : new SellerMenu((Seller) user, database);
@@ -79,14 +79,9 @@ public class HomeScreen {
         return !continueLoop; // indicates successful login
     }
     public boolean redirectToSignupScreen(boolean isSeller) {
-        SignUpScreen signUpScreen = isSeller ? new SellerSignUp(database) : new BuyerSignUp();
-        User user = signUpScreen.getCredentials();
-        if (database.addUser(user)) {
-            System.out.println("User added successfully");
-            System.out.println(database.toString());
-        } else {
-            System.out.println("User not added! Please try again.");
-        }
+        SignUpScreen signUpScreen = isSeller ? new SellerSignUp(database) : new BuyerSignUp(database);
+        signUpScreen.getCredentialsAndSignUp();
+
         return false; // Continue loop anyway
     }
 

@@ -97,10 +97,6 @@ public abstract class User {
     }
     public void addOrder(Order order) {
         orderHistory.add(order);
-        order.getBuyer().getMetrics().setOrdersMade(orderHistory.size());
-
-        order.getBuyer().getMetrics().setProductsBought(order.getProducts().size());
-
     }
     public Date getStartTime(){
         return startTime;

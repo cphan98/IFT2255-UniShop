@@ -8,15 +8,14 @@ import otherUtility.Category;
 import products.*;
 
 import static java.lang.Float.parseFloat;
-import static java.lang.Integer.parseInt;
 
 public class SellerSignUp implements SignUpScreen {
-    private DataBase database;
+    private final DataBase database;
 
     public SellerSignUp(DataBase database) {
         this.database = database;
     }
-    public User getCredentials() {
+    public void getCredentialsAndSignUp() {
         System.out.println("Welcome, new seller!");
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter your username:");
@@ -73,23 +72,34 @@ public class SellerSignUp implements SignUpScreen {
             }
         }
         Seller seller = new Seller(username, password, email, phoneNumber, new Address(address, country, province, city, postalCode), category);
+        database.addUser(seller);
         addProductToSeller(seller);
         System.out.println("WARNING: You must connect within the next 24 hours or else the signup will be cancelled");
-        return seller;
     }
 
     private void addProductToSeller(Seller seller) {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
         String title = inputManager.nextLine();
+        while (!database.verifyNewProduct(new Book(title, "", 0, 0, seller, 1, 55, "a", "a", "a", "a", "a", 1, 1))) {
+            System.out.println("Invalid input. Please enter a unique title.");
+            title = inputManager.nextLine();
+        }
         System.out.println("Please enter the description of the product:");
         String description = inputManager.nextLine();
-        System.out.println("Please enter the price of the product:");
-        float price = parseFloat(inputManager.nextLine());
-        System.out.println("Please enter the base points of the product:");
-        int basePoints = parseInt(inputManager.nextLine());
+        float price = -1F;
+        while (price < 0) {
+            System.out.println("Please enter the price of the product:");
+            try {
+                price = parseFloat(inputManager.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+        System.out.println("Please enter the additional points of the product:");
+        int basePoints = getUserInputAsInteger();
         System.out.println("Please enter the quantity of the product:");
-        int quantity = parseInt(inputManager.nextLine());
+        int quantity = getUserInputAsInteger();
         System.out.println("Please enter the sell date of the product:");
         String sellDate = inputManager.nextLine();
         Product product = null;
@@ -100,15 +110,15 @@ public class SellerSignUp implements SignUpScreen {
                 System.out.println("Please enter the publisher of the book:");
                 String publisher = inputManager.nextLine();
                 System.out.println("Please enter the ISBN of the book:");
-                int ISBN = parseInt(inputManager.nextLine());
+                int ISBN = getUserInputAsInteger();
                 System.out.println("Please enter the genre of the book:");
                 String genre = inputManager.nextLine();
                 System.out.println("Please enter the release date of the book:");
                 String releaseDate = inputManager.nextLine();
                 System.out.println("Please enter the edition of the book:");
-                int edition = parseInt(inputManager.nextLine());
+                int edition = getUserInputAsInteger();
                 System.out.println("Please enter the volume of the book:");
-                int volume = parseInt(inputManager.nextLine());
+                int volume = getUserInputAsInteger();
                 product = new Book(title, description, price, basePoints, seller, quantity, ISBN, author, publisher, genre, releaseDate, sellDate, edition, volume);
                 break;
             case LEARNING_RESOURCES:
@@ -117,13 +127,13 @@ public class SellerSignUp implements SignUpScreen {
                 System.out.println("Please enter the organization of the learning resource:");
                 String organization = inputManager.nextLine();
                 System.out.println("Please enter the ISBN of the learning resource:");
-                ISBN = parseInt(inputManager.nextLine());
+                ISBN = getUserInputAsInteger();
                 System.out.println("Please enter the release date of the learning resource:");
                 releaseDate = inputManager.nextLine();
                 System.out.println("Please enter the type of the learning resource:");
                 String type = inputManager.nextLine();
                 System.out.println("Please enter the edition of the learning resource:");
-                edition = parseInt(inputManager.nextLine());
+                edition = getUserInputAsInteger();
                 product = new LearningResource(title, description, price, basePoints, seller, quantity, ISBN, author, organization, releaseDate, sellDate, type, edition);
                 break;
             case STATIONERY:
@@ -155,11 +165,24 @@ public class SellerSignUp implements SignUpScreen {
                 model = inputManager.nextLine();
                 System.out.println("Please enter the subcategory of the desktop accessory:");
                 subCategory = inputManager.nextLine();
-                System.out.println("Please enter the release date of the desktop accessory:");
-                releaseDate = inputManager.nextLine();
                 product = new OfficeEquipment(title, description, price, basePoints, seller, quantity, brand, model, subCategory, sellDate);
                 break;
         }
         database.addProduct(product);
+    }
+
+    protected int getUserInputAsInteger() {
+        while (true) {
+            try {
+                int returned = Integer.parseInt(InputManager.getInstance().nextLine());
+                if (returned < 0) {
+                    System.out.println("Invalid input. Please enter a positive number.");
+                } else {
+                    return returned;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
     }
 }

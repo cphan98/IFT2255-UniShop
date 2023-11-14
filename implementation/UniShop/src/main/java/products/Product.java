@@ -14,8 +14,8 @@ public abstract class Product {
     private int basePoints;
     private Seller seller;
     private int quantity;
-    private String sellDate;
-    private ArrayList<Evaluation> evaluations;
+    private final String sellDate;
+    private final ArrayList<Evaluation> evaluations;
     private float overallRating;
     private int likes;
     private boolean hasPromotion;
@@ -100,7 +100,7 @@ public abstract class Product {
         for (Evaluation evaluation : evaluations) {
             total += evaluation.getRating();
         }
-        this.overallRating = total / evaluations.size();
+        this.overallRating = Math.round((total / evaluations.size()) * 10.0) / 10.0F;
     }
     public ArrayList<Evaluation> getEvaluations() {
         return this.evaluations;
@@ -138,7 +138,7 @@ public abstract class Product {
     }
 
     public String smallToString() {
-        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t" + "Likes: " + likes + "\t\t" + (hasPromotion? "(promoted)" : "") + "\n";
+        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t" + "Likes: " + likes + "\t\t" + "Average rating: " + overallRating + "\t\t" + (hasPromotion? "(promoted)" : "") + "\n";
     }
 
     public String evaluationsToString() {
@@ -149,6 +149,7 @@ public abstract class Product {
         int i = 1;
         for (Evaluation evaluation : evaluations) {
             sb.append(i).append(". ").append(evaluation.toString()).append("\n");
+            i++;
         }
         return sb.toString();
     }
