@@ -53,6 +53,12 @@ public class Buyer extends User {
             }
             sellerProducts.put(product, cartProducts.get(product));
             splitCart.put(seller, sellerProducts);
+            for ( Seller sellers : splitCart.keySet())
+            {
+                String title = "New order!";
+                String summary = this.getId() + " just bought your " + product.getTitle() + "!";
+                sellers.addNotification(new Notification(title, summary));
+            }
         }
         return splitCart;
     }
@@ -74,6 +80,9 @@ public class Buyer extends User {
     }
     public ArrayList<Seller> getSellersFollowed() {
         return sellersFollowed;
+    }
+    public void addSellersFollowers(Seller seller){
+        sellersFollowed.add(seller);
     }
     public Cart getCart() {
         return cart;
@@ -114,11 +123,14 @@ public class Buyer extends User {
             sellersFollowed.add(seller);
             seller.setLikes(seller.getLikes() + 1);
             this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
+            seller.addFollower(this);   //seller has a new follower
+            addSellersFollowers(seller);        // keep track of buyer's following
             System.out.println("You are now following " + seller.getId() + "!");
         } else {
             sellersFollowed.remove(seller);
             seller.setLikes(seller.getLikes() - 1);
             this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
+            seller.removeFollower(this);
             System.out.println("You are no longer following " + seller.getId() + "!");
         }
     }
@@ -148,6 +160,9 @@ public class Buyer extends User {
             buyersFollowed.add(buyer);
             buyer.getFollowers().add(this);
             this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
+            String title = "You have a new follower!";
+            String summary = getId() + "is now following you !";
+            buyer.addNotification(new Notification(title, summary));
             System.out.println("You are now following " + buyer.getId() + "!");
         } else {
             buyersFollowed.remove(buyer);

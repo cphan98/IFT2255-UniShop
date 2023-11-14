@@ -2,10 +2,7 @@ package UIs;
 
 import LoginUtility.Catalog;
 import LoginUtility.DataBase;
-import Users.Address;
-import Users.Buyer;
-import Users.CreditCard;
-import Users.Seller;
+import Users.*;
 import otherUtility.Category;
 import otherUtility.OrderState;
 import products.Evaluation;
@@ -577,6 +574,9 @@ public class BuyerMenu extends Menu {
             rating = Float.parseFloat(inputManager.nextLine());
         }
         product.addEvaluation(new Evaluation(comment, rating, user));
+        String title = "You got a new evaluation!";
+        String summary = this.user + " added a new comment on " + product.getTitle() + "!";
+        product.getSeller().addNotification(new Notification(title, summary));
     }
 
     // SHOPPING CART
@@ -673,6 +673,7 @@ public class BuyerMenu extends Menu {
                 generateOrders(paymentType, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }
+
         }
 
         database.updateOrderIDCounts();

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Seller extends User {
     private Category category;
     private ArrayList<Product> products;
+    private ArrayList<Buyer> followers;
     private SellerMetrics metrics;
     private int likes;
     public Seller(String id, String password, String email, String phoneNumber, Address address, Category category) {
@@ -16,6 +17,7 @@ public class Seller extends User {
         this.metrics = new SellerMetrics();
         this.category = category;
         this.products = new ArrayList<>();
+        this.followers = new ArrayList<>();
         this.likes = 0;
     }
 
@@ -61,7 +63,6 @@ public class Seller extends User {
     public void setLikes(int likes) {
         this.likes = likes;
     }
-
 
 
     public String toString() {
