@@ -32,9 +32,10 @@ public class Cart {
 
     // Calculate total price based on the quantities of each product
     public float getTotalPrice() {
-        return productQuantities.entrySet().stream()
+        float total = productQuantities.entrySet().stream()
                 .map(entry -> entry.getKey().getPrice() * entry.getValue())
                 .reduce(0f, Float::sum);
+        return Math.round(total * 100.0) / 100.0f;
 
     }
     public HashMap<Product, Integer> getProducts() {
@@ -53,7 +54,7 @@ public class Cart {
                 .append(", Price: ")
                 .append(product.getPrice()).append("$")
                 .append("\n"));
-        sb.append("Total Price: ").append(getTotalPrice()).append("$").append(" (or ").append(getTotalPrice() * 50).append(" points)");
+        sb.append("Total Price: ").append(getTotalPrice()).append("$").append(" (or ").append(Math.ceil(getTotalPrice() * 50)).append(" points)");
         return sb.toString();
     }
 }

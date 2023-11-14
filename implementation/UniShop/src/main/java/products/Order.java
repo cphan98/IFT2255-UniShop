@@ -3,9 +3,7 @@ package products;
 import Users.*;
 import otherUtility.OrderState;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -18,8 +16,8 @@ public class Order {
     private CreditCard paymentInfo;
     private Address shippingAddress;
     private String phoneNumber;
-    private LocalDate today = LocalDate.now();
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private final LocalDate today = LocalDate.now();
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private String orderDate = today.format(formatter);
     private HashMap<Product, Integer> products;
     private OrderState status = OrderState.IN_PRODUCTION;
@@ -74,9 +72,10 @@ public class Order {
     }
 
     public float getTotalPrice() {
-        return products.entrySet().stream()
+        float total = products.entrySet().stream()
                 .map(entry -> entry.getKey().getPrice() * entry.getValue())
                 .reduce(0f, Float::sum);
+        return Math.round(total * 100.0) / 100.0f;
     }
 
     // constructor with new personal and credit card
@@ -131,7 +130,11 @@ public class Order {
     public Order(Buyer buyer, String paymentType, HashMap<Product, Integer> products) {
         this.buyer = buyer;
         this.paymentType = paymentType;
-        if (Objects.equals(paymentType, "credit card")) this.paymentInfo = buyer.getCard();
+        if (Objects.equals(paymentType, "credit card")) {
+            this.paymentInfo = buyer.getCard();
+        } else {
+            this.paymentInfo = new CreditCard("00000000", "Used", "Points", "0000-00-00");
+        }
         this.shippingAddress = buyer.getAddress();
         this.phoneNumber = buyer.getPhoneNumber();
         this.products = new HashMap<>();

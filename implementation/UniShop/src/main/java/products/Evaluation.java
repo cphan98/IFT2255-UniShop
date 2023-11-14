@@ -3,9 +3,9 @@ package products;
 import Users.Buyer;
 
 public class Evaluation {
-    private String comment;
-    private Float rating;
-    private Buyer author;
+    private final String comment;
+    private final Float rating;
+    private final Buyer author;
     private int likes;
 
     public Evaluation(String comment, Float rating, Buyer author)
@@ -16,9 +16,6 @@ public class Evaluation {
         this.likes = 0;
     }
     //getters (no setters because we don't want to change the comment, rating or author)
-    public String getComment() {
-        return comment;
-    }
     public float getRating() {
         return rating;
     }

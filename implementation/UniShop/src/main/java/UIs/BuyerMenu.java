@@ -2,10 +2,7 @@ package UIs;
 
 import LoginUtility.Catalog;
 import LoginUtility.DataBase;
-import Users.Address;
-import Users.Buyer;
-import Users.CreditCard;
-import Users.Seller;
+import Users.*;
 import otherUtility.Category;
 import otherUtility.OrderState;
 import products.Evaluation;
@@ -14,8 +11,6 @@ import products.Product;
 
 import java.util.HashMap;
 import java.util.Objects;
-
-import static java.lang.Integer.parseInt;
 
 public class BuyerMenu extends Menu {
     private final Buyer user;
@@ -74,6 +69,7 @@ public class BuyerMenu extends Menu {
             InputManager inputManager = InputManager.getInstance();
             System.out.println("Name: " + user.getId());
             System.out.println("Email: " + user.getEmail());
+            System.out.println("Buying points: " + user.getPoints());
             System.out.println();
             System.out.println("METRICS");
             displayMetrics();
@@ -208,7 +204,7 @@ public class BuyerMenu extends Menu {
         System.out.println("1. Cancel order");
         System.out.println("2. Report a problem");
         System.out.println("3. Confirm order reception");
-        System.out.println("3. Return to order history");
+        System.out.println("4. Return to order history");
         int choice = getUserInputAsInteger();
         switch (choice) {
             case 1:
@@ -241,6 +237,10 @@ public class BuyerMenu extends Menu {
         switch (choice) {
             case 1 -> {
                 System.out.println("Proceeding to checkout...");
+                if (user.getCart().getProducts().isEmpty()) {
+                    System.out.println("Your cart is empty!");
+                    return true;
+                }
                 makeCheckout();
             }
             case 2 -> removeProductFromCart();
@@ -268,7 +268,8 @@ public class BuyerMenu extends Menu {
             System.out.println("2. Get a seller's info and products");
             System.out.println("3. Filter products");
             System.out.println("4. Filter sellers");
-            System.out.println("5. Return to menu");
+            System.out.println("5. Display products liked by the buyers you follow");
+            System.out.println("6. Return to menu");
 
             int choice = getUserInputAsInteger();
 
@@ -277,7 +278,8 @@ public class BuyerMenu extends Menu {
                 case 2 -> displaySellerInfo();
                 case 3 -> filterProducts();
                 case 4 -> filterSellers();
-                case 5 -> {
+                case 5 -> displayProductsLikedByFollowing();
+                case 6 -> {
                     System.out.println("Returning to menu...");
                     continueLoop = false;
                 }
@@ -285,6 +287,22 @@ public class BuyerMenu extends Menu {
             }
         }
         return true;
+    }
+    private void displayProductsLikedByFollowing() {
+        System.out.println("Products liked by the buyers you're following:");
+        HashMap<Product, Integer> productsLikedByFollowing = new HashMap<>();
+        for (Buyer buyer : user.getBuyersFollowed()) {
+            for (Product product : buyer.getWishList()) {
+                if (productsLikedByFollowing.containsKey(product)) {
+                    productsLikedByFollowing.put(product, productsLikedByFollowing.get(product) + 1);
+                } else {
+                    productsLikedByFollowing.put(product, 1);
+                }
+            }
+        }
+        for (Product product : productsLikedByFollowing.keySet()) {
+            System.out.println(product.smallToString());
+        }
     }
     private void searchAndDisplayProduct() {
         if (searchProduct(catalog)) {
@@ -545,14 +563,12 @@ public class BuyerMenu extends Menu {
     }
     // WISH LIST
     public boolean displayWishList() {
-        InputManager inputManager = InputManager.getInstance();
         System.out.println("WISHLIST");
         boolean continueLoop = true;
         while (continueLoop) {
             System.out.println(user.wishListToString());
-            System.out.println("0. Return to menu");
-            System.out.println("Type the number of the product you want to add to the cart:");
-            int choice = parseInt(inputManager.nextLine());
+            System.out.println("Type the number of the product you want to add to the cart, or 0 to return to menu:");
+            int choice = getUserInputAsInteger();
             if (choice < 0 || choice > user.getWishList().size()) {
                 System.out.println("Invalid choice");
             }
@@ -577,10 +593,11 @@ public class BuyerMenu extends Menu {
             rating = Float.parseFloat(inputManager.nextLine());
         }
         product.addEvaluation(new Evaluation(comment, rating, user));
+        String title = "You got a new evaluation!";
+        String summary = this.user + " added a new comment on " + product.getTitle() + "!";
+        product.getSeller().addNotification(new Notification(title, summary));
     }
-
     // SHOPPING CART
-
     public void removeProductFromCart() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter the name of the product you want to remove:");
@@ -591,7 +608,7 @@ public class BuyerMenu extends Menu {
             return;
         }
         System.out.println("How many of it do you want to remove?");
-        int quantity = parseInt(inputManager.nextLine());
+        int quantity = getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in cart");
             return;
@@ -600,11 +617,9 @@ public class BuyerMenu extends Menu {
         product.setQuantity(product.getQuantity() + quantity);
         System.out.println("Product removed from cart");
     }
-
     public void addProductToCart(Product product) {
         System.out.println("How many of it do you want?");
-        InputManager inputManager = InputManager.getInstance();
-        int quantity = parseInt(inputManager.nextLine());
+        int quantity = getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in stock");
             return;
@@ -613,12 +628,14 @@ public class BuyerMenu extends Menu {
         product.setQuantity(product.getQuantity() - quantity);
         System.out.println("Product added to cart");
     }
-
     public void makeCheckout() {
         InputManager im = InputManager.getInstance();
-        System.out.println("You currently have " + user.getPoints() + "points\n");
+        System.out.println("You currently have " + user.getPoints() + " points\n");
         System.out.println("Do you want to use your registered info for this order? (y/n)");
-        String choice = im.nextLine();
+        String choice = "";
+        while (!choice.matches("[yn]")) {
+            choice = im.nextLine();
+        }
         if (user.getCard() == null) {
             System.out.println("You don't have a credit card registered");
             System.out.println("Enter your credit card number:");
@@ -632,8 +649,24 @@ public class BuyerMenu extends Menu {
             user.setCard(new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate));
         }
         if (Objects.equals(choice, "y")) {
-            generateOrders();
-            System.out.println("Order successful!");
+            System.out.println("Enter your payment type (credit card/points):");
+            String paymentType = "";
+            while (!paymentType.matches("credit card|points")) {
+                paymentType = im.nextLine();
+            }
+            if (Objects.equals(paymentType, "credit card")) {
+                generateOrders();
+                System.out.println("Order successful!");
+            }
+            else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
+                if (user.getPoints() < user.getCart().getTotalPrice() * 50) {
+                    System.out.println("Not enough points. You need " + (user.getCart().getTotalPrice() * 50 - user.getPoints()) + " more points to pay this order");
+                    return;
+                }
+                user.removePoints((int) user.getCart().getTotalPrice() * 50);
+                generateOrders(paymentType);
+                System.out.println("Order successful!");
+            }
         }
         else {
             System.out.println("Shipping address:");
@@ -667,12 +700,14 @@ public class BuyerMenu extends Menu {
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
                 if (user.getPoints() < user.getCart().getTotalPrice() * 50) {
-                    System.out.println("Not enough points. You need " + (user.getCart().getTotalPrice() * 50 - user.getPoints()) + " more points to pay this order");
+                    System.out.println("Not enough points. You need " + Math.ceil((user.getCart().getTotalPrice() * 50 - user.getPoints())) + " more points to pay this order");
                     return;
                 }
+                user.removePoints((int) user.getCart().getTotalPrice() * 50);
                 generateOrders(paymentType, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }
+
         }
 
         database.updateOrderIDCounts();
@@ -696,12 +731,19 @@ public class BuyerMenu extends Menu {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
         for (Seller seller : splitCart.keySet()) {
             HashMap<Product, Integer> products = splitCart.get(seller);
+            database.addOrder(new Order(user, "credit card", user.getCard(), products));
+        }
+    }
+    private void generateOrders(String paymentType) {
+        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
+        for (Seller seller : splitCart.keySet()) {
+            HashMap<Product, Integer> products = splitCart.get(seller);
 
             for(Product product : user.getCart().getProducts().keySet()){
-                 database.getSeller(seller).sellProduct(product, splitCart.size());
+                database.getSeller(seller).sellProduct(product, splitCart.size());
             }
 
-            database.addOrder(new Order(user, "credit card", user.getCard(), products));
+            database.addOrder(new Order(user, paymentType, products));
         }
     }
     public void emptyCart() {
