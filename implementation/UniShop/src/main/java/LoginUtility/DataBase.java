@@ -1,5 +1,7 @@
 package LoginUtility;
 
+import Users.Buyer;
+import Users.Notification;
 import Users.Seller;
 import Users.User;
 import products.Order;
@@ -65,6 +67,11 @@ public class DataBase {
         // add into the seller's product list as well
         Seller seller = getSeller(product.getSeller());
         seller.getProducts().add(product);
+        String title = "New product just added!";
+        String summary = "This " + seller.getId() + " just added a new product!";
+        for (Buyer follower : seller.getFollowers()){
+            follower.addNotification(new Notification(title, summary));
+        }
     }
     public void removeProduct(Product product) {
         products.remove(product);

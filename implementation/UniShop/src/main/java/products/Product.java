@@ -86,14 +86,12 @@ public abstract class Product {
     public void setDescription(String description) {
         this.description = description;
     }
-
     public boolean isPromoted() {
         return hasPromotion;
     }
     public void setPromotion(boolean promotion) {
         hasPromotion = promotion;
     }
-
     public Float getOverallRating() {
         return overallRating;
     }
@@ -104,7 +102,6 @@ public abstract class Product {
         }
         this.overallRating = Math.round((total / evaluations.size()) * 10.0) / 10.0F;
     }
-
     public ArrayList<Evaluation> getEvaluations() {
         return this.evaluations;
     }
