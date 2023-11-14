@@ -133,7 +133,6 @@ public class DataBase {
             Product thisOne = it.next();
             thisOne.getSeller().addOrder(order);
         }
-        System.out.println(orders.size());
     }
     public boolean verifyNewProduct(Product product) {
         boolean valid = true;
@@ -153,7 +152,6 @@ public class DataBase {
             if (startTime != null) {
                 long difference = endTime.getTime() - startTime.getTime();
                 long diffInHrs = difference / 3600000;
-                System.out.println(diffInHrs);
                 if (diffInHrs >= 24) {
                     return false;
                 }

@@ -14,7 +14,13 @@ public class UniShop {
     public static void main(String[] args) {
         makeFakeData();
         HomeScreen homeScreen = new HomeScreen(database);
+        printBigVoidBefore();
         homeScreen.initialize();
+    }
+    private static void printBigVoidBefore() {
+        for (int i=0; i<100; i++) {
+            System.out.println();
+        }
     }
 
     private static void makeFakeData() {
