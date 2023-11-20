@@ -1,4 +1,4 @@
-Ce dossier contient :
+This folder contains:
 
-- Le rapport
-- Les diagrammes d'activités
+- DM2 report
+- Activity diagrams
