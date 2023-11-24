@@ -1,4 +1,4 @@
-ce dossier doit contenir :
+This folder contains:
 
-- le diagramme de classes
-- les diagrammes de séquences
+- Class diagram
+- Sequence diagrams
