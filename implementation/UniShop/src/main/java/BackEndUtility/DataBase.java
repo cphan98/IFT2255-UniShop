@@ -16,7 +16,6 @@ public class DataBase {
     private final ArrayList<User> users;
     private final ArrayList<Product> products = new ArrayList<>();
     private final ArrayList<Order> orders = new ArrayList<>();
-
     public DataBase(ArrayList<User> users) {
         this.users = users;
     }
