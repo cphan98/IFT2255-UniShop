@@ -2,6 +2,8 @@ package UIs;
 
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
+import Users.Buyer;
+import Users.Seller;
 import UtilityObjects.Notification;
 import Users.User;
 import productClasses.Usages.Order;
@@ -44,6 +46,9 @@ public abstract class Menu {
             notification.setRead(true);
         }
     }
+
+    // NOTIFICATIONS
+
     public boolean displayNotifications() {
         System.out.println("NOTIFICATIONS");
         System.out.println(user.notificationsToString());
@@ -57,6 +62,15 @@ public abstract class Menu {
         System.out.println("Returning to menu...");
         return true;
     }
+
+    public void sendBuyerNotification(Buyer buyer, String title, String summary) {
+        buyer.addNotification((new Notification(title, summary)));
+    }
+
+    public void sendSellerNotification(Seller seller, String title, String summary) {
+        seller.addNotification(new Notification(title, summary));
+    }
+
     public abstract void displayMetrics();
     public abstract void modifyProfile();
     public abstract void modifyPersonalInfo();

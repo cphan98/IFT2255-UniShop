@@ -235,6 +235,7 @@ public class SellerMenu extends Menu {
                     order.setShippingNumber(number);
 
                     order.changeStatus(OrderState.IN_DELIVERY);
+                    sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
                     System.out.println("Your order is ready to be shipped!");
                     break;
                 }

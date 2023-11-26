@@ -203,6 +203,17 @@ public class BuyerMenu extends Menu {
         user.setCard(new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate));
         System.out.println("Payment info modified");
     }
+
+    public void cancelOrder(Buyer buyer, Order order) {
+        order.setStatus(OrderState.CANCELLED);
+        buyer.getMetrics().setOrdersMade((buyer.getMetrics().getOrdersMade() - 1));
+        int productsCancelled = 0;
+        for (Product p : order.getProducts().keySet()) {
+            productsCancelled += order.getProducts().get(p);
+        }
+        buyer.getMetrics().setProductsBought((buyer.getMetrics().getProductsBought() - productsCancelled));
+    }
+
     public void interactWithOrder(Order order) {
         System.out.println(order);
         System.out.println();
@@ -213,7 +224,9 @@ public class BuyerMenu extends Menu {
         int choice = getUserInputAsInteger();
         switch (choice) {
             case 1:
-                order.cancelOrder();
+                cancelOrder(user, order);
+                sendBuyerNotification(user, "Order cancelled", "Your order " + order.getId() + " has been cancelled!");
+                sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Order cancelled", "your order " + order.getId() + " has been cancelled!");
                 System.out.println("Order cancelled");
                 break;
             case 2:
@@ -221,6 +234,7 @@ public class BuyerMenu extends Menu {
                 break;
             case 3:
                 order.changeStatus(OrderState.DELIVERED);
+                sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
                 System.out.println("Order confirmed");
             case 4:
                 System.out.println("Returning to order history...");
