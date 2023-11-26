@@ -22,15 +22,11 @@ public class BuyerMenu extends Menu {
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
     private Catalog catalog;
-
     // MENU
-
     public BuyerMenu(Buyer user, DataBase database) {
-        super(user);
+        super(user, database);
         this.user = user;
-        this.database = database;
     }
-
     public boolean displayMenu() {
         boolean continueLoop = true;
 
@@ -48,7 +44,7 @@ public class BuyerMenu extends Menu {
             System.out.println("5. Display Catalog");
             System.out.println("6. Display Notifications");
             System.out.println("7. Log out");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> continueLoop = displayProfile();
@@ -71,7 +67,6 @@ public class BuyerMenu extends Menu {
         while (continueLoop) {
             line();
             System.out.println("PROFILE");
-            InputManager inputManager = InputManager.getInstance();
             System.out.println("Name: " + user.getId());
             System.out.println("Email: " + user.getEmail());
             System.out.println("Buying points: " + user.getPoints());
@@ -83,35 +78,23 @@ public class BuyerMenu extends Menu {
             System.out.println("1. Modify profile");
             System.out.println("2. Return to menu");
             System.out.println("3. Delete account");
-            String choice = inputManager.nextLine();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
-                case "1" -> {
+                case 1:
                     System.out.println("Modifying profile...");
                     modifyProfile();
-                }
-                case "2" -> {
+                    break;
+                case 2:
                     System.out.println("Returning to menu...");
                     continueLoop = false;
-                }
-                default -> {
-                    System.out.println("Are you sure you want to delete your account? (y/n)");
-                    String input = inputManager.nextLine();
-                    boolean continueLoop2 = true;
-                    while (continueLoop2) {
-                        if (Objects.equals(input, "y")) {
-                            System.out.println("Deleting account...");
-                            database.removeUser(user);
-                            continueLoop2 = false;
-                        } else if (Objects.equals(input, "n")) {
-                            System.out.println("Returning to menu...");
-                            continueLoop2 = false;
-                        } else {
-                            System.out.println("Invalid input");
-                        }
-                    }
+                    break;
+                case 3:
+                    uiUtilities.deleteAccount();
+                    return false;
+                default:
+                    System.out.println("Invalid selection. Please try again.");
                     return false;  // continue the loop
-                }
             }
         }
         return true;  // continue the loop
@@ -122,73 +105,14 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Modify password");
         System.out.println("4. Modify payment info");
         System.out.println("5. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
-            case 1 -> modifyPersonalInfo();
-            case 2 -> modifyShippingAddress();
-            case 3 -> modifyPassword();
+            case 1 -> uiUtilities.modifyPersonalInfo(user);
+            case 2 -> uiUtilities.modifyAddress();
+            case 3 -> uiUtilities.modifyPassword();
             case 4 -> modifyPaymentInfo();
             case 5 -> System.out.println("Returning to menu...");
             default -> System.out.println("Invalid selection. Please try again.");
-        }
-    }
-    public void modifyPersonalInfo() {
-        System.out.println("Enter your first name:");
-        String firstName = InputManager.getInstance().nextLine();
-        System.out.println("Enter your last name:");
-        String lastName = InputManager.getInstance().nextLine();
-        System.out.println("Enter your new id:");
-        String id = InputManager.getInstance().nextLine();
-        String email = "";
-        while (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
-            System.out.println("Please enter your email:");
-            email = InputManager.getInstance().nextLine();
-        }
-        String phoneNumber = "a";
-        while (!phoneNumber.matches("[0-9]+")) {
-            System.out.println("Enter your phone number:");
-            phoneNumber = InputManager.getInstance().nextLine();
-        }
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        if (!database.validateNewUser(id, email)) {
-            System.out.println("This id or email is already taken");
-            System.out.println("Your other info are changed but your id and email were not changed");
-            return;
-        }
-        user.setId(id);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
-        System.out.println("Personal info modified");
-    }
-    public void modifyShippingAddress() {
-        System.out.println("Enter your street name:");
-        String street = InputManager.getInstance().nextLine();
-        System.out.println("Enter your city:");
-        String city = InputManager.getInstance().nextLine();
-        System.out.println("Enter your province:");
-        String province = InputManager.getInstance().nextLine();
-        System.out.println("Enter your country:");
-        String country = InputManager.getInstance().nextLine();
-        System.out.println("Enter your postal code:");
-        String postalCode = InputManager.getInstance().nextLine();
-        Address shippingAddress = new Address(street, city, province, country, postalCode);
-        user.setAddress(shippingAddress);
-    }
-    public void modifyPassword() {
-        while (true) {
-            System.out.println("Enter your current password:");
-            String currentPassword = InputManager.getInstance().nextLine();
-            if (Objects.equals(currentPassword, user.getPassword())) {
-                System.out.println("Enter your new password:");
-                String newPassword = InputManager.getInstance().nextLine();
-                user.setPassword(newPassword);
-                database.changePassword(user, newPassword);
-                System.out.println("Password modified");
-                break;
-            } else {
-                System.out.println("Wrong password");
-            }
         }
     }
     public void modifyPaymentInfo() {
@@ -221,7 +145,7 @@ public class BuyerMenu extends Menu {
         System.out.println("2. Report a problem");
         System.out.println("3. Confirm order reception");
         System.out.println("4. Return to order history");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1:
                 cancelOrder(user, order);
@@ -252,7 +176,7 @@ public class BuyerMenu extends Menu {
         System.out.println("2. Remove an item from the cart");
         System.out.println("3. Empty cart");
         System.out.println("4. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1 -> {
                 System.out.println("Proceeding to checkout...");
@@ -290,7 +214,7 @@ public class BuyerMenu extends Menu {
             System.out.println("5. Display products liked by the buyers you follow");
             System.out.println("6. Return to menu");
 
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> searchAndDisplayProduct();
@@ -333,10 +257,9 @@ public class BuyerMenu extends Menu {
     }
     public boolean searchProduct(Catalog catalog) {
         boolean continueLoop = true;
-        InputManager im = InputManager.getInstance();
         while (continueLoop) {
             System.out.println("Enter the name of the product you want to search:");
-            String title = im.nextLine();
+            String title = InputManager.getInstance().nextLine();
             pointedProduct = catalog.searchProductByName(title);
             continueLoop = pointedProduct == null;
         }
@@ -355,11 +278,11 @@ public class BuyerMenu extends Menu {
             System.out.println("4. Interact with an evaluation");
             System.out.println("5. Return to catalog");
 
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> addProductToCart(pointedProduct);
-                case 2 -> user.toggleProductToWishList(pointedProduct);
+                case 2 -> uiUtilities.toggleProductToWishList(user, pointedProduct);
                 case 3 -> addEvaluationToProduct(pointedProduct);
                 case 4 -> interactWithEvaluations();
                 case 5 -> {
@@ -372,7 +295,7 @@ public class BuyerMenu extends Menu {
     }
     private void interactWithEvaluations() {
         System.out.println("Enter the number of the evaluation you want to interact with, or 0 to return:");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         if (choice == 0) {
             System.out.println("Returning to product...");
         } else if (choice > pointedProduct.getEvaluations().size()) {
@@ -391,13 +314,13 @@ public class BuyerMenu extends Menu {
                 System.out.println("2. Follow this buyer");
             }
             System.out.println("3. Return to product");
-            int choice2 = getUserInputAsInteger();
+            int choice2 = uiUtilities.getUserInputAsInteger();
             switch (choice2) {
                 case 1:
-                    user.toggleEvaluationLike(pointedEvaluation);
+                    uiUtilities.toggleEvaluationLike(user, pointedEvaluation);
                     break;
                 case 2:
-                    user.toggleBuyerToFollowing(pointedEvaluation.getAuthor());
+                    uiUtilities.toggleBuyerToFollowing(user, pointedEvaluation.getAuthor());
                     break;
                 case 3:
                     System.out.println("Returning to product...");
@@ -426,9 +349,9 @@ public class BuyerMenu extends Menu {
             System.out.println("1. Follow this seller");
         }
         System.out.println("2. Return to catalog");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
-            case 1 -> user.toggleSellerToFollowing(pointedSeller);
+            case 1 -> uiUtilities.toggleSellerToFollowing(user, pointedSeller);
             case 2 -> {
                 System.out.println("Returning to catalog...");
                 catalog.displayCatalog();
@@ -442,7 +365,7 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Order by likes");
         System.out.println("4. Order by average rating");
         System.out.println("5. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1 -> {
                 System.out.println("1. Books");
@@ -451,7 +374,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("4. Electronics");
                 System.out.println("5. Desktop accessories");
                 System.out.println("6. Return to menu");
-                int choice2 = getUserInputAsInteger();
+                int choice2 = uiUtilities.getUserInputAsInteger();
                 switch (choice2) {
                     case 1 -> catalog.filterProductsByCategory(Category.BOOKS);
                     case 2 -> catalog.filterProductsByCategory(Category.LEARNING_RESOURCES);
@@ -466,7 +389,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice3 = getUserInputAsInteger();
+                int choice3 = uiUtilities.getUserInputAsInteger();
                 switch (choice3) {
                     case 1 -> catalog.orderProducts(true, "price");
                     case 2 -> catalog.orderProducts(false, "price");
@@ -478,7 +401,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice4 = getUserInputAsInteger();
+                int choice4 = uiUtilities.getUserInputAsInteger();
                 switch (choice4) {
                     case 1 -> catalog.orderProducts(true, "likes");
                     case 2 -> catalog.orderProducts(false, "likes");
@@ -490,7 +413,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice5 = getUserInputAsInteger();
+                int choice5 = uiUtilities.getUserInputAsInteger();
                 switch (choice5) {
                     case 1 -> catalog.orderProducts(true, "averageNote");
                     case 2 -> catalog.orderProducts(false, "averageNote");
@@ -506,7 +429,7 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Order by average rating");
         System.out.println("4. Display only favorite sellers");
         System.out.println("5. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1:
                 System.out.println("1. Books");
@@ -515,7 +438,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("4. Electronics");
                 System.out.println("5. Desktop accessories");
                 System.out.println("6. Return to menu");
-                int choice2 = getUserInputAsInteger();
+                int choice2 = uiUtilities.getUserInputAsInteger();
                 switch (choice2) {
                     case 1:
                         catalog.filterSellersByCategory(Category.BOOKS);
@@ -544,7 +467,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice4 = getUserInputAsInteger();
+                int choice4 = uiUtilities.getUserInputAsInteger();
                 switch (choice4) {
                     case 1:
                         catalog.orderSellers(true, "likes");
@@ -564,7 +487,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice5 = getUserInputAsInteger();
+                int choice5 = uiUtilities.getUserInputAsInteger();
                 switch (choice5) {
                     case 1 -> catalog.orderSellers(true, "averageNote");
                     case 2 -> catalog.orderSellers(false, "averageNote");
@@ -587,7 +510,7 @@ public class BuyerMenu extends Menu {
         while (continueLoop) {
             System.out.println(user.wishListToString());
             System.out.println("Type the number of the product you want to add to the cart, or 0 to return to menu:");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
             if (choice < 0 || choice > user.getWishList().size()) {
                 System.out.println("Invalid choice");
             }
@@ -627,7 +550,7 @@ public class BuyerMenu extends Menu {
             return;
         }
         System.out.println("How many of it do you want to remove?");
-        int quantity = getUserInputAsInteger();
+        int quantity = uiUtilities.getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in cart");
             return;
@@ -638,7 +561,7 @@ public class BuyerMenu extends Menu {
     }
     public void addProductToCart(Product product) {
         System.out.println("How many of it do you want?");
-        int quantity = getUserInputAsInteger();
+        int quantity = uiUtilities.getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in stock");
             return;
@@ -674,7 +597,7 @@ public class BuyerMenu extends Menu {
                 paymentType = im.nextLine();
             }
             if (Objects.equals(paymentType, "credit card")) {
-                generateOrders();
+                database.generateAndAddOrders(user);
                 System.out.println("Order successful!");
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
@@ -683,7 +606,7 @@ public class BuyerMenu extends Menu {
                     return;
                 }
                 user.removePoints((int) user.getCart().getTotalPrice() * 50);
-                generateOrders(paymentType);
+                database.generateAndAddOrders(user, paymentType);
                 System.out.println("Order successful!");
             }
         }
@@ -714,7 +637,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("Enter your credit card owner's last name:");
                 String ownerLastName = im.nextLine();
                 CreditCard creditCard = new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate);
-                generateOrders(creditCard, shippingAddress, phoneNumber);
+                database.generateAndAddOrders(user, creditCard, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
@@ -723,7 +646,7 @@ public class BuyerMenu extends Menu {
                     return;
                 }
                 user.removePoints((int) user.getCart().getTotalPrice() * 50);
-                generateOrders(paymentType, shippingAddress, phoneNumber);
+                database.generateAndAddOrders(user, paymentType, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }
 
@@ -732,39 +655,8 @@ public class BuyerMenu extends Menu {
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
     }
-    private void generateOrders(String paymentType, Address shippingAddress, String phoneNumber) {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            HashMap<Product, Integer> sellerProducts = splitCart.get(seller);
-            database.addOrder(new Order(user, paymentType, shippingAddress, phoneNumber, sellerProducts));
-        }
-    }
-    private void generateOrders(CreditCard creditCard, Address shippingAddress, String phoneNumber) {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            HashMap<Product, Integer> sellerProducts = splitCart.get(seller);
-            database.addOrder(new Order(user, "credit card", creditCard, shippingAddress, phoneNumber, sellerProducts));
-        }
-    }
-    private void generateOrders() {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            HashMap<Product, Integer> products = splitCart.get(seller);
-            database.addOrder(new Order(user, "credit card", user.getCard(), products));
-        }
-    }
-    private void generateOrders(String paymentType) {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            HashMap<Product, Integer> products = splitCart.get(seller);
 
-            for(Product product : user.getCart().getProducts().keySet()){
-                database.getSeller(seller).sellProduct(product, splitCart.size());
-            }
 
-            database.addOrder(new Order(user, paymentType, products));
-        }
-    }
     public void emptyCart() {
         InputManager im = InputManager.getInstance();
         System.out.println("Are you sure you want to empty the cart? (y/n)");

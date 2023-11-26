@@ -1,4 +1,5 @@
 import BackEndUtility.DataBase;
+import UIs.Buyer.BuyerMenu;
 import UIs.HomeScreen;
 import Users.*;
 import UtilityObjects.Address;
@@ -11,7 +12,6 @@ import productClasses.Inheritances.*;
 import productClasses.Usages.Evaluation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class UniShop {
@@ -49,18 +49,19 @@ public class UniShop {
     }
     private static void simulateSomeActions() {
         Buyer cynthia = (Buyer) database.getUsers().get(0);
-        cynthia.toggleBuyerToFollowing((Buyer) database.getUsers().get(1));
-        cynthia.toggleBuyerToFollowing((Buyer) database.getUsers().get(2));
-        cynthia.toggleBuyerToFollowing((Buyer) database.getUsers().get(3));
-        cynthia.toggleBuyerToFollowing((Buyer) database.getUsers().get(4));
-        ((Buyer) database.getUsers().get(4)).toggleProductToWishList(database.getProducts().get(0));
-        ((Buyer) database.getUsers().get(4)).toggleProductToWishList(database.getProducts().get(1));
-        ((Buyer) database.getUsers().get(3)).toggleProductToWishList(database.getProducts().get(1));
-        ((Buyer) database.getUsers().get(3)).toggleProductToWishList(database.getProducts().get(2));
-        ((Buyer) database.getUsers().get(2)).toggleProductToWishList(database.getProducts().get(2));
-        ((Buyer) database.getUsers().get(2)).toggleProductToWishList(database.getProducts().get(3));
-        ((Buyer) database.getUsers().get(1)).toggleProductToWishList(database.getProducts().get(3));
-        ((Buyer) database.getUsers().get(1)).toggleProductToWishList(database.getProducts().get(4));
+        BuyerMenu buyerMenu = new BuyerMenu(cynthia, database);
+        buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) database.getUsers().get(1));
+        buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) database.getUsers().get(2));
+        buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) database.getUsers().get(3));
+        buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) database.getUsers().get(4));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(4)), database.getProducts().get(0));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(4)), database.getProducts().get(1));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(3)), database.getProducts().get(1));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(3)), database.getProducts().get(2));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(2)), database.getProducts().get(2));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(2)), database.getProducts().get(3));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(1)), database.getProducts().get(3));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(1)), database.getProducts().get(4));
 
         Buyer random = (Buyer) database.getUsers().get(1);
         random.getWishList().add(database.getProducts().get(0));
@@ -70,11 +71,7 @@ public class UniShop {
         cynthia.getCart().addProduct(database.getProducts().get(0), 2);
         cynthia.getCart().addProduct(database.getProducts().get(1), 4);
         cynthia.getCart().addProduct(database.getProducts().get(2), 1);
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = cynthia.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            Order order = new Order(cynthia, "credit card", splitCart.get(seller));
-            database.addOrder(order);
-        }
+        database.generateAndAddOrders(cynthia, "credit card");
         cynthia.getCart().getProducts().clear();
 
         cynthia.getOrderHistory().get(1).changeStatus(OrderState.IN_DELIVERY);
