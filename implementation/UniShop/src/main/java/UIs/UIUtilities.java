@@ -30,11 +30,13 @@ public class UIUtilities {
             evaluation.setLikes(evaluation.getLikes() + 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() + 1);
             System.out.println("You liked " + evaluation.getAuthor().getId() + "'s evaluation!");
+            user.addExpPoints(1);
         } else {
             user.getEvaluationsLiked() .remove(evaluation);
             evaluation.setLikes(evaluation.getLikes() - 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() - 1);
             System.out.println("You unliked " + evaluation.getAuthor().getId() + "'s evaluation!");
+            user.removeExpPoints(1);
         }
     }
     public void toggleBuyerToFollowing(Buyer user, Buyer buyer) {
@@ -50,11 +52,13 @@ public class UIUtilities {
             String summary = user.getId() + " is now following you !";
             buyer.addNotification(new Notification(title, summary));
             System.out.println("You are now following " + buyer.getId() + "!");
+            user.addExpPoints(5);
         } else {
             user.getBuyersFollowed().remove(buyer);
             buyer.getFollowers().remove(user);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() - 1);
             System.out.println("You are no longer following " + buyer.getId() + "!");
+            user.removeExpPoints(5);
         }
     }
 
@@ -81,12 +85,14 @@ public class UIUtilities {
             seller.addFollower(user);   //seller has a new follower
             sellersFollowed.add(seller);        // keep track of buyer's following
             System.out.println("You are now following " + seller.getId() + "!");
+            user.addExpPoints(5);
         } else {
             sellersFollowed.remove(seller);
             seller.getMetrics().updateLikes(seller.getMetrics().getLikes() - 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() - 1);
             seller.removeFollower(user);
             System.out.println("You are no longer following " + seller.getId() + "!");
+            user.removeExpPoints(5);
         }
     }
     public void deleteAccount() {

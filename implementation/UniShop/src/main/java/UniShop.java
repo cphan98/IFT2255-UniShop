@@ -4,7 +4,6 @@ import UIs.HomeScreen;
 import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
-import productClasses.Usages.Order;
 import BackEndUtility.Category;
 import BackEndUtility.OrderState;
 import productClasses.*;
@@ -44,7 +43,7 @@ public class UniShop {
         try {
             SerializationUtil.saveDataBase(database, DATA_FILE);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error saving data: " + e.getMessage());
         }
     }
     private static void printBigVoidBefore() {

@@ -16,6 +16,7 @@ public class Buyer extends User implements java.io.Serializable {
     private String lastName;
     private final Cart cart;
     private int points;
+    private int expPoints;
     private final BuyerMetrics metrics;
     private CreditCard card;
     private final ArrayList<Seller> sellersFollowed;
@@ -37,9 +38,17 @@ public class Buyer extends User implements java.io.Serializable {
     public void addPoints(int points) {
         this.points += points;
     }
-
     public void removePoints(int points) {
         this.points -= points;
+    }
+    public void addExpPoints(int points) {
+        this.expPoints += points;
+    }
+    public void removeExpPoints(int points) {
+        this.expPoints -= points;
+    }
+    public int getExpPoints() {
+        return expPoints;
     }
     public int getPoints() {
         return points;

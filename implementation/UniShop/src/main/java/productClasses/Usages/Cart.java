@@ -54,7 +54,12 @@ public class Cart implements java.io.Serializable {
                 .append(", Price: ")
                 .append(product.getPrice()).append("$")
                 .append("\n"));
-        sb.append("Total Price: ").append(getTotalPrice()).append("$").append(" (or ").append(Math.ceil(getTotalPrice() * 50)).append(" points)");
+        sb.append("Total Price: ").append(getTotalPrice()).append("$").append(" (or ").append(Math.ceil(getTotalPrice() * 50)).append(" points)").append("\n\n");
+
+        int pointsWon = productQuantities.entrySet().stream()
+                .mapToInt(entry -> entry.getKey().getBasePoints() * entry.getValue())
+                .sum();
+        sb.append("You'll get ").append(pointsWon).append(" points for this purchase!");
         return sb.toString();
     }
 }

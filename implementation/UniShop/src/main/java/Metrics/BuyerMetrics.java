@@ -10,7 +10,6 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
     private int evaluationsMade;
     private final ArrayList<Float> notesGiven;
     private float averageNoteGiven;
-    private int expPoints;
     public BuyerMetrics() {
         ordersMade = 0;
         productsBought = 0;
@@ -18,7 +17,6 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
         likesGiven = 0;
         evaluationsMade = 0;
         averageNoteGiven = 0;
-        expPoints = 0;
         notesGiven = new ArrayList<>();
     }
     public void setOrdersMade(int ordersMade) {
@@ -73,7 +71,6 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
             "Likes received on their evaluations: " + likesReceived + "\n" +
             "Likes given: " + likesGiven + "\n" +
             "Evaluations made: " + evaluationsMade + "\n" +
-            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" + "\n" +
-            "Experience: " + expPoints + " points\n";
+            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n";
     }
 }

@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class BuyerMenu extends Menu {
+    private final int EVALUATION_POINTS = 10;
+    private final int LIKE_POINTS = 1;
+    private final int FOLLOW_POINTS = 5;
+    private final int ORDER_POINTS = 10;
     private final Buyer user;
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
@@ -70,6 +74,7 @@ public class BuyerMenu extends Menu {
             System.out.println("Name: " + user.getId());
             System.out.println("Email: " + user.getEmail());
             System.out.println("Buying points: " + user.getPoints());
+            System.out.println("Experience points: " + user.getExpPoints());
             System.out.println();
             System.out.println("METRICS");
             displayMetrics();
@@ -535,6 +540,7 @@ public class BuyerMenu extends Menu {
             rating = Float.parseFloat(inputManager.nextLine());
         }
         product.addEvaluation(new Evaluation(comment, rating, user));
+        user.addExpPoints(EVALUATION_POINTS);
         String title = "You got a new evaluation!";
         String summary = this.user + " added a new comment on " + product.getTitle() + "!";
         product.getSeller().addNotification(new Notification(title, summary));
@@ -654,6 +660,7 @@ public class BuyerMenu extends Menu {
 
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
+        user.addExpPoints(ORDER_POINTS);
     }
 
 
