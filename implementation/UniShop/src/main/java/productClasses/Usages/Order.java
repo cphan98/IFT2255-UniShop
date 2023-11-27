@@ -159,29 +159,6 @@ public class Order implements java.io.Serializable {
             case IN_DELIVERY -> setStatus(OrderState.IN_DELIVERY);
             case DELIVERED -> setStatus(OrderState.DELIVERED);
         }
-        sendBuyerNotification(buyer, "Order Status Changed", "Your order " + id + " is now " + status.toString().toLowerCase() + "!");
-    }
-
-    public void cancelOrder() {
-        setStatus(OrderState.CANCELLED);
-        buyer.getMetrics().setOrdersMade(buyer.getMetrics().getOrdersMade() - 1);
-        int productsCancelled = 0;
-        for (Product p : products.keySet()) {
-            productsCancelled += products.get(p);
-        }
-        buyer.getMetrics().setProductsBought(buyer.getMetrics().getProductsBought() - productsCancelled);
-        sendBuyerNotification(buyer, "Order Cancelled", "Your order " + id + " has been cancelled!");
-        sendSellerNotification(products.keySet().iterator().next().getSeller(), "Order Cancelled", "Your order " + id + " has been cancelled!");
-    }
-
-    // NOTIFICATIONS
-
-    public void sendBuyerNotification(Buyer buyer, String title, String summary) {
-        buyer.addNotification(new Notification(title, summary));
-    }
-
-    public void sendSellerNotification(Seller seller, String title, String summary) {
-        seller.addNotification(new Notification(title, summary));
     }
 
     // ETA

@@ -44,36 +44,6 @@ public class Buyer extends User implements java.io.Serializable {
     public int getPoints() {
         return points;
     }
-    public HashMap<Seller, HashMap<Product, Integer>> splitCartBeforeOrder() {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = new HashMap<>();
-        HashMap<Product, Integer> cartProducts = cart.getProducts();
-        for (Product product : cart.getProducts().keySet()) {
-            addPoints(product.getBasePoints()*cart.getProducts().get(product));
-            System.out.println("With this purchase, you won " + product.getBasePoints()*cart.getProducts().get(product) + " buying points!\n");
-        }
-        for (Product product : cartProducts.keySet()) {
-            Seller seller = product.getSeller();
-            HashMap<Product, Integer> sellerProducts;
-            if (splitCart.containsKey(seller)) {
-                sellerProducts = splitCart.get(seller);
-            } else {
-                sellerProducts = new HashMap<>();
-            }
-            sellerProducts.put(product, cartProducts.get(product));
-            splitCart.put(seller, sellerProducts);
-
-        }
-        for ( Seller seller : splitCart.keySet())
-        {
-            for (Product product : splitCart.get(seller).keySet())
-            {
-                String title = "New order!";
-                String summary = this.getId() + " just bought your " + product.getTitle() + "!";
-                seller.addNotification(new Notification(title, summary));
-            }
-        }
-        return splitCart;
-    }
     public String getFirstName() {
         return firstName;
     }
@@ -92,9 +62,6 @@ public class Buyer extends User implements java.io.Serializable {
     }
     public ArrayList<Seller> getSellersFollowed() {
         return sellersFollowed;
-    }
-    public void addSellersFollowers(Seller seller){
-        sellersFollowed.add(seller);
     }
     public Cart getCart() {
         return cart;
@@ -116,72 +83,6 @@ public class Buyer extends User implements java.io.Serializable {
     }
     public ArrayList<Evaluation> getEvaluationsLiked() {
         return evaluationsLiked;
-    }
-    public void toggleProductToWishList(Product product) {
-        if (wishList.contains(product)) {
-            wishList.remove(product);
-            product.setLikes(product.getLikes() - 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
-            System.out.println("Product removed from wish list!");
-        } else {
-            wishList.add(product);
-            product.setLikes(product.getLikes() + 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
-            System.out.println("Product added to wish list!");
-        }
-    }
-    public void toggleSellerToFollowing(Seller seller) {
-        if (!sellersFollowed.contains(seller)) {
-            sellersFollowed.add(seller);
-            seller.getMetrics().updateLikes(seller.getMetrics().getLikes() + 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
-            seller.addFollower(this);   //seller has a new follower
-            addSellersFollowers(seller);        // keep track of buyer's following
-            System.out.println("You are now following " + seller.getId() + "!");
-        } else {
-            sellersFollowed.remove(seller);
-            seller.getMetrics().updateLikes(seller.getMetrics().getLikes() - 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
-            seller.removeFollower(this);
-            System.out.println("You are no longer following " + seller.getId() + "!");
-        }
-    }
-    public void toggleEvaluationLike(Evaluation evaluation) {
-        if (evaluation.getAuthor() == this) {
-            System.out.println("You cannot like your own evaluation!");
-            return;
-        }
-        if (!evaluationsLiked.contains(evaluation)) {
-            evaluationsLiked.add(evaluation);
-            evaluation.setLikes(evaluation.getLikes() + 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
-            System.out.println("You liked " + evaluation.getAuthor().getId() + "'s evaluation!");
-        } else {
-            evaluationsLiked.remove(evaluation);
-            evaluation.setLikes(evaluation.getLikes() - 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
-            System.out.println("You unliked " + evaluation.getAuthor().getId() + "'s evaluation!");
-        }
-    }
-    public void toggleBuyerToFollowing(Buyer buyer) {
-        if (buyer == this) {
-            System.out.println("You cannot follow yourself!");
-            return;
-        }
-        if (!buyersFollowed.contains(buyer)) {
-            buyersFollowed.add(buyer);
-            buyer.getFollowers().add(this);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
-            String title = "You have a new follower!";
-            String summary = getId() + " is now following you !";
-            buyer.addNotification(new Notification(title, summary));
-            System.out.println("You are now following " + buyer.getId() + "!");
-        } else {
-            buyersFollowed.remove(buyer);
-            buyer.getFollowers().remove(this);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
-            System.out.println("You are no longer following " + buyer.getId() + "!");
-        }
     }
     public String wishListToString() {
         if (wishList.isEmpty()) {
