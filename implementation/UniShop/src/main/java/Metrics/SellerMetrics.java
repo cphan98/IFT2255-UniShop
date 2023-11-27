@@ -44,7 +44,11 @@ public class SellerMetrics implements Metrics {
         return likes;
     }
 
-    public String toString() {
+    public String SomeMetricsToString(){
+        return"Products sold: " + productsSold + "\n" +
+                "Average note received: "  + averageNoteReceived + "\n";
+    }
+    public String AllMetricsToString() {
         return "Since inception," + "\n" +
             "Income: " + revenue + "$\n" +
             "Products sold: " + productsSold + "\n" +

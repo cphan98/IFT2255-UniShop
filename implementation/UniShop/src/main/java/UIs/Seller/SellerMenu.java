@@ -39,7 +39,8 @@ public class SellerMenu extends Menu {
             System.out.println("2. Display Order History");
             System.out.println("3. Display Inventory");
             System.out.println("4. Display Notifications");
-            System.out.println("5. Log out");
+            System.out.println("5. Display Metrics");
+            System.out.println("6. Log out");
             int choice = getUserInputAsInteger();
 
             switch (choice) {
@@ -56,6 +57,9 @@ public class SellerMenu extends Menu {
                     continueLoop = displayNotifications();
                     break;
                 case 5:
+                    continueLoop = displayMetrics();
+                    break;
+                case 6:
                     return false;  // Add this to handle log out
                 default:
                     System.out.println("Invalid selection. Please try again.");
@@ -75,7 +79,7 @@ public class SellerMenu extends Menu {
             System.out.println("Email: " + user.getEmail());
             System.out.println();
             System.out.println("METRICS");
-            displayMetrics();
+            displayProfileMetrics();
             System.out.println();
             System.out.println("1. Modify profile");
             System.out.println("2. Return to menu");
@@ -506,7 +510,22 @@ public class SellerMenu extends Menu {
 
     // METRICS
 
-    public void displayMetrics() {
-        System.out.println(user.getMetrics().toString());
+    public void displayProfileMetrics() {
+        System.out.println(user.getMetrics().SomeMetricsToString());
     }
+    public boolean displayMetrics(){
+        boolean continueLoop = true;
+        while (continueLoop){
+            System.out.println("Metrics for " + user.getId() + " : ");
+            System.out.println(user.getMetrics().AllMetricsToString());
+            System.out.println();
+            System.out.println("1. Return to menu ");
+            int choice = getUserInputAsInteger();
+            switch (choice){
+                case 1: continueLoop = false;
+            }
+        }
+        return true;
+    }
+
 }

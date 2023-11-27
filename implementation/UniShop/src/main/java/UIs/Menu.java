@@ -57,7 +57,7 @@ public abstract class Menu {
         System.out.println("Returning to menu...");
         return true;
     }
-    public abstract void displayMetrics();
+    public abstract boolean displayMetrics();
     public abstract void modifyProfile();
     public abstract void modifyPersonalInfo();
     public abstract void modifyPassword();

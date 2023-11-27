@@ -14,6 +14,7 @@ import productClasses.Usages.Evaluation;
 import productClasses.Usages.Order;
 import productClasses.Product;
 
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -47,7 +48,8 @@ public class BuyerMenu extends Menu {
             System.out.println("4. Display Wishlist");
             System.out.println("5. Display Catalog");
             System.out.println("6. Display Notifications");
-            System.out.println("7. Log out");
+            System.out.println("7. Display Metrics");
+            System.out.println("8. Log out");
             int choice = getUserInputAsInteger();
 
             switch (choice) {
@@ -57,7 +59,8 @@ public class BuyerMenu extends Menu {
                 case 4 -> continueLoop = displayWishList();
                 case 5 -> continueLoop = displayCatalog();
                 case 6 -> continueLoop = displayNotifications();
-                case 7 -> {
+                case 7 -> continueLoop = displayMetrics();
+                case 8 -> {
                     return false;  // Add this to handle log out
                 }
                 default -> System.out.println("Invalid selection. Please try again.");
@@ -77,7 +80,8 @@ public class BuyerMenu extends Menu {
             System.out.println("Buying points: " + user.getPoints());
             System.out.println();
             System.out.println("METRICS");
-            displayMetrics();
+            displayMetricsProfil();
+
             line();
             System.out.println();
             System.out.println("1. Modify profile");
@@ -256,8 +260,23 @@ public class BuyerMenu extends Menu {
         return true;  // continue the loop
     }
     // METRICS
-    public void displayMetrics() {
-        System.out.println(user.getMetrics().toString());
+    public void displayMetricsProfil() {
+        System.out.println(user.getMetrics().SomeMetricsToString());
+
+    }
+    public boolean displayMetrics(){
+        boolean continueLoop = true;
+        while (continueLoop){
+            System.out.println("Metrics for " + user.getId() + " : ");
+            System.out.println(user.getMetrics().AlltoString());
+            System.out.println();
+            System.out.println("1. Return to menu ");
+            int choice = getUserInputAsInteger();
+            switch (choice){
+                case 1: continueLoop = false;
+            }
+        }
+        return true;
     }
     // CATALOG
     public boolean displayCatalog() {

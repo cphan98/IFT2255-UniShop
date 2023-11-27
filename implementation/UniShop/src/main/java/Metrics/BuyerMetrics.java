@@ -65,7 +65,13 @@ public class BuyerMetrics implements Metrics {
         }
         averageNoteGiven = sum / notesGiven.size();
     }
-    public String toString() {
+    public String SomeMetricsToString() {
+        return
+            "Orders made: " + ordersMade + "\n" +
+            "Likes given: " + likesGiven + "\n" +
+            "Experience: " + expPoints + " points\n";
+}
+    public String AlltoString() {
         return
                 "Since inception," + "\n" +
             "Orders made: " + ordersMade + "\n" +
