@@ -1,6 +1,6 @@
 package BackEndUtility;
 
-public enum OrderState {
+public enum OrderState implements java.io.Serializable {
     PENDING,
     ACCEPTED,
     REJECTED,

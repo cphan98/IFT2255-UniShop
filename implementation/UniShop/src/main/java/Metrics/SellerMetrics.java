@@ -2,7 +2,7 @@ package Metrics;
 
 import java.util.ArrayList;
 
-public class SellerMetrics implements Metrics {
+public class SellerMetrics implements Metrics, java.io.Serializable {
     private float revenue;
     private int productsSold;
     private float averageNoteReceived;

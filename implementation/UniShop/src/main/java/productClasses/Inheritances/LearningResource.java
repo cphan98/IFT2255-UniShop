@@ -4,7 +4,7 @@ import Users.Seller;
 import BackEndUtility.Category;
 import productClasses.Product;
 
-public class LearningResource extends Product {
+public class LearningResource extends Product implements java.io.Serializable {
     private int ISBN;
     private String author;
     private String organization;

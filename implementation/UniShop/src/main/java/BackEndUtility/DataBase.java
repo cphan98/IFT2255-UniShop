@@ -12,13 +12,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
-public class DataBase {
+public class DataBase implements java.io.Serializable {
     private final ArrayList<User> users;
     private final ArrayList<Product> products = new ArrayList<>();
     private final ArrayList<Order> orders = new ArrayList<>();
 
     public DataBase(ArrayList<User> users) {
         this.users = users;
+    }
+    public DataBase() {
+        this.users = new ArrayList<>();
     }
 
     public User getUser(String id, String password) {

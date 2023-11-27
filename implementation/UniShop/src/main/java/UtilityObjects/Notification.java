@@ -3,7 +3,7 @@ package UtilityObjects;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Notification {
+public class Notification implements java.io.Serializable {
     // attributes
     private String title;
     private String summary;
@@ -14,8 +14,6 @@ public class Notification {
     public String getTitle() { return title; }
     public String getSummary() { return summary; }
     public String getDate() { return date; }
-    public boolean isRead() { return read; }
-
     // setters
     public void setTitle(String title) { this.title = title; }
     public void setSummary(String summary) { this.summary = summary; }

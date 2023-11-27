@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Order {
+public class Order implements java.io.Serializable {
     // ATTRIBUTES
 
     private String id;
@@ -21,8 +21,7 @@ public class Order {
     private Address shippingAddress;
     private String phoneNumber;
     private final LocalDate today = LocalDate.now();
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private String orderDate = today.format(formatter);
+    private String orderDate = today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     private HashMap<Product, Integer> products;
     private OrderState status = OrderState.IN_PRODUCTION;
     private String ETA;

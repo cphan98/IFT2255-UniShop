@@ -4,8 +4,8 @@ import productClasses.Product;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Cart {
-    private HashMap<Product, Integer> productQuantities;
+public class Cart implements java.io.Serializable {
+    private final HashMap<Product, Integer> productQuantities;
 
     public Cart() {
         this.productQuantities = new HashMap<>();

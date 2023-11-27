@@ -2,7 +2,7 @@ package BackEndUtility;
 
 import java.util.Scanner;
 
-public class InputManager {
+public class InputManager implements java.io.Serializable {
     private static InputManager instance = null;
     private Scanner scanner;
 

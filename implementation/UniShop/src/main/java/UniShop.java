@@ -9,18 +9,43 @@ import BackEndUtility.OrderState;
 import productClasses.*;
 import productClasses.Inheritances.*;
 import productClasses.Usages.Evaluation;
+import serializationUtil.SerializationUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 public class UniShop {
+    private static final String DATA_FILE = "dataBase.ser";
     private static DataBase database;
     public static void main(String[] args) {
-        makeFakeData();
+        try {
+            // Try to load existing data
+            database = SerializationUtil.loadDataBase(DATA_FILE);
+        } catch (IOException | ClassNotFoundException e) {
+            // If no data is found or an error occurs, create new data
+            makeFakeData();
+        }
+
         HomeScreen homeScreen = new HomeScreen(database);
         printBigVoidBefore();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                SerializationUtil.saveDataBase(database, DATA_FILE);
+                System.out.println("Data saved successfully.");
+            } catch (IOException e) {
+                System.out.println("Error saving data: " + e.getMessage());
+            }
+        }));
         homeScreen.initialize();
+
+        // Save the data when exiting
+        try {
+            SerializationUtil.saveDataBase(database, DATA_FILE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     private static void printBigVoidBefore() {
         for (int i=0; i<100; i++) {

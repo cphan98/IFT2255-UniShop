@@ -4,7 +4,7 @@ import Users.Seller;
 import BackEndUtility.Category;
 import productClasses.Product;
 
-public class Stationery extends Product {
+public class Stationery extends Product implements java.io.Serializable {
     private String brand;
     private String model;
     private String subCategory;

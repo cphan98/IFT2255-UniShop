@@ -2,7 +2,7 @@ package productClasses.Usages;
 
 import productClasses.Product;
 
-public class IssueQuery {
+public class IssueQuery implements java.io.Serializable {
     // ATTRIBUTES
 
     private String id;

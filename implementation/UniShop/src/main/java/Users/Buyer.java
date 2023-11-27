@@ -11,7 +11,7 @@ import productClasses.Product;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Buyer extends User {
+public class Buyer extends User implements java.io.Serializable {
     private String firstName;
     private String lastName;
     private final Cart cart;
