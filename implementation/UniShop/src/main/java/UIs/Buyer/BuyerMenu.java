@@ -18,10 +18,6 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class BuyerMenu extends Menu {
-    private final int EVALUATION_POINTS = 10;
-    private final int LIKE_POINTS = 1;
-    private final int FOLLOW_POINTS = 5;
-    private final int ORDER_POINTS = 10;
     private final Buyer user;
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
@@ -46,7 +42,8 @@ public class BuyerMenu extends Menu {
             System.out.println("3. Display Cart");
             System.out.println("4. Display Wishlist");
             System.out.println("5. Display Catalog");
-            System.out.println("6. Display Notifications");
+            int unreadNotifications = user.getNotifications().stream().filter(notification -> !notification.isRead()).toArray().length;
+            System.out.println("6. Display Notifications" + (unreadNotifications == 0 ? "" : " (" + unreadNotifications  + " new)"));
             System.out.println("7. Log out");
             int choice = uiUtilities.getUserInputAsInteger();
 
@@ -165,6 +162,8 @@ public class BuyerMenu extends Menu {
                 order.changeStatus(OrderState.DELIVERED);
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
                 System.out.println("Order confirmed");
+                user.addExpPoints(10);
+                break;
             case 4:
                 System.out.println("Returning to order history...");
                 break;
@@ -532,6 +531,12 @@ public class BuyerMenu extends Menu {
     // EVALUATIONS
     public void addEvaluationToProduct(Product product) {
         InputManager inputManager = InputManager.getInstance();
+        for (Evaluation evaluation : product.getEvaluations()) {
+            if (evaluation.getAuthor().equals(user)) {
+                System.out.println("You already evaluated this product");
+                return;
+            }
+        }
         System.out.println("Enter a comment:");
         String comment = inputManager.nextLine();
         float rating = -1F;
@@ -540,7 +545,6 @@ public class BuyerMenu extends Menu {
             rating = Float.parseFloat(inputManager.nextLine());
         }
         product.addEvaluation(new Evaluation(comment, rating, user));
-        user.addExpPoints(EVALUATION_POINTS);
         String title = "You got a new evaluation!";
         String summary = this.user + " added a new comment on " + product.getTitle() + "!";
         product.getSeller().addNotification(new Notification(title, summary));
@@ -660,7 +664,6 @@ public class BuyerMenu extends Menu {
 
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
-        user.addExpPoints(ORDER_POINTS);
     }
 
 

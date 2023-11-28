@@ -34,7 +34,8 @@ public class SellerMenu extends Menu {
             System.out.println("1. Display Profile");
             System.out.println("2. Display Order History");
             System.out.println("3. Display Inventory");
-            System.out.println("4. Display Notifications");
+            int unreadNotifications = user.getNotifications().stream().filter(notification -> !notification.isRead()).toArray().length;
+            System.out.println("4. Display Notifications" + (unreadNotifications == 0 ? "" : " (" + unreadNotifications  + " new)"));
             System.out.println("5. Log out");
             int choice = uiUtilities.getUserInputAsInteger();
 

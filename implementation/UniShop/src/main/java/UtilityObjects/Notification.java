@@ -19,6 +19,7 @@ public class Notification implements java.io.Serializable {
     public void setSummary(String summary) { this.summary = summary; }
     public void setDate(String date) { this.date = date; }
     public void setRead(boolean read) { this.read = read; }
+    public boolean isRead() { return read; }
     // constructor
     public Notification(String title, String summary) {
         this.title = title;
