@@ -15,6 +15,7 @@ import productClasses.Usages.Order;
 import productClasses.Product;
 
 import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -261,23 +262,35 @@ public class BuyerMenu extends Menu {
     }
     // METRICS
     public void displayMetricsProfil() {
-        System.out.println(user.getMetrics().SomeMetricsToString());
+
+        System.out.println(user.getMetrics().getSelectedMetrics().get(0));
+        System.out.println(user.getMetrics().getSelectedMetrics().get(1));
+        System.out.println(user.getMetrics().getSelectedMetrics().get(2));
 
     }
+
     public boolean displayMetrics(){
         boolean continueLoop = true;
         while (continueLoop){
-            System.out.println("Metrics for " + user.getId() + " : ");
+            System.out.println("All metrics available for " + user.getId() + " : ");
+            System.out.println();
             System.out.println(user.getMetrics().AlltoString());
             System.out.println();
-            System.out.println("1. Return to menu ");
+            System.out.println("1. Configure metrics to display in profile (3 max.)");
+            System.out.println("2. Return to menu ");
             int choice = getUserInputAsInteger();
+
             switch (choice){
-                case 1: continueLoop = false;
+                case 1:
+                    user.getMetrics().configureMetrics();
+                    break;
+                case 2: continueLoop = false;
             }
         }
         return true;
     }
+
+
     // CATALOG
     public boolean displayCatalog() {
         line();

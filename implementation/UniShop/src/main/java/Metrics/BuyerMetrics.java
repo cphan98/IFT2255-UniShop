@@ -1,5 +1,7 @@
 package Metrics;
 
+import BackEndUtility.InputManager;
+
 import java.util.ArrayList;
 
 public class BuyerMetrics implements Metrics {
@@ -11,6 +13,9 @@ public class BuyerMetrics implements Metrics {
     private final ArrayList<Float> notesGiven;
     private float averageNoteGiven;
     private int expPoints;
+
+    public ArrayList<String> selectedMetrics; //to be shown on the users profile
+
     public BuyerMetrics() {
         ordersMade = 0;
         productsBought = 0;
@@ -20,6 +25,7 @@ public class BuyerMetrics implements Metrics {
         averageNoteGiven = 0;
         expPoints = 0;
         notesGiven = new ArrayList<>();
+        selectedMetrics = new ArrayList<>();
     }
     public void setOrdersMade(int ordersMade) {
         this.ordersMade = ordersMade;
@@ -39,6 +45,13 @@ public class BuyerMetrics implements Metrics {
     public void setAverageNoteGiven(float averageNoteGiven) {
         this.averageNoteGiven = averageNoteGiven;
     }
+    public void setSelectedMetrics(ArrayList<String> selectedMetrics) {this.selectedMetrics = selectedMetrics; };
+
+    public void setExpPoints(int expPoints) {
+        this.expPoints = expPoints;
+    }
+    public int getExpPoints(){ return expPoints;}
+
     public int getOrdersMade() {
         return ordersMade;
     }
@@ -57,6 +70,24 @@ public class BuyerMetrics implements Metrics {
     public float getAverageNoteGiven() {
         return averageNoteGiven;
     }
+    public ArrayList<String> getSelectedMetrics(){
+        return selectedMetrics;
+    }
+    protected int getUserInputAsInteger() {
+        while (true) {
+            try {
+                int returned = Integer.parseInt(InputManager.getInstance().nextLine());
+                if (returned < 0) {
+                    System.out.println("Invalid input. Please enter a positive number.");
+                } else {
+                    return returned;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+
+        }
+    }
     public void updateAverageNoteGiven(float note) {
         notesGiven.add(note);
         float sum = 0;
@@ -65,12 +96,7 @@ public class BuyerMetrics implements Metrics {
         }
         averageNoteGiven = sum / notesGiven.size();
     }
-    public String SomeMetricsToString() {
-        return
-            "Orders made: " + ordersMade + "\n" +
-            "Likes given: " + likesGiven + "\n" +
-            "Experience: " + expPoints + " points\n";
-}
+
     public String AlltoString() {
         return
                 "Since inception," + "\n" +
@@ -79,7 +105,65 @@ public class BuyerMetrics implements Metrics {
             "Likes received on their evaluations: " + likesReceived + "\n" +
             "Likes given: " + likesGiven + "\n" +
             "Evaluations made: " + evaluationsMade + "\n" +
-            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" + "\n" +
+            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" +
             "Experience: " + expPoints + " points\n";
     }
+    public void configureMetrics(){
+        ArrayList<String> allMetrics = new ArrayList<>();
+        ArrayList<Number> allMetricsValues =new ArrayList<>();
+        allMetrics.add("Orders made");
+        allMetricsValues.add(ordersMade);
+        allMetrics.add("Products bought" );
+        allMetricsValues.add(productsBought);
+        allMetrics.add("Likes received on evaluation" );
+        allMetricsValues.add(likesReceived);
+        allMetrics.add("Likes given" );
+        allMetricsValues.add(likesGiven);
+        allMetrics.add("Average note given");
+        allMetricsValues.add(averageNoteGiven);
+        allMetrics.add("Experience points" );
+        allMetricsValues.add(expPoints);
+        ArrayList<String> selectedMetrics = selectMetrics(allMetrics, allMetricsValues);
+    }
+
+    private ArrayList<String> selectMetrics(ArrayList<String> allMetrics, ArrayList<Number> allMetricsValues){
+        System.out.println("Select metrics to be displayed in your profile (3 max.)");
+        System.out.println("Enter the number corresponding to the metric to select or '0' to finish:");
+        int count = 1;
+        for (String metric : allMetrics){
+            System.out.println(count + ". " + metric);
+            count++;
+        }
+        boolean continueLoop = true;
+        while (continueLoop){
+            int choice = getUserInputAsInteger();
+            if (choice == 0){
+                break;
+            }
+
+            if (choice > 0 && choice <= allMetrics.size()){
+                String metricSelected = allMetrics.get(choice - 1)  ;
+                if(!selectedMetrics.contains(metricSelected)){
+                    selectedMetrics.add(metricSelected + " " + allMetricsValues.get(choice-1).toString());
+                    System.out.println(metricSelected + " was added to your profile");
+                    if (selectedMetrics.size()==3){
+                        System.out.println("--------------------------------------------------------------");
+                        System.out.println("Your selected metrics have been successfully added to your profile!");
+                        System.out.println("--------------------------------------------------------------");
+                        System.out.println();
+                        break;
+                    }
+                } else {
+                    System.out.println("Metric already displayed in profile");
+                }
+            } else {
+                System.out.println("invalid selection");
+            }
+        }
+        return selectedMetrics;
+    }
+
+
+
+
 }
