@@ -16,12 +16,19 @@ import productClasses.Usages.IssueQuery;
 import productClasses.Usages.Order;
 import productClasses.Product;
 
+
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+=======
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 
 public class BuyerMenu extends Menu {
     private final Buyer user;
@@ -49,7 +56,9 @@ public class BuyerMenu extends Menu {
             System.out.println("4. Display Wishlist");
             System.out.println("5. Display Catalog");
             System.out.println("6. Display Notifications");
-            System.out.println("7. Log out");
+
+            System.out.println("7. Display Metrics");
+            System.out.println("8. Log out");
             int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
@@ -59,7 +68,8 @@ public class BuyerMenu extends Menu {
                 case 4 -> continueLoop = displayWishList();
                 case 5 -> continueLoop = displayCatalog();
                 case 6 -> continueLoop = displayNotifications();
-                case 7 -> {
+                case 7 -> continueLoop = displayMetrics();
+                case 8 -> {
                     return false;  // Add this to handle log out
                 }
                 default -> System.out.println("Invalid selection. Please try again.");
@@ -78,7 +88,8 @@ public class BuyerMenu extends Menu {
             System.out.println("Buying points: " + user.getPoints());
             System.out.println();
             System.out.println("METRICS");
-            displayMetrics();
+            displayMetricsProfil();
+
             line();
             System.out.println();
             System.out.println("1. Modify profile");
@@ -500,9 +511,36 @@ public class BuyerMenu extends Menu {
         return true;  // continue the loop
     }
     // METRICS
-    public void displayMetrics() {
-        System.out.println(user.getMetrics().toString());
+    public void displayMetricsProfil() {
+
+        System.out.println(user.getMetrics().getSelectedMetrics().get(0));
+        System.out.println(user.getMetrics().getSelectedMetrics().get(1));
+        System.out.println(user.getMetrics().getSelectedMetrics().get(2));
+
     }
+
+    public boolean displayMetrics(){
+        boolean continueLoop = true;
+        while (continueLoop){
+            System.out.println("All metrics available for " + user.getId() + " : ");
+            System.out.println();
+            System.out.println(user.getMetrics().AlltoString());
+            System.out.println();
+            System.out.println("1. Configure metrics to display in profile (3 max.)");
+            System.out.println("2. Return to menu ");
+            int choice = getUserInputAsInteger();
+
+            switch (choice){
+                case 1:
+                    user.getMetrics().configureMetrics();
+                    break;
+                case 2: continueLoop = false;
+            }
+        }
+        return true;
+    }
+
+
     // CATALOG
     public boolean displayCatalog() {
         line();

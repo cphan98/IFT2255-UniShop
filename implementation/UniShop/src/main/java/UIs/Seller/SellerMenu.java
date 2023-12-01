@@ -36,8 +36,10 @@ public class SellerMenu extends Menu {
             System.out.println("3. Display Inventory");
             int unreadNotifications = user.getNotifications().stream().filter(notification -> !notification.isRead()).toArray().length;
             System.out.println("4. Display Notifications" + (unreadNotifications == 0 ? "" : " (" + unreadNotifications  + " new)"));
-            System.out.println("5. Log out");
+            System.out.println("5. Display Metrics");
+            System.out.println("6. Log out");
             int choice = uiUtilities.getUserInputAsInteger();
+
 
             switch (choice) {
                 case 1:
@@ -53,6 +55,9 @@ public class SellerMenu extends Menu {
                     continueLoop = displayNotifications();
                     break;
                 case 5:
+                    continueLoop = displayMetrics();
+                    break;
+                case 6:
                     return false;  // Add this to handle log out
                 default:
                     System.out.println("Invalid selection. Please try again.");
@@ -72,7 +77,7 @@ public class SellerMenu extends Menu {
             System.out.println("Email: " + user.getEmail());
             System.out.println();
             System.out.println("METRICS");
-            displayMetrics();
+            displayProfileMetrics();
             System.out.println();
             System.out.println("1. Modify profile");
             System.out.println("2. Return to menu");
@@ -534,7 +539,31 @@ public class SellerMenu extends Menu {
 
     // METRICS
 
-    public void displayMetrics() {
-        System.out.println(user.getMetrics().toString());
+    public void displayProfileMetrics() {
+        System.out.println(user.getMetrics().getSelectedMetrics().get(0));
+        System.out.println(user.getMetrics().getSelectedMetrics().get(1));
+        System.out.println(user.getMetrics().getSelectedMetrics().get(2));
+
     }
+    public boolean displayMetrics(){
+        boolean continueLoop = true;
+        while (continueLoop){
+            System.out.println("All metrics available for " + user.getId() + " : ");
+            System.out.println();
+            System.out.println(user.getMetrics().AlltoString());
+            System.out.println();
+            System.out.println("1. Configure metrics to display in profile (3 max.)");
+            System.out.println("2. Return to menu ");
+            int choice = getUserInputAsInteger();
+
+            switch (choice){
+                case 1:
+                    user.getMetrics().configureMetrics();
+                    break;
+                case 2: continueLoop = false;
+            }
+        }
+        return true;
+    }
+
 }

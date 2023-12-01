@@ -64,6 +64,7 @@ public abstract class Menu {
         return true;
     }
 
+
     public void sendBuyerNotification(Buyer buyer, String title, String summary) {
         buyer.addNotification((new Notification(title, summary)));
     }
@@ -73,6 +74,7 @@ public abstract class Menu {
     }
 
     public abstract void displayMetrics();
+
     public abstract void modifyProfile();
 
     protected static void line() {
