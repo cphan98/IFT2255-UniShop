@@ -6,7 +6,7 @@ import productClasses.Usages.Evaluation;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public abstract class Product {
+public abstract class Product implements java.io.Serializable {
     private final String id;
     private String title;
     private String description;

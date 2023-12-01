@@ -7,7 +7,7 @@ import productClasses.Product;
 
 import java.util.ArrayList;
 
-public class Seller extends User {
+public class Seller extends User implements java.io.Serializable {
 
     private Category category;
     private ArrayList<Product> products;

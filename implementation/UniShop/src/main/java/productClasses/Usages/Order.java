@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Order {
+public class Order implements java.io.Serializable {
     // ATTRIBUTES
 
     private String id;
@@ -21,19 +21,16 @@ public class Order {
     private Address shippingAddress;
     private String phoneNumber;
     private final LocalDate today = LocalDate.now();
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private String orderDate = today.format(formatter);
+    private String orderDate = today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     private HashMap<Product, Integer> products;
     private OrderState status = OrderState.IN_PRODUCTION;
     private String ETA;
-    private Boolean isReturn = false;
     private IssueQuery issue;
     private String shippingCompany;
     private String shippingNumber;
     private float totalCost;
 
     // GETTERS
-
     public String getId() { return id; }
     public Buyer getBuyer() { return buyer; }
     public String getPaymentType() { return paymentType; }
@@ -44,14 +41,12 @@ public class Order {
     public HashMap<Product, Integer> getProducts() { return products; }
     public OrderState getStatus() { return status; }
     public String getETA() { return ETA; }
-    public Boolean getIsReturn() { return isReturn; }
     public IssueQuery getIssue() { return issue; }
     public String getShippingCompany() { return shippingCompany; }
     public String getShippingNumber() { return shippingNumber; }
     public float getTotalCost() { return totalCost; }
 
     // SETTERS
-
     public void setId(String id) { this.id = id; }
     public void setBuyer(Buyer buyer) { this.buyer = buyer; }
     public void setPaymentType(String paymentType) { this.paymentType = paymentType; }
@@ -62,7 +57,6 @@ public class Order {
     public void setProducts(HashMap<Product, Integer> products) { this.products = products; }
     public void setStatus(OrderState status) { this.status = status; }
     public void setETA(String ETA) { this.ETA = ETA; }
-    public void setIsReturn(Boolean isReturn) { this.isReturn = isReturn; }
     public void setIssue(IssueQuery issue) { this.issue = issue; }
     public void setShippingCompany(String company) {this.shippingCompany = company; }
     public void setShippingNumber(String number) { this.shippingNumber = number; }
@@ -160,29 +154,6 @@ public class Order {
             case IN_DELIVERY -> setStatus(OrderState.IN_DELIVERY);
             case DELIVERED -> setStatus(OrderState.DELIVERED);
         }
-        sendBuyerNotification(buyer, "Order Status Changed", "Your order " + id + " is now " + status.toString().toLowerCase() + "!");
-    }
-
-    public void cancelOrder() {
-        setStatus(OrderState.CANCELLED);
-        buyer.getMetrics().setOrdersMade(buyer.getMetrics().getOrdersMade() - 1);
-        int productsCancelled = 0;
-        for (Product p : products.keySet()) {
-            productsCancelled += products.get(p);
-        }
-        buyer.getMetrics().setProductsBought(buyer.getMetrics().getProductsBought() - productsCancelled);
-        sendBuyerNotification(buyer, "Order Cancelled", "Your order " + id + " has been cancelled!");
-        sendSellerNotification(products.keySet().iterator().next().getSeller(), "Order Cancelled", "Your order " + id + " has been cancelled!");
-    }
-
-    // NOTIFICATIONS
-
-    public void sendBuyerNotification(Buyer buyer, String title, String summary) {
-        buyer.addNotification(new Notification(title, summary));
-    }
-
-    public void sendSellerNotification(Seller seller, String title, String summary) {
-        seller.addNotification(new Notification(title, summary));
     }
 
     // ETA

@@ -1,8 +1,6 @@
 package UtilityObjects;
 
-import java.util.Date;
-
-public class CreditCard {
+public class CreditCard implements java.io.Serializable {
     // attributes
     private String cardNumber;
     private String firstName;

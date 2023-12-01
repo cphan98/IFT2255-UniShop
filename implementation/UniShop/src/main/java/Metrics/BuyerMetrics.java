@@ -4,7 +4,7 @@ import BackEndUtility.InputManager;
 
 import java.util.ArrayList;
 
-public class BuyerMetrics implements Metrics {
+public class BuyerMetrics implements Metrics, java.io.Serializable {
     private int ordersMade;
     private int productsBought;
     private int likesReceived;
@@ -12,6 +12,7 @@ public class BuyerMetrics implements Metrics {
     private int evaluationsMade;
     private final ArrayList<Float> notesGiven;
     private float averageNoteGiven;
+
     private int expPoints;
 
     public ArrayList<String> selectedMetrics; //to be shown on the users profile
@@ -23,7 +24,6 @@ public class BuyerMetrics implements Metrics {
         likesGiven = 0;
         evaluationsMade = 0;
         averageNoteGiven = 0;
-        expPoints = 0;
         notesGiven = new ArrayList<>();
         selectedMetrics = new ArrayList<>();
     }
@@ -105,8 +105,12 @@ public class BuyerMetrics implements Metrics {
             "Likes received on their evaluations: " + likesReceived + "\n" +
             "Likes given: " + likesGiven + "\n" +
             "Evaluations made: " + evaluationsMade + "\n" +
+
             "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" +
             "Experience: " + expPoints + " points\n";
+
+            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n";
+
     }
     public void configureMetrics(){
         ArrayList<String> allMetrics = new ArrayList<>();

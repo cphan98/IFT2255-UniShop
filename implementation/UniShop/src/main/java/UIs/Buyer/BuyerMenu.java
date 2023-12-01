@@ -4,6 +4,7 @@ import BackEndUtility.Catalog;
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import UIs.Menu;
+import UIs.UIUtilities;
 import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
@@ -11,28 +12,34 @@ import UtilityObjects.Notification;
 import BackEndUtility.Category;
 import BackEndUtility.OrderState;
 import productClasses.Usages.Evaluation;
+import productClasses.Usages.IssueQuery;
 import productClasses.Usages.Order;
 import productClasses.Product;
+
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+=======
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 
 public class BuyerMenu extends Menu {
     private final Buyer user;
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
     private Catalog catalog;
-
     // MENU
-
     public BuyerMenu(Buyer user, DataBase database) {
-        super(user);
+        super(user, database);
         this.user = user;
-        this.database = database;
     }
-
     public boolean displayMenu() {
         boolean continueLoop = true;
 
@@ -49,9 +56,10 @@ public class BuyerMenu extends Menu {
             System.out.println("4. Display Wishlist");
             System.out.println("5. Display Catalog");
             System.out.println("6. Display Notifications");
+
             System.out.println("7. Display Metrics");
             System.out.println("8. Log out");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> continueLoop = displayProfile();
@@ -75,7 +83,6 @@ public class BuyerMenu extends Menu {
         while (continueLoop) {
             line();
             System.out.println("PROFILE");
-            InputManager inputManager = InputManager.getInstance();
             System.out.println("Name: " + user.getId());
             System.out.println("Email: " + user.getEmail());
             System.out.println("Buying points: " + user.getPoints());
@@ -88,35 +95,23 @@ public class BuyerMenu extends Menu {
             System.out.println("1. Modify profile");
             System.out.println("2. Return to menu");
             System.out.println("3. Delete account");
-            String choice = inputManager.nextLine();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
-                case "1" -> {
+                case 1:
                     System.out.println("Modifying profile...");
                     modifyProfile();
-                }
-                case "2" -> {
+                    break;
+                case 2:
                     System.out.println("Returning to menu...");
                     continueLoop = false;
-                }
-                default -> {
-                    System.out.println("Are you sure you want to delete your account? (y/n)");
-                    String input = inputManager.nextLine();
-                    boolean continueLoop2 = true;
-                    while (continueLoop2) {
-                        if (Objects.equals(input, "y")) {
-                            System.out.println("Deleting account...");
-                            database.removeUser(user);
-                            continueLoop2 = false;
-                        } else if (Objects.equals(input, "n")) {
-                            System.out.println("Returning to menu...");
-                            continueLoop2 = false;
-                        } else {
-                            System.out.println("Invalid input");
-                        }
-                    }
+                    break;
+                case 3:
+                    uiUtilities.deleteAccount();
+                    return false;
+                default:
+                    System.out.println("Invalid selection. Please try again.");
                     return false;  // continue the loop
-                }
             }
         }
         return true;  // continue the loop
@@ -127,73 +122,14 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Modify password");
         System.out.println("4. Modify payment info");
         System.out.println("5. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
-            case 1 -> modifyPersonalInfo();
-            case 2 -> modifyShippingAddress();
-            case 3 -> modifyPassword();
+            case 1 -> uiUtilities.modifyPersonalInfo(user);
+            case 2 -> uiUtilities.modifyAddress();
+            case 3 -> uiUtilities.modifyPassword();
             case 4 -> modifyPaymentInfo();
             case 5 -> System.out.println("Returning to menu...");
             default -> System.out.println("Invalid selection. Please try again.");
-        }
-    }
-    public void modifyPersonalInfo() {
-        System.out.println("Enter your first name:");
-        String firstName = InputManager.getInstance().nextLine();
-        System.out.println("Enter your last name:");
-        String lastName = InputManager.getInstance().nextLine();
-        System.out.println("Enter your new id:");
-        String id = InputManager.getInstance().nextLine();
-        String email = "";
-        while (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
-            System.out.println("Please enter your email:");
-            email = InputManager.getInstance().nextLine();
-        }
-        String phoneNumber = "a";
-        while (!phoneNumber.matches("[0-9]+")) {
-            System.out.println("Enter your phone number:");
-            phoneNumber = InputManager.getInstance().nextLine();
-        }
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        if (!database.validateNewUser(id, email)) {
-            System.out.println("This id or email is already taken");
-            System.out.println("Your other info are changed but your id and email were not changed");
-            return;
-        }
-        user.setId(id);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
-        System.out.println("Personal info modified");
-    }
-    public void modifyShippingAddress() {
-        System.out.println("Enter your street name:");
-        String street = InputManager.getInstance().nextLine();
-        System.out.println("Enter your city:");
-        String city = InputManager.getInstance().nextLine();
-        System.out.println("Enter your province:");
-        String province = InputManager.getInstance().nextLine();
-        System.out.println("Enter your country:");
-        String country = InputManager.getInstance().nextLine();
-        System.out.println("Enter your postal code:");
-        String postalCode = InputManager.getInstance().nextLine();
-        Address shippingAddress = new Address(street, city, province, country, postalCode);
-        user.setAddress(shippingAddress);
-    }
-    public void modifyPassword() {
-        while (true) {
-            System.out.println("Enter your current password:");
-            String currentPassword = InputManager.getInstance().nextLine();
-            if (Objects.equals(currentPassword, user.getPassword())) {
-                System.out.println("Enter your new password:");
-                String newPassword = InputManager.getInstance().nextLine();
-                user.setPassword(newPassword);
-                database.changePassword(user, newPassword);
-                System.out.println("Password modified");
-                break;
-            } else {
-                System.out.println("Wrong password");
-            }
         }
     }
     public void modifyPaymentInfo() {
@@ -208,33 +144,347 @@ public class BuyerMenu extends Menu {
         user.setCard(new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate));
         System.out.println("Payment info modified");
     }
+
+    public void cancelOrder(Buyer buyer, Order order) {
+        order.setStatus(OrderState.CANCELLED);
+        buyer.getMetrics().setOrdersMade((buyer.getMetrics().getOrdersMade() - 1));
+        int productsCancelled = 0;
+        for (Product p : order.getProducts().keySet()) {
+            productsCancelled += order.getProducts().get(p);
+        }
+        buyer.getMetrics().setProductsBought((buyer.getMetrics().getProductsBought() - productsCancelled));
+    }
+
     public void interactWithOrder(Order order) {
+        // if the reshipment has not been received within 30 days of the request, cancel reshipment request
+        if (check30DaysFromReshipmentRequest(order.getIssue())) {
+            order.setStatus(OrderState.RESHIPMENT_CANCELLED);
+
+            // send buyer and seller a notification
+            sendBuyerNotification(user, "Reshipment for order " + order.getId() + " is cancelled", "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
+            sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Issue " + order.getIssue().getId() + " cancelled", "The reshipment package has not been received within 30 days of the reshipment request.");
+        }
+
         System.out.println(order);
         System.out.println();
         System.out.println("1. Cancel order");
-        System.out.println("2. Report a problem");
-        System.out.println("3. Confirm order reception");
-        System.out.println("4. Return to order history");
-        int choice = getUserInputAsInteger();
+        System.out.println("2. Return order");
+        System.out.println("3. Exchange order");
+        System.out.println("4. Report a problem");
+        System.out.println("5. Confirm order reception");
+        System.out.println("6. Return to order history");
+
+        int choice = uiUtilities.getUserInputAsInteger();
+
         switch (choice) {
-            case 1:
-                order.cancelOrder();
+            case 1: // cancel order
+                System.out.println("Cancelling order...");
+
+                // order can only be cancelled when status is 'in production'
+                if (order.getStatus() != OrderState.IN_PRODUCTION) {
+                    System.out.println("WARNING : Cannot cancel this order!");
+                    if (order.getStatus() == OrderState.IN_DELIVERY)
+                        System.out.println("Your order is out for delivery.");
+                    if (order.getStatus() == OrderState.DELIVERED)
+                        System.out.println("You have already received your order.");
+                    if (order.getStatus() == OrderState.CANCELLED)
+                        System.out.println("You have already cancelled your order.");
+                    if (order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED)
+                        System.out.println("You cannot cancel a returning order.");
+                    break;
+                }
+
+                cancelOrder(user, order);
+                sendBuyerNotification(user, "Order cancelled", "Your order " + order.getId() + " has been cancelled!");
+                sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Order cancelled", "your order " + order.getId() + " has been cancelled!");
                 System.out.println("Order cancelled");
+
                 break;
-            case 2:
+
+            case 2: // return order
+                System.out.println("Returning order...");
+
+                // order can only be returned when status is 'delivered'
+                if (order.getStatus() != OrderState.DELIVERED) {
+                    System.out.println("WARNING : Cannot return this order!");
+                    if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.IN_DELIVERY)
+                        System.out.println("Your order is being processed.");
+                    if (order.getStatus() == OrderState.CANCELLED)
+                        System.out.println("Your order is cancelled.");
+                    if (order.getStatus() == OrderState.RESHIPMENT_DELIVERED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY)
+                        System.out.println("You have already requested a return.");
+                    break;
+                }
+
+                // order can only be returned within 30 days since it's reception
+                if (!check30DaysFromOrderReception(order)) {
+                    System.out.println("WARNING : Cannot return this order! More than 30 days have passed since the receipt of your order.");
+                    break;
+                }
+
+                // begin return process
+                returnOrder(order);
+
+                break;
+
+            case 3: // exchange order
+                System.out.println("Exchanging order...");
+
+                // order can only be exchanged when status is 'delivered'
+                if (order.getStatus() != OrderState.DELIVERED) {
+                    System.out.println("WARNING : Cannot exchange this order!");
+                    if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.IN_DELIVERY)
+                        System.out.println("Your order is being processed.");
+                    if (order.getStatus() == OrderState.CANCELLED)
+                        System.out.println("Your order is cancelled.");
+                    if (order.getStatus() == OrderState.RESHIPMENT_DELIVERED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY)
+                        System.out.println("You have already requested an exchange.");
+                    break;
+                }
+
+                // order can only be exchanged within 30 days since it's reception
+                if (!check30DaysFromOrderReception(order)) {
+                    System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since the receipt of your order.");
+                    break;
+                }
+
+                // TODO
+
+                break;
+
+            case 4: // report a problem
                 System.out.println("Reporting problem...");
                 break;
-            case 3:
+
+            case 5: // confirm order reception
                 order.changeStatus(OrderState.DELIVERED);
+                sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
                 System.out.println("Order confirmed");
-            case 4:
+
+            case 6: // return order history
                 System.out.println("Returning to order history...");
                 break;
-            default:
+
+            default: // invalid input
                 System.out.println("Invalid selection. Please try again.");
                 break;
         }
     }
+
+    // Checks if the time between the order reception and the return request is <= 30 days
+    private boolean check30DaysFromOrderReception(Order order) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+        long diffInDays;
+
+        try {
+            Date reception = sdf.parse(order.getOrderDate());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate today = LocalDate.now();
+            Date request = sdf.parse(today.format(formatter));
+
+            long diffInMs = Math.abs(request.getTime() - reception.getTime());
+            diffInDays = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (diffInDays > 30) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Returns an order
+    private void returnOrder(Order order) {
+        // display order products
+        order.productsToString();
+
+        // confirm return process
+        System.out.println("Do you want to make a return? (y/n)");
+        InputManager im = InputManager.getInstance();
+        String returnChoice = "";
+        while (!returnChoice.matches("[yn]")) {
+            returnChoice = im.nextLine();
+        }
+
+        // begin return process
+        if (Objects.equals(returnChoice, "y")) {
+            // ask products to return
+            HashMap<Product, Integer> returnProducts = askReturnProducts(order);
+
+            // ask reason of return
+            String reason = askReturnReason();
+
+            // create return query
+            IssueQuery returnQuery = new IssueQuery(reason);
+            returnQuery.setSolutionDescription("Return");
+            returnQuery.setReshipmentProducts(returnProducts);
+            order.setIssue(returnQuery);
+
+            // update order status
+            order.setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
+
+            // confirm return query creation
+            System.out.println("You have successfully requested a return!");
+
+            // send notification to seller
+            sendSellerNotification(returnQuery.getReshipmentProducts().keySet().iterator().next().getSeller(), "Return requested: " + returnQuery.getId(), user.getId() + " requested a return.");
+
+            // print reshipment label
+            printReshipmentLabel(returnQuery.getReshipmentProducts().keySet().iterator().next().getSeller());
+
+            // show next instructions
+            System.out.println("Please follow the next steps:");
+            System.out.println("1. Prepare the reshipment package with the given label.");
+            System.out.println("2. Give the package to your closest post service.");
+        }
+    }
+
+    // Gets Product object with product title from order products
+    private Product getProductFromOrder(HashMap<Product, Integer> products, String title) {
+        Product productFound = null;
+        for (Map.Entry<Product, Integer> product : products.entrySet()) {
+            if (Objects.equals(title, product.getKey().getTitle()))
+                productFound = product.getKey();
+        }
+        return productFound;
+    }
+
+    // Asks products to return
+    private HashMap<Product, Integer> askReturnProducts(Order order) {
+        HashMap<Product, Integer> returnProducts = new HashMap<>(); // product list to return
+        ArrayList<String> orderProducts = new ArrayList<>(); // list of order product titles
+        for (Product product : order.getProducts().keySet()) {
+            orderProducts.add(product.getTitle());
+        }
+
+        // ask product(s) to return
+        boolean moreProdcutsToReturn = true;
+        while (moreProdcutsToReturn) {
+            System.out.println("Enter the name of the product you would like to return. The product must be listed above.");
+            String productTitle = InputManager.getInstance().nextLine();
+
+            // validate product title
+            while (Objects.equals(productTitle, "") || !orderProducts.contains(productTitle)) {
+                System.out.println("Please enter a valid product!");
+                productTitle = InputManager.getInstance().nextLine();
+            }
+
+            // get Product object
+            Product product = getProductFromOrder(order.getProducts(), productTitle);
+
+            // check if product is already in return product list
+            if (returnProducts.containsKey(product) && Objects.equals(returnProducts.get(product), order.getProducts().get(product))) {
+                System.out.println("A maximum of " + order.getProducts().get(product) + product.getTitle() + " can be returned.");
+                System.out.println("Would you like to return another item? (y/n)");
+                String returnChoice = "";
+                while (!returnChoice.matches("[yn]")) {
+                    returnChoice = InputManager.getInstance().nextLine();
+                }
+                if (Objects.equals(returnChoice, "n")) break;
+            }
+
+            // if > 1 units available to return, ask quantity to return
+            if (order.getProducts().get(product) > 1) {
+                System.out.println("Enter the quantity of " + productTitle + " you would like to return.");
+                int productQuantity = uiUtilities.getUserInputAsInteger();
+
+                // validate product quantity
+                while (productQuantity <= 0 || productQuantity > order.getProducts().get(product)) {
+                    System.out.println("Please enter a valid quantity! You can only return up to " + order.getProducts().get(product) + " units.");
+                    productQuantity = uiUtilities.getUserInputAsInteger();
+                }
+
+                // add product to return product list
+                returnProducts.put(product, productQuantity);
+            } else returnProducts.put(product, 1);
+
+            // ask more products to return
+            System.out.println("Would you like to return another item? (y/n)");
+            String returnChoice = "";
+            while (!returnChoice.matches("[yn]")) {
+                returnChoice = InputManager.getInstance().nextLine();
+            }
+            if (Objects.equals(returnChoice, "n")) moreProdcutsToReturn = false;
+        }
+
+        // return list of products to return
+        return returnProducts;
+    }
+
+    // Asks the reason of the return
+    private String askReturnReason() {
+        System.out.println("What is the reason of your return?");
+        System.out.println("1. Wrong product(s) ordered");
+        System.out.println("2. Wrong product(s) received");
+        System.out.println("3. No longer need the product(s)");
+        System.out.println("4. Not satisfied with the product(s)");
+        System.out.println("5. Did not make this order");
+        System.out.println("6. Other");
+        int choice = uiUtilities.getUserInputAsInteger();
+        String reason = "";
+        switch (choice) {
+            case 1 -> reason = "Wrong product(s) ordered";
+            case 2 -> reason = "Wrong product(s) received";
+            case 3 -> reason = "No longer need the product(s)";
+            case 4 -> reason = "Not satisfied with the product(s)";
+            case 5 -> reason = "Did not make this order";
+            case 6 -> reason = "Other";
+            default -> System.out.println("Invalid selection. Please try again.");
+        }
+        return reason;
+    }
+
+    // Prints reshipment label
+    private void printReshipmentLabel(Seller seller) {
+        System.out.println();
+        System.out.println("Printing label...");
+        System.out.println();
+        System.out.println("--------------------------------------------------");
+        System.out.println();
+        System.out.println("FROM: " + user.getFirstName() + " " + user.getLastName());
+        System.out.println("      " + user.getAddress().getAddressLine());
+        System.out.println("      " + user.getAddress().getCity() + ", " + user.getAddress().getProvince() + ", " + user.getAddress().getCountry());
+        System.out.println("      " + user.getAddress().getPostalCode());
+        System.out.println();
+        System.out.println("TO:   " + seller.getId());
+        System.out.println("      " + seller.getAddress().getAddressLine());
+        System.out.println("      " + seller.getAddress().getCity() + ", " + seller.getAddress().getProvince() + ", " + seller.getAddress().getCountry());
+        System.out.println("      " + seller.getAddress().getPostalCode());
+        System.out.println();
+        System.out.println("--------------------------------------------------");
+        System.out.println();
+        System.out.println("Label printed!");
+        System.out.println();
+    }
+
+    // Checks if the reshipment has been received within 30 days of the return request
+    private boolean check30DaysFromReshipmentRequest(IssueQuery query) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+        long diffInDays;
+
+        try {
+            Date request = sdf.parse(query.getRequestDate());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate today = LocalDate.now();
+            Date reception = sdf.parse(today.format(formatter));
+
+            long diffInMs = Math.abs(request.getTime() - reception.getTime());
+            diffInDays = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (diffInDays > 30) {
+            return false;
+        }
+
+        return true;
+    }
+
     // SHOPPING CART
     public boolean displayCart() {
         System.out.println(user.getCart().toString());
@@ -243,7 +493,7 @@ public class BuyerMenu extends Menu {
         System.out.println("2. Remove an item from the cart");
         System.out.println("3. Empty cart");
         System.out.println("4. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1 -> {
                 System.out.println("Proceeding to checkout...");
@@ -308,7 +558,7 @@ public class BuyerMenu extends Menu {
             System.out.println("5. Display products liked by the buyers you follow");
             System.out.println("6. Return to menu");
 
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> searchAndDisplayProduct();
@@ -351,10 +601,9 @@ public class BuyerMenu extends Menu {
     }
     public boolean searchProduct(Catalog catalog) {
         boolean continueLoop = true;
-        InputManager im = InputManager.getInstance();
         while (continueLoop) {
             System.out.println("Enter the name of the product you want to search:");
-            String title = im.nextLine();
+            String title = InputManager.getInstance().nextLine();
             pointedProduct = catalog.searchProductByName(title);
             continueLoop = pointedProduct == null;
         }
@@ -373,11 +622,11 @@ public class BuyerMenu extends Menu {
             System.out.println("4. Interact with an evaluation");
             System.out.println("5. Return to catalog");
 
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> addProductToCart(pointedProduct);
-                case 2 -> user.toggleProductToWishList(pointedProduct);
+                case 2 -> uiUtilities.toggleProductToWishList(user, pointedProduct);
                 case 3 -> addEvaluationToProduct(pointedProduct);
                 case 4 -> interactWithEvaluations();
                 case 5 -> {
@@ -390,7 +639,7 @@ public class BuyerMenu extends Menu {
     }
     private void interactWithEvaluations() {
         System.out.println("Enter the number of the evaluation you want to interact with, or 0 to return:");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         if (choice == 0) {
             System.out.println("Returning to product...");
         } else if (choice > pointedProduct.getEvaluations().size()) {
@@ -409,13 +658,13 @@ public class BuyerMenu extends Menu {
                 System.out.println("2. Follow this buyer");
             }
             System.out.println("3. Return to product");
-            int choice2 = getUserInputAsInteger();
+            int choice2 = uiUtilities.getUserInputAsInteger();
             switch (choice2) {
                 case 1:
-                    user.toggleEvaluationLike(pointedEvaluation);
+                    uiUtilities.toggleEvaluationLike(user, pointedEvaluation);
                     break;
                 case 2:
-                    user.toggleBuyerToFollowing(pointedEvaluation.getAuthor());
+                    uiUtilities.toggleBuyerToFollowing(user, pointedEvaluation.getAuthor());
                     break;
                 case 3:
                     System.out.println("Returning to product...");
@@ -444,9 +693,9 @@ public class BuyerMenu extends Menu {
             System.out.println("1. Follow this seller");
         }
         System.out.println("2. Return to catalog");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
-            case 1 -> user.toggleSellerToFollowing(pointedSeller);
+            case 1 -> uiUtilities.toggleSellerToFollowing(user, pointedSeller);
             case 2 -> {
                 System.out.println("Returning to catalog...");
                 catalog.displayCatalog();
@@ -460,7 +709,7 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Order by likes");
         System.out.println("4. Order by average rating");
         System.out.println("5. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1 -> {
                 System.out.println("1. Books");
@@ -469,7 +718,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("4. Electronics");
                 System.out.println("5. Desktop accessories");
                 System.out.println("6. Return to menu");
-                int choice2 = getUserInputAsInteger();
+                int choice2 = uiUtilities.getUserInputAsInteger();
                 switch (choice2) {
                     case 1 -> catalog.filterProductsByCategory(Category.BOOKS);
                     case 2 -> catalog.filterProductsByCategory(Category.LEARNING_RESOURCES);
@@ -484,7 +733,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice3 = getUserInputAsInteger();
+                int choice3 = uiUtilities.getUserInputAsInteger();
                 switch (choice3) {
                     case 1 -> catalog.orderProducts(true, "price");
                     case 2 -> catalog.orderProducts(false, "price");
@@ -496,7 +745,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice4 = getUserInputAsInteger();
+                int choice4 = uiUtilities.getUserInputAsInteger();
                 switch (choice4) {
                     case 1 -> catalog.orderProducts(true, "likes");
                     case 2 -> catalog.orderProducts(false, "likes");
@@ -508,7 +757,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice5 = getUserInputAsInteger();
+                int choice5 = uiUtilities.getUserInputAsInteger();
                 switch (choice5) {
                     case 1 -> catalog.orderProducts(true, "averageNote");
                     case 2 -> catalog.orderProducts(false, "averageNote");
@@ -524,7 +773,7 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Order by average rating");
         System.out.println("4. Display only favorite sellers");
         System.out.println("5. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1:
                 System.out.println("1. Books");
@@ -533,7 +782,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("4. Electronics");
                 System.out.println("5. Desktop accessories");
                 System.out.println("6. Return to menu");
-                int choice2 = getUserInputAsInteger();
+                int choice2 = uiUtilities.getUserInputAsInteger();
                 switch (choice2) {
                     case 1:
                         catalog.filterSellersByCategory(Category.BOOKS);
@@ -562,7 +811,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice4 = getUserInputAsInteger();
+                int choice4 = uiUtilities.getUserInputAsInteger();
                 switch (choice4) {
                     case 1:
                         catalog.orderSellers(true, "likes");
@@ -582,7 +831,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice5 = getUserInputAsInteger();
+                int choice5 = uiUtilities.getUserInputAsInteger();
                 switch (choice5) {
                     case 1 -> catalog.orderSellers(true, "averageNote");
                     case 2 -> catalog.orderSellers(false, "averageNote");
@@ -605,7 +854,7 @@ public class BuyerMenu extends Menu {
         while (continueLoop) {
             System.out.println(user.wishListToString());
             System.out.println("Type the number of the product you want to add to the cart, or 0 to return to menu:");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
             if (choice < 0 || choice > user.getWishList().size()) {
                 System.out.println("Invalid choice");
             }
@@ -645,7 +894,7 @@ public class BuyerMenu extends Menu {
             return;
         }
         System.out.println("How many of it do you want to remove?");
-        int quantity = getUserInputAsInteger();
+        int quantity = uiUtilities.getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in cart");
             return;
@@ -656,7 +905,7 @@ public class BuyerMenu extends Menu {
     }
     public void addProductToCart(Product product) {
         System.out.println("How many of it do you want?");
-        int quantity = getUserInputAsInteger();
+        int quantity = uiUtilities.getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in stock");
             return;
@@ -692,7 +941,7 @@ public class BuyerMenu extends Menu {
                 paymentType = im.nextLine();
             }
             if (Objects.equals(paymentType, "credit card")) {
-                generateOrders();
+                database.generateAndAddOrders(user);
                 System.out.println("Order successful!");
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
@@ -701,7 +950,7 @@ public class BuyerMenu extends Menu {
                     return;
                 }
                 user.removePoints((int) user.getCart().getTotalPrice() * 50);
-                generateOrders(paymentType);
+                database.generateAndAddOrders(user, paymentType);
                 System.out.println("Order successful!");
             }
         }
@@ -732,7 +981,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("Enter your credit card owner's last name:");
                 String ownerLastName = im.nextLine();
                 CreditCard creditCard = new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate);
-                generateOrders(creditCard, shippingAddress, phoneNumber);
+                database.generateAndAddOrders(user, creditCard, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
@@ -741,7 +990,7 @@ public class BuyerMenu extends Menu {
                     return;
                 }
                 user.removePoints((int) user.getCart().getTotalPrice() * 50);
-                generateOrders(paymentType, shippingAddress, phoneNumber);
+                database.generateAndAddOrders(user, paymentType, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }
 
@@ -750,39 +999,8 @@ public class BuyerMenu extends Menu {
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
     }
-    private void generateOrders(String paymentType, Address shippingAddress, String phoneNumber) {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            HashMap<Product, Integer> sellerProducts = splitCart.get(seller);
-            database.addOrder(new Order(user, paymentType, shippingAddress, phoneNumber, sellerProducts));
-        }
-    }
-    private void generateOrders(CreditCard creditCard, Address shippingAddress, String phoneNumber) {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            HashMap<Product, Integer> sellerProducts = splitCart.get(seller);
-            database.addOrder(new Order(user, "credit card", creditCard, shippingAddress, phoneNumber, sellerProducts));
-        }
-    }
-    private void generateOrders() {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            HashMap<Product, Integer> products = splitCart.get(seller);
-            database.addOrder(new Order(user, "credit card", user.getCard(), products));
-        }
-    }
-    private void generateOrders(String paymentType) {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = user.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            HashMap<Product, Integer> products = splitCart.get(seller);
 
-            for(Product product : user.getCart().getProducts().keySet()){
-                database.getSeller(seller).sellProduct(product, splitCart.size());
-            }
 
-            database.addOrder(new Order(user, paymentType, products));
-        }
-    }
     public void emptyCart() {
         InputManager im = InputManager.getInstance();
         System.out.println("Are you sure you want to empty the cart? (y/n)");

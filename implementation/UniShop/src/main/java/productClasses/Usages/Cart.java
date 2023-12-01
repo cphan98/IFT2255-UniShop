@@ -4,8 +4,8 @@ import productClasses.Product;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Cart {
-    private HashMap<Product, Integer> productQuantities;
+public class Cart implements java.io.Serializable {
+    private final HashMap<Product, Integer> productQuantities;
 
     public Cart() {
         this.productQuantities = new HashMap<>();
@@ -54,7 +54,12 @@ public class Cart {
                 .append(", Price: ")
                 .append(product.getPrice()).append("$")
                 .append("\n"));
-        sb.append("Total Price: ").append(getTotalPrice()).append("$").append(" (or ").append(Math.ceil(getTotalPrice() * 50)).append(" points)");
+        sb.append("Total Price: ").append(getTotalPrice()).append("$").append(" (or ").append(Math.ceil(getTotalPrice() * 50)).append(" points)").append("\n\n");
+
+        int pointsWon = productQuantities.entrySet().stream()
+                .mapToInt(entry -> entry.getKey().getBasePoints() * entry.getValue())
+                .sum();
+        sb.append("You'll get ").append(pointsWon).append(" points for this purchase!");
         return sb.toString();
     }
 }

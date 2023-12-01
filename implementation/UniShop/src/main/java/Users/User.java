@@ -6,7 +6,7 @@ import productClasses.Usages.Order;
 
 import java.util.*;
 
-public abstract class User {
+public abstract class User implements java.io.Serializable {
     protected String id;
     protected String password;
     protected String email;

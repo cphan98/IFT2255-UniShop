@@ -2,7 +2,7 @@ package productClasses.Usages;
 
 import Users.Buyer;
 
-public class Evaluation {
+public class Evaluation implements java.io.Serializable {
     private final String comment;
     private final Float rating;
     private final Buyer author;

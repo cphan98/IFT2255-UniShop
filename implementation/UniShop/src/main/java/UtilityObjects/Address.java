@@ -1,6 +1,6 @@
 package UtilityObjects;
 
-public class Address {
+public class Address implements java.io.Serializable {
     // attributes
     private String addressLine;
     private String country;
