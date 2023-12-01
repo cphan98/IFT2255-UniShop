@@ -7,5 +7,8 @@ public enum OrderState implements java.io.Serializable {
     IN_PRODUCTION,
     IN_DELIVERY,
     DELIVERED,
-    CANCELLED
+    CANCELLED,
+    RESHIPMENT_IN_DELIVERY,
+    RESHIPMENT_DELIVERED,
+    RESHIPMENT_CANCELLED
 }

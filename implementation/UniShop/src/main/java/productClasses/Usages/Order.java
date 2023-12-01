@@ -25,14 +25,12 @@ public class Order implements java.io.Serializable {
     private HashMap<Product, Integer> products;
     private OrderState status = OrderState.IN_PRODUCTION;
     private String ETA;
-    private Boolean isReturn = false;
     private IssueQuery issue;
     private String shippingCompany;
     private String shippingNumber;
     private float totalCost;
 
     // GETTERS
-
     public String getId() { return id; }
     public Buyer getBuyer() { return buyer; }
     public String getPaymentType() { return paymentType; }
@@ -43,14 +41,12 @@ public class Order implements java.io.Serializable {
     public HashMap<Product, Integer> getProducts() { return products; }
     public OrderState getStatus() { return status; }
     public String getETA() { return ETA; }
-    public Boolean getIsReturn() { return isReturn; }
     public IssueQuery getIssue() { return issue; }
     public String getShippingCompany() { return shippingCompany; }
     public String getShippingNumber() { return shippingNumber; }
     public float getTotalCost() { return totalCost; }
 
     // SETTERS
-
     public void setId(String id) { this.id = id; }
     public void setBuyer(Buyer buyer) { this.buyer = buyer; }
     public void setPaymentType(String paymentType) { this.paymentType = paymentType; }
@@ -61,7 +57,6 @@ public class Order implements java.io.Serializable {
     public void setProducts(HashMap<Product, Integer> products) { this.products = products; }
     public void setStatus(OrderState status) { this.status = status; }
     public void setETA(String ETA) { this.ETA = ETA; }
-    public void setIsReturn(Boolean isReturn) { this.isReturn = isReturn; }
     public void setIssue(IssueQuery issue) { this.issue = issue; }
     public void setShippingCompany(String company) {this.shippingCompany = company; }
     public void setShippingNumber(String number) { this.shippingNumber = number; }
