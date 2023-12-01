@@ -179,6 +179,9 @@ public class SellerMenu extends Menu {
                 }
                 order.setStatus(OrderState.RESHIPMENT_DELIVERED);
 
+                // send notification to buyer
+                sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
                 // refund buyer
                 refund(order);
 
@@ -266,7 +269,15 @@ public class SellerMenu extends Menu {
             sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
         }
 
-        // update inventory in database
+        // update product quantities in database
+        updateDatabaseProductQuantities(returnProducts);
+
+        // update product quantities in seller's inventory
+        updateInventoryQuantities(returnProducts);
+    }
+
+    // Update product quantities in database
+    private void updateDatabaseProductQuantities(HashMap<Product, Integer> returnProducts) {
         ArrayList<Product> databaseProducts = database.getProducts();
         for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
             // find product in seller inventory
@@ -274,6 +285,20 @@ public class SellerMenu extends Menu {
                 if (Objects.equals(product, returnProduct.getKey())) {
                     int index = databaseProducts.indexOf(product);
                     database.getProducts().get(index).setQuantity(product.getQuantity() + returnProduct.getValue());
+                }
+            }
+        }
+    }
+
+    // Update product quantities in seller's inventory
+    private void updateInventoryQuantities(HashMap<Product, Integer> returnProducts) {
+        ArrayList<Product> inventory = user.getProducts();
+        for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
+            // find product in seller inventory
+            for (Product product : inventory) {
+                if (Objects.equals(product, returnProduct.getKey())) {
+                    int index = inventory.indexOf(product);
+                    user.getProducts().get(index).setQuantity(product.getQuantity() + returnProduct.getValue());
                 }
             }
         }
