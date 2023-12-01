@@ -9,7 +9,7 @@ import BackEndUtility.OrderState;
 import productClasses.*;
 import productClasses.Inheritances.*;
 
-import java.util.Objects;
+import java.util.*;
 
 import static java.lang.Float.parseFloat;
 
@@ -115,21 +115,19 @@ public class SellerMenu extends Menu {
         }
     }
 
-
     // ORDERS
-
-    // TODO: display one order and be able to interact with it
 
     public void interactWithOrder(Order order) {
         System.out.println(order);
         System.out.println();
         System.out.println("1. Prepare order");
         System.out.println("2. Handle problem");
-        System.out.println("3. Confirm return receipt");
+        System.out.println("3. Confirm reshipment reception");
         System.out.println("4. Return to order history");
 
         int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
+            // prepare order
             case 1:
                 if (order.getStatus() == OrderState.IN_DELIVERY) {
                     System.out.println("This order has already been prepared.");
@@ -152,21 +150,53 @@ public class SellerMenu extends Menu {
                     sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
                     System.out.println("Your order is ready to be shipped!");
                     break;
+                } else {
+                    System.out.println("You cannot prepare this order.");
                 }
+
+            // handle problem
             case 2:
                 if (order.getIssue() == null) {
                     System.out.println("No query in process.");
                     break;
-                } else {
-                    displayIssue(order);
                 }
+
+                displayIssue(order);
+
                 break;
+
+            // confirm reshipment reception
             case 3:
-                // TODO
+                // if no issues, nothing to do
+                if (order.getIssue() == null) {
+                    System.out.println("No query in process.");
+                    break;
+                }
+
+                // reshipment reception can only be confirmed when status is 'reshipment in delivery'
+                if (order.getStatus() != OrderState.RESHIPMENT_IN_DELIVERY) {
+                    System.out.println("You cannot confirm the reshipment reception.");
+                    break;
+                }
+                order.setStatus(OrderState.RESHIPMENT_DELIVERED);
+
+                // send notification to buyer
+                sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+                // refund buyer
+                refund(order);
+
+                // confirm reshipment
+                System.out.println("Reshipment confirmed!");
+
                 break;
+
+            // return to order history
             case 4:
                 System.out.println("Returning to order history...");
                 break;
+
+            // invalid input
             default:
                 System.out.println("Invalid selection. Please try again.");
                 break;
@@ -194,6 +224,87 @@ public class SellerMenu extends Menu {
         System.out.println();
     }
 
+    // Refund buyer
+    private void refund(Order order) {
+        HashMap<Product, Integer> returnProducts = order.getIssue().getReshipmentProducts(); // list of products to return
+        Set<Product> orderProducts = order.getProducts().keySet(); // list of products from the order
+
+        // refund according to original payment type: credit card or points
+        if (Objects.equals(order.getPaymentType(), "credit card")) {
+            float sum = 0; // sum to refund
+
+            // calculate sum to refund
+            for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
+                int quantity = returnProduct.getValue();
+                float price = 0;
+
+                // find the corresponding product in the order
+                for (Product orderProduct : orderProducts) {
+                    if (Objects.equals(orderProduct, returnProduct.getKey())) price = orderProduct.getPrice();
+                }
+
+                // add cost of returning products to sum
+                sum += quantity * price;
+            }
+
+            // send notification to buyer
+            sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
+        } else {
+            int sum = 0; // sum to refund
+
+            // calculate points to refund
+            for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
+                int quantity = returnProduct.getValue();
+                float points = 0;
+
+                // find the corresponding product in the order
+                for (Product orderProduct : orderProducts) {
+                    if (Objects.equals(orderProduct, returnProduct.getKey())) points = orderProduct.getBasePoints();
+                }
+
+                // add cost of returning products to sum
+                sum += quantity * points;
+            }
+
+            // send notification to buyer
+            sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
+        }
+
+        // update product quantities in database
+        updateDatabaseProductQuantities(returnProducts);
+
+        // update product quantities in seller's inventory
+        updateInventoryQuantities(returnProducts);
+    }
+
+    // Update product quantities in database
+    private void updateDatabaseProductQuantities(HashMap<Product, Integer> returnProducts) {
+        ArrayList<Product> databaseProducts = database.getProducts();
+        for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
+            // find product in seller inventory
+            for (Product product : databaseProducts) {
+                if (Objects.equals(product, returnProduct.getKey())) {
+                    int index = databaseProducts.indexOf(product);
+                    database.getProducts().get(index).setQuantity(product.getQuantity() + returnProduct.getValue());
+                }
+            }
+        }
+    }
+
+    // Update product quantities in seller's inventory
+    private void updateInventoryQuantities(HashMap<Product, Integer> returnProducts) {
+        ArrayList<Product> inventory = user.getProducts();
+        for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
+            // find product in seller inventory
+            for (Product product : inventory) {
+                if (Objects.equals(product, returnProduct.getKey())) {
+                    int index = inventory.indexOf(product);
+                    user.getProducts().get(index).setQuantity(product.getQuantity() + returnProduct.getValue());
+                }
+            }
+        }
+    }
+
     // ISSUES
 
     public void displayIssue(Order order) {
@@ -206,7 +317,7 @@ public class SellerMenu extends Menu {
             System.out.println("Solution: " + order.getIssue().getSolutionDescription());
         }
 
-        if (order.getIssue().getReshipmentTrackingNum() == 0) {
+        if (order.getIssue().getReshipmentTrackingNum() == null) {
             System.out.println("Reshipment tracking #: N/A");
         } else {
             System.out.println("Reshipment tracking #: " + order.getIssue().getReshipmentTrackingNum());
@@ -224,7 +335,7 @@ public class SellerMenu extends Menu {
             System.out.println("Replacement product: " + order.getIssue().getReplacementProduct().getTitle());
         }
 
-        if (order.getIssue().getReplacementTrackingNum() == 0) {
+        if (order.getIssue().getReplacementTrackingNum() == null) {
             System.out.println("Replacement tracking #: N/A");
         } else {
             System.out.println("Replacement tracking #: " + order.getIssue().getReplacementTrackingNum());
