@@ -109,8 +109,6 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
             "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" +
             "Experience: " + expPoints + " points\n";
 
-            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n";
-
     }
     public void configureMetrics(){
         ArrayList<String> allMetrics = new ArrayList<>();

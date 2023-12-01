@@ -15,13 +15,9 @@ import productClasses.Usages.Evaluation;
 import productClasses.Usages.IssueQuery;
 import productClasses.Usages.Order;
 import productClasses.Product;
-
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-=======
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -156,14 +152,6 @@ public class BuyerMenu extends Menu {
     }
 
     public void interactWithOrder(Order order) {
-        // if the reshipment has not been received within 30 days of the request, cancel reshipment request
-        if (check30DaysFromReshipmentRequest(order.getIssue())) {
-            order.setStatus(OrderState.RESHIPMENT_CANCELLED);
-
-            // send buyer and seller a notification
-            sendBuyerNotification(user, "Reshipment for order " + order.getId() + " is cancelled", "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
-            sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Issue " + order.getIssue().getId() + " cancelled", "The reshipment package has not been received within 30 days of the reshipment request.");
-        }
 
         System.out.println(order);
         System.out.println();
@@ -171,8 +159,9 @@ public class BuyerMenu extends Menu {
         System.out.println("2. Return order");
         System.out.println("3. Exchange order");
         System.out.println("4. Report a problem");
-        System.out.println("5. Confirm order reception");
-        System.out.println("6. Return to order history");
+        System.out.println("5. Accept solution for the problem");
+        System.out.println("6. Confirm order reception");
+        System.out.println("7. Return to order history");
 
         int choice = uiUtilities.getUserInputAsInteger();
 
@@ -247,21 +236,52 @@ public class BuyerMenu extends Menu {
                     System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since the receipt of your order.");
                     break;
                 }
+                // if the reshipment has not been received within 30 days of the request, cancel reshipment request
+                if (check30DaysFromReshipmentRequest(order.getIssue())) {
+                    order.setStatus(OrderState.RESHIPMENT_CANCELLED);
+
+                    // send buyer and seller a notification
+                    sendBuyerNotification(user, "Reshipment for order " + order.getId() + " is cancelled", "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
+                    sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Issue " + order.getIssue().getId() + " cancelled", "The reshipment package has not been received within 30 days of the reshipment request.");
+                }
 
                 // TODO
 
                 break;
 
             case 4: // report a problem
-                System.out.println("Reporting problem...");
+
+                order.reportProblem();
+                for (Product product : order.getProducts().keySet()){
+                    product.getSeller().addNotification(new Notification("there is a problem with a product", user.getFirstName() +" reported a problem with a " + product));
+                }
+
                 break;
 
-            case 5: // confirm order reception
+            case 5:
+                if (order.getIssue() == null){
+                    System.out.println("You haven't reported a problem yet");
+                }else{
+                    order.getIssue().acceptSolution();
+                    if (order.getIssue().acceptSolution()){
+                        for (Product product : order.getProducts().keySet()){
+                            product.getSeller().addNotification(new Notification("Reponse to proposed solution", order.getBuyer().getFirstName() + " has accepted your solution"));
+                        }
+                        break;
+
+                    }else{
+                        break;
+                    }
+                }
+                break;
+
+
+            case 6: // confirm order reception
                 order.changeStatus(OrderState.DELIVERED);
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
                 System.out.println("Order confirmed");
 
-            case 6: // return order history
+            case 7: // return order history
                 System.out.println("Returning to order history...");
                 break;
 
@@ -326,7 +346,7 @@ public class BuyerMenu extends Menu {
             // update order status
             order.setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
 
-            // confirm return query creation
+            // confirm return i  creation
             System.out.println("You have successfully requested a return!");
 
             // send notification to seller
@@ -528,7 +548,7 @@ public class BuyerMenu extends Menu {
             System.out.println();
             System.out.println("1. Configure metrics to display in profile (3 max.)");
             System.out.println("2. Return to menu ");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice){
                 case 1:

@@ -73,7 +73,7 @@ public abstract class Menu {
         seller.addNotification(new Notification(title, summary));
     }
 
-    public abstract void displayMetrics();
+    public abstract boolean displayMetrics();
 
     public abstract void modifyProfile();
 

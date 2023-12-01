@@ -4,6 +4,7 @@ import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import UIs.Menu;
 import Users.Seller;
+import UtilityObjects.Notification;
 import productClasses.Usages.Order;
 import BackEndUtility.OrderState;
 import productClasses.*;
@@ -168,6 +169,9 @@ public class SellerMenu extends Menu {
 
                 displayIssue(order);
 
+                order.getBuyer().addNotification(new Notification(user + "Has send a solution to the problem", "the seller thinks its pertinent to: " + order.getIssue().getSolutionDescription()));
+
+
                 break;
 
             // confirm reshipment reception
@@ -316,8 +320,10 @@ public class SellerMenu extends Menu {
         System.out.println("Issue ID: " + order.getIssue().getId());
         System.out.println("Description: " + order.getIssue().getIssueDescription());
 
-        if (order.getIssue().getSolutionDescription().isEmpty()) {
+        if (order.getIssue().getSolutionDescription() == null) {
             System.out.println("Solution: waiting for a solution...");
+            order.getIssue().proposeSolution();
+            order.getBuyer().addNotification(new Notification("Seller: " +  user+ " has proposed a solution", user + "thinks it's pertinent to: " + order.getIssue().getSolutionDescription()));
         } else {
             System.out.println("Solution: " + order.getIssue().getSolutionDescription());
         }
@@ -540,10 +546,11 @@ public class SellerMenu extends Menu {
     // METRICS
 
     public void displayProfileMetrics() {
-        System.out.println(user.getMetrics().getSelectedMetrics().get(0));
-        System.out.println(user.getMetrics().getSelectedMetrics().get(1));
-        System.out.println(user.getMetrics().getSelectedMetrics().get(2));
-
+        if(! user.getMetrics().getSelectedMetrics().isEmpty()){
+            System.out.println(user.getMetrics().getSelectedMetrics().get(0));
+            System.out.println(user.getMetrics().getSelectedMetrics().get(1));
+            System.out.println(user.getMetrics().getSelectedMetrics().get(2));
+        }
     }
     public boolean displayMetrics(){
         boolean continueLoop = true;
@@ -554,7 +561,7 @@ public class SellerMenu extends Menu {
             System.out.println();
             System.out.println("1. Configure metrics to display in profile (3 max.)");
             System.out.println("2. Return to menu ");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice){
                 case 1:
