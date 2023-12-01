@@ -183,7 +183,10 @@ public class SellerMenu extends Menu {
                     System.out.println("You cannot confirm the reshipment reception.");
                     break;
                 }
+
+                // update status
                 order.setStatus(OrderState.RESHIPMENT_DELIVERED);
+                order.getIssue().setReshipmentReceived(true);
 
                 // send notification to buyer
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
@@ -396,6 +399,7 @@ public class SellerMenu extends Menu {
         }
         return true;
     }
+
     public void modifyAdditionalPoints() {
         Product product = null;
         while (product == null) {
@@ -411,6 +415,7 @@ public class SellerMenu extends Menu {
         }
         product.setBasePoints(product.getBasePoints()+additionalPoints);
     }
+
     public void changeProductQty() {
         Product product = null;
         while (product == null) {
@@ -426,6 +431,7 @@ public class SellerMenu extends Menu {
         }
         user.changeProductQuantity(product, quantity);
     }
+
     public void removeProduct() {
         Product product = null;
         while (product == null) {
@@ -438,6 +444,7 @@ public class SellerMenu extends Menu {
         if (choice.equals("y")) {database.removeProduct(product);}
         else {System.out.println("Product not removed");}
     }
+
     public void addProduct() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
@@ -543,8 +550,8 @@ public class SellerMenu extends Menu {
         System.out.println(user.getMetrics().getSelectedMetrics().get(0));
         System.out.println(user.getMetrics().getSelectedMetrics().get(1));
         System.out.println(user.getMetrics().getSelectedMetrics().get(2));
-
     }
+
     public boolean displayMetrics(){
         boolean continueLoop = true;
         while (continueLoop){
@@ -554,7 +561,7 @@ public class SellerMenu extends Menu {
             System.out.println();
             System.out.println("1. Configure metrics to display in profile (3 max.)");
             System.out.println("2. Return to menu ");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice){
                 case 1:
@@ -565,5 +572,4 @@ public class SellerMenu extends Menu {
         }
         return true;
     }
-
 }
