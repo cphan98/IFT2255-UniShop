@@ -257,8 +257,18 @@ public class BuyerMenu extends Menu {
                 break;
 
             case 5: // confirm order reception
+                // can only confirm when status is 'in delivery'
+                if (order.getStatus() != OrderState.IN_DELIVERY) {
+                    System.out.println("You cannot confirm your order!");
+                }
+
+                // change status to 'delivered'
                 order.changeStatus(OrderState.DELIVERED);
+
+                // send notification to buyer
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+                // confirm reception
                 System.out.println("Order confirmed");
 
             case 6: // return order history
@@ -512,11 +522,9 @@ public class BuyerMenu extends Menu {
     }
     // METRICS
     public void displayMetricsProfil() {
-
         System.out.println(user.getMetrics().getSelectedMetrics().get(0));
         System.out.println(user.getMetrics().getSelectedMetrics().get(1));
         System.out.println(user.getMetrics().getSelectedMetrics().get(2));
-
     }
 
     public boolean displayMetrics(){
@@ -528,7 +536,7 @@ public class BuyerMenu extends Menu {
             System.out.println();
             System.out.println("1. Configure metrics to display in profile (3 max.)");
             System.out.println("2. Return to menu ");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice){
                 case 1:
@@ -540,8 +548,8 @@ public class BuyerMenu extends Menu {
         return true;
     }
 
-
     // CATALOG
+
     public boolean displayCatalog() {
         line();
         System.out.println("CATALOG");
@@ -575,6 +583,7 @@ public class BuyerMenu extends Menu {
         }
         return true;
     }
+
     private void displayProductsLikedByFollowing() {
         System.out.println("Products liked by the buyers you're following:");
         HashMap<Product, Integer> productsLikedByFollowing = new HashMap<>();
@@ -591,6 +600,7 @@ public class BuyerMenu extends Menu {
             System.out.println(product.smallToString());
         }
     }
+
     private void searchAndDisplayProduct() {
         if (searchProduct(catalog)) {
             System.out.println(pointedProduct);
@@ -599,6 +609,7 @@ public class BuyerMenu extends Menu {
             System.out.println("Product not found. Please try again.");
         }
     }
+
     public boolean searchProduct(Catalog catalog) {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -609,6 +620,7 @@ public class BuyerMenu extends Menu {
         }
         return true;  // continue the loop
     }
+
     private void interactWithProduct() {
         boolean continueInteraction = true;
         while (continueInteraction) {
@@ -637,6 +649,7 @@ public class BuyerMenu extends Menu {
             }
         }
     }
+
     private void interactWithEvaluations() {
         System.out.println("Enter the number of the evaluation you want to interact with, or 0 to return:");
         int choice = uiUtilities.getUserInputAsInteger();
@@ -675,6 +688,7 @@ public class BuyerMenu extends Menu {
             }
         }
     }
+
     private void displaySellerInfo() {
         System.out.println("Enter the name of the seller you want to check out:");
         String id = InputManager.getInstance().nextLine();
@@ -686,6 +700,7 @@ public class BuyerMenu extends Menu {
         }
         interactWithSeller();
     }
+
     private void interactWithSeller() {
         if (user.getSellersFollowed().contains(pointedSeller)) {
             System.out.println("1. Unfollow this seller");
@@ -703,6 +718,7 @@ public class BuyerMenu extends Menu {
             default -> System.out.println("Invalid selection. Please try again.");
         }
     }
+
     public void filterProducts() {
         System.out.println("1. Filter by category");
         System.out.println("2. Order by price");
@@ -767,6 +783,7 @@ public class BuyerMenu extends Menu {
             }
         }
     }
+
     public void filterSellers() {
         System.out.println("1. Filter by category");
         System.out.println("2. Order by likes");
@@ -847,7 +864,9 @@ public class BuyerMenu extends Menu {
                 break;
         }
     }
+
     // WISH LIST
+
     public boolean displayWishList() {
         System.out.println("WISHLIST");
         boolean continueLoop = true;
@@ -868,7 +887,9 @@ public class BuyerMenu extends Menu {
         }
         return true;
     }
+
     // EVALUATIONS
+
     public void addEvaluationToProduct(Product product) {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter a comment:");
@@ -883,7 +904,9 @@ public class BuyerMenu extends Menu {
         String summary = this.user + " added a new comment on " + product.getTitle() + "!";
         product.getSeller().addNotification(new Notification(title, summary));
     }
+
     // SHOPPING CART
+
     public void removeProductFromCart() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter the name of the product you want to remove:");
@@ -903,6 +926,7 @@ public class BuyerMenu extends Menu {
         product.setQuantity(product.getQuantity() + quantity);
         System.out.println("Product removed from cart");
     }
+
     public void addProductToCart(Product product) {
         System.out.println("How many of it do you want?");
         int quantity = uiUtilities.getUserInputAsInteger();
@@ -914,6 +938,7 @@ public class BuyerMenu extends Menu {
         product.setQuantity(product.getQuantity() - quantity);
         System.out.println("Product added to cart");
     }
+
     public void makeCheckout() {
         InputManager im = InputManager.getInstance();
         System.out.println("You currently have " + user.getPoints() + " points\n");
@@ -999,7 +1024,6 @@ public class BuyerMenu extends Menu {
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
     }
-
 
     public void emptyCart() {
         InputManager im = InputManager.getInstance();
