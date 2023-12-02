@@ -4,7 +4,6 @@ import Metrics.BuyerMetrics;
 import UtilityObjects.Address;
 import productClasses.Usages.Cart;
 import UtilityObjects.CreditCard;
-import UtilityObjects.Notification;
 import productClasses.Usages.Evaluation;
 import productClasses.Product;
 
@@ -15,13 +14,12 @@ public class Buyer extends User implements java.io.Serializable {
     private String firstName;
     private String lastName;
     private final Cart cart;
-    private int points;
-    private int expPoints;
     private final BuyerMetrics metrics;
     private CreditCard card;
     private final ArrayList<Seller> sellersFollowed;
     private final ArrayList<Buyer> buyersFollowed;
     private final ArrayList<Evaluation> evaluationsLiked;
+    private final HashMap<Product, Evaluation> evaluationsMade;
     private final ArrayList<Product> wishList;
     public Buyer(String firstName, String lastName, String id, String password, String email, String phoneNumber, Address address) {
         super(id, password, email, phoneNumber, address);
@@ -29,30 +27,13 @@ public class Buyer extends User implements java.io.Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.cart = new Cart();
-        this.points = 0;
         this.wishList = new ArrayList<>();
         this.sellersFollowed = new ArrayList<>();
         this.buyersFollowed = new ArrayList<>();
         this.evaluationsLiked = new ArrayList<>();
+        this.evaluationsMade = new HashMap<>();
     }
-    public void addPoints(int points) {
-        this.points += points;
-    }
-    public void removePoints(int points) {
-        this.points -= points;
-    }
-    public void addExpPoints(int points) {
-        this.expPoints += points;
-    }
-    public void removeExpPoints(int points) {
-        this.expPoints -= points;
-    }
-    public int getExpPoints() {
-        return expPoints;
-    }
-    public int getPoints() {
-        return points;
-    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -93,6 +74,9 @@ public class Buyer extends User implements java.io.Serializable {
     public ArrayList<Evaluation> getEvaluationsLiked() {
         return evaluationsLiked;
     }
+    public HashMap<Product, Evaluation> getEvaluationsMade() {
+        return evaluationsMade;
+    }
     public String wishListToString() {
         if (wishList.isEmpty()) {
             return "Your wish list is empty!";
@@ -106,5 +90,6 @@ public class Buyer extends User implements java.io.Serializable {
         }
         return sb.toString();
     }
+
 
 }

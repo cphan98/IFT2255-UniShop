@@ -61,12 +61,11 @@ public class UniShop {
             Product product = putFakeProduct(seller);
             database.addProduct(product);
             product.setLikes(Math.round(new Random().nextFloat() * 1000));
-
             float randomRating;
             for (int i=0; i<5; i++) {
                 randomRating = (float) Math.round(Math.random()*50)/10;
                 String comment = "This is a " + prompts[Math.max(0,Math.round(randomRating)-1)] + " " + product.getTitle().toLowerCase() + "!";
-                product.addEvaluation(new Evaluation(comment, randomRating, (Buyer) users.get(i)));
+                database.addEvaluationToProduct(product, new Evaluation(comment, randomRating, (Buyer) users.get(i)));
             }
         });
         simulateSomeActions();
@@ -86,10 +85,6 @@ public class UniShop {
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(2)), database.getProducts().get(3));
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(1)), database.getProducts().get(3));
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(1)), database.getProducts().get(4));
-
-        Buyer random = (Buyer) database.getUsers().get(1);
-        random.getWishList().add(database.getProducts().get(0));
-        random.getWishList().add(database.getProducts().get(1));
 
         cynthia.setCard(new CreditCard("123456789012", "Cynthia", "Phan", "2022-01-01"));
         cynthia.getCart().addProduct(database.getProducts().get(0), 2);

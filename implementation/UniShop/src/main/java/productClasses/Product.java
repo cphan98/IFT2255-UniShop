@@ -106,13 +106,7 @@ public abstract class Product implements java.io.Serializable {
     public ArrayList<Evaluation> getEvaluations() {
         return this.evaluations;
     }
-    public void addEvaluation(Evaluation evaluation) {
-        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() + 1);
-        evaluation.getAuthor().getMetrics().updateAverageNoteGiven(evaluation.getRating());
-        this.evaluations.add(evaluation);
-        this.seller.getMetrics().updateAverageNoteReceived(evaluation.getRating());
-        updateOverallRating();
-    }
+
     public int getLikes()
     {
        return this.likes;

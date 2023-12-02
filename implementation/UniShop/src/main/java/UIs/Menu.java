@@ -48,7 +48,7 @@ public abstract class Menu {
     }
     public abstract void interactWithOrder(Order order);
     // NOTIFICATIONS
-    public boolean displayNotifications() {
+    public void displayNotifications() {
         System.out.println("NOTIFICATIONS");
         System.out.println(user.notificationsToString());
         System.out.println("1. Return to menu");
@@ -61,7 +61,6 @@ public abstract class Menu {
             notification.setRead(true);
         }
         System.out.println("Returning to menu...");
-        return true;
     }
 
 
