@@ -259,7 +259,16 @@ public class BuyerMenu extends Menu {
             case 5: // confirm order reception
                 // can only confirm when status is 'in delivery'
                 if (order.getStatus() != OrderState.IN_DELIVERY) {
-                    System.out.println("You cannot confirm your order!");
+                    System.out.println("WARNING : Cannot confirm this order!");
+                    if (order.getStatus() == OrderState.DELIVERED)
+                        System.out.println("Your order has already been confirmed.");
+                    if (order.getStatus() == OrderState.IN_PRODUCTION)
+                        System.out.println("Your order has not been shipped yet.");
+                    if (order.getStatus() == OrderState.CANCELLED)
+                        System.out.println("Your order is cancelled.");
+                    if (order.getStatus() == OrderState.RESHIPMENT_CANCELLED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED)
+                        System.out.println("You cannot confirm a reshipment.");
+                    break;
                 }
 
                 // change status to 'delivered'
@@ -269,7 +278,9 @@ public class BuyerMenu extends Menu {
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
 
                 // confirm reception
-                System.out.println("Order confirmed");
+                System.out.println("Order confirmed!");
+
+                break;
 
             case 6: // return order history
                 System.out.println("Returning to order history...");
