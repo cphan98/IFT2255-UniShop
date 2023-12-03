@@ -606,6 +606,9 @@ public class BuyerMenu extends Menu {
                     exchangeOrder.setPhoneNumber(order.getPhoneNumber());
                     exchangeOrder.setTotalCost(priceDiff);
 
+                    // add tracking number to issue
+                    order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
+
                     // add order to buyer's and seller's order history
                     user.addOrder(exchangeOrder);
                     Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
@@ -757,6 +760,9 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setPhoneNumber(order.getPhoneNumber());
         exchangeOrder.setTotalCost(priceDiff);
 
+        // add tracking number to issue
+        order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
+
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
         Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
@@ -821,6 +827,9 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setPhoneNumber(order.getPhoneNumber());
         exchangeOrder.setTotalCost(priceDiff);
 
+        // add tracking number to issue
+        order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
+
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
         Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
@@ -849,6 +858,9 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setShippingAddress(order.getShippingAddress());
         exchangeOrder.setPhoneNumber(order.getPhoneNumber());
         exchangeOrder.setTotalCost(priceDiff);
+
+        // add tracking number to issue
+        order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
@@ -882,6 +894,9 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setShippingAddress(order.getShippingAddress());
         exchangeOrder.setPhoneNumber(order.getPhoneNumber());
         exchangeOrder.setTotalCost(priceDiff);
+
+        // add tracking number to issue
+        order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
