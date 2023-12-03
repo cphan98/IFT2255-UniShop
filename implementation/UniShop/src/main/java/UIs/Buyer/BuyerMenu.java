@@ -580,17 +580,40 @@ public class BuyerMenu extends Menu {
                     switch (priceAction) {
                         case "refund" -> refundPriceDiff(priceDiff, replacementProducts, order);
                         case "pay" -> payPriceDiff(priceDiff, replacementProducts, order);
-                        case "nothing" -> System.out.println("No payment due.");
                     }
                     break;
                 case "points" :
                     String pointsAction = payPointsDiffOrRefund(pointsDiff);
                     switch (pointsAction) {
-                        case "refund" -> refundPointsDiff(pointsDiff, replacementProducts, order);
+                        case "refund" -> refundPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
                         case "pay" -> payPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
-                        case "nothing" -> System.out.println("No payment due.");
                     }
                     break;
+                default :
+                    System.out.println("No payment due.");
+
+                    // create order
+                    Order exchangeOrder = new Order(user, "points", replacementProducts);
+                    exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+                    exchangeOrder.setShippingAddress(order.getShippingAddress());
+                    exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+                    exchangeOrder.setTotalCost(priceDiff);
+
+                    // add order to buyer's and seller's order history
+                    user.addOrder(exchangeOrder);
+                    Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+                    seller.addOrder(exchangeOrder);
+
+                    // add order to database
+                    database.addOrder(exchangeOrder);
+
+                    // update product quantities in database and seller's inventory
+                    updateDatabaseProductQuantities(replacementProducts);
+                    updateInventoryQuantities(replacementProducts, seller);
+
+                    // send notification to buyer and seller
+                    sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
+                    sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
             }
 
             // update order status
@@ -813,22 +836,53 @@ public class BuyerMenu extends Menu {
         // (refund to original credit card)
         System.out.println("Refund in process...");
 
+        // create order
+        Order exchangeOrder = new Order(user, "credit card", replacementProducts);
+        exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+        exchangeOrder.setShippingAddress(order.getShippingAddress());
+        exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+        exchangeOrder.setTotalCost(priceDiff);
+
+        // add order to buyer's and seller's order history
+        user.addOrder(exchangeOrder);
+        Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+        seller.addOrder(exchangeOrder);
+
+        // add order to database
+        database.addOrder(exchangeOrder);
+
         // update product quantities in database and seller's inventory
         updateDatabaseProductQuantities(replacementProducts);
         updateInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
 
         // send notification to buyer
         sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + Math.abs(priceDiff) + " from your exchange request " + order.getIssue().getId() + ".");
+        sendSellerNotification(replacementProducts.entrySet().iterator().next().getKey().getSeller(), "New Order", "You have a new order: " + exchangeOrder.getId());
 
         // confirm refund
         System.out.println("Refund completed!");
     }
 
     // Refunds points difference
-    private void refundPointsDiff(int pointsDiff, HashMap<Product, Integer> replacementProducts, Order order) {
+    private void refundPointsDiff(int pointsDiff, float priceDiff, HashMap<Product, Integer> replacementProducts, Order order) {
         // refund points
         System.out.println("Refund in process...");
         user.addPoints(Math.abs(pointsDiff));
+
+        // create order
+        Order exchangeOrder = new Order(user, "points", replacementProducts);
+        exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+        exchangeOrder.setShippingAddress(order.getShippingAddress());
+        exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+        exchangeOrder.setTotalCost(priceDiff);
+
+        // add order to buyer's and seller's order history
+        user.addOrder(exchangeOrder);
+        Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+        seller.addOrder(exchangeOrder);
+
+        // add order to database
+        database.addOrder(exchangeOrder);
 
         // update product quantities in database and seller's inventory
         updateInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
@@ -836,6 +890,7 @@ public class BuyerMenu extends Menu {
 
         // send notification to buyer
         sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + Math.abs(pointsDiff) + " from your exchange request " + order.getIssue().getId() + ".");
+        sendSellerNotification(replacementProducts.entrySet().iterator().next().getKey().getSeller(), "New Order", "You have a new order: " + exchangeOrder.getId());
 
         // confirme refund
         System.out.println("Refund completed!");
