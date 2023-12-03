@@ -191,8 +191,8 @@ public class SellerMenu extends Menu {
                 // send notification to buyer
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
 
-                // refund buyer
-                refund(order);
+                // if issue's solution description is 'return', refund buyer
+                if (Objects.equals(order.getIssue().getSolutionDescription(), "Return")) refund(order);
 
                 // confirm reshipment
                 System.out.println("Reshipment confirmed!");
