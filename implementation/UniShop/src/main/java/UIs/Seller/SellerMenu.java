@@ -247,9 +247,8 @@ public class SellerMenu extends Menu {
                 float price = 0;
 
                 // find the corresponding product in the order
-                for (Product orderProduct : orderProducts) {
+                for (Product orderProduct : orderProducts)
                     if (Objects.equals(orderProduct, returnProduct.getKey())) price = orderProduct.getPrice();
-                }
 
                 // add cost of returning products to sum
                 sum += quantity * price;
@@ -278,11 +277,12 @@ public class SellerMenu extends Menu {
             sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
         }
 
-        // update product quantities in database
+        // update product quantities in database and seller's inventory
         updateDatabaseProductQuantities(returnProducts);
-
-        // update product quantities in seller's inventory
         updateInventoryQuantities(returnProducts);
+
+        // confirm refund
+        System.out.println("Refund completed!");
     }
 
     // Update product quantities in database

@@ -31,6 +31,7 @@ public class Order implements java.io.Serializable {
     private float totalCost;
 
     // GETTERS
+
     public String getId() { return id; }
     public Buyer getBuyer() { return buyer; }
     public String getPaymentType() { return paymentType; }
@@ -47,6 +48,7 @@ public class Order implements java.io.Serializable {
     public float getTotalCost() { return totalCost; }
 
     // SETTERS
+
     public void setId(String id) { this.id = id; }
     public void setBuyer(Buyer buyer) { this.buyer = buyer; }
     public void setPaymentType(String paymentType) { this.paymentType = paymentType; }

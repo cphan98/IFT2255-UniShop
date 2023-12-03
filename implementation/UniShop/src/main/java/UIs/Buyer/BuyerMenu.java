@@ -4,7 +4,6 @@ import BackEndUtility.Catalog;
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import UIs.Menu;
-import UIs.UIUtilities;
 import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
@@ -16,12 +15,9 @@ import productClasses.Usages.IssueQuery;
 import productClasses.Usages.Order;
 import productClasses.Product;
 
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-=======
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -29,17 +25,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-
 public class BuyerMenu extends Menu {
+    // ATTRIBUTES
+
     private final Buyer user;
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
     private Catalog catalog;
-    // MENU
+
+    // CONSTRUCTOR
+
     public BuyerMenu(Buyer user, DataBase database) {
         super(user, database);
         this.user = user;
     }
+
+    // MENU
+
     public boolean displayMenu() {
         boolean continueLoop = true;
 
@@ -77,7 +79,9 @@ public class BuyerMenu extends Menu {
         }
         return true;
     }
+
     // PROFILE
+
     public boolean displayProfile() {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -116,6 +120,7 @@ public class BuyerMenu extends Menu {
         }
         return true;  // continue the loop
     }
+
     public void modifyProfile() {
         System.out.println("1. Modify personal info");
         System.out.println("2. Modify shipping address");
@@ -132,6 +137,7 @@ public class BuyerMenu extends Menu {
             default -> System.out.println("Invalid selection. Please try again.");
         }
     }
+
     public void modifyPaymentInfo() {
         System.out.println("Enter your credit card number:");
         String cardNumber = InputManager.getInstance().nextLine();
@@ -160,7 +166,7 @@ public class BuyerMenu extends Menu {
         if (check30DaysFromReshipmentRequest(order.getIssue())) {
             order.setStatus(OrderState.RESHIPMENT_CANCELLED);
 
-            // send buyer and seller a notification
+            // send notification to buyer and seller
             sendBuyerNotification(user, "Reshipment for order " + order.getId() + " is cancelled", "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
             sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Issue " + order.getIssue().getId() + " cancelled", "The reshipment package has not been received within 30 days of the reshipment request.");
         }
@@ -218,7 +224,7 @@ public class BuyerMenu extends Menu {
 
                 // order can only be returned within 30 days since it's reception
                 if (!check30DaysFromOrderReception(order)) {
-                    System.out.println("WARNING : Cannot return this order! More than 30 days have passed since the receipt of your order.");
+                    System.out.println("WARNING : Cannot return this order! More than 30 days have passed since the reception of your order.");
                     break;
                 }
 
@@ -244,11 +250,12 @@ public class BuyerMenu extends Menu {
 
                 // order can only be exchanged within 30 days since it's reception
                 if (!check30DaysFromOrderReception(order)) {
-                    System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since the receipt of your order.");
+                    System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since the reception of your order.");
                     break;
                 }
 
-                // TODO
+                // begin exchange process
+                exchangeOrder(order);
 
                 break;
 
@@ -326,17 +333,15 @@ public class BuyerMenu extends Menu {
         System.out.println("Do you want to make a return? (y/n)");
         InputManager im = InputManager.getInstance();
         String returnChoice = "";
-        while (!returnChoice.matches("[yn]")) {
-            returnChoice = im.nextLine();
-        }
+        while (!returnChoice.matches("[yn]")) returnChoice = im.nextLine();
 
         // begin return process
         if (Objects.equals(returnChoice, "y")) {
             // ask products to return
-            HashMap<Product, Integer> returnProducts = askReturnProducts(order);
+            HashMap<Product, Integer> returnProducts = askProducts(order, "return");
 
             // ask reason of return
-            String reason = askReturnReason();
+            String reason = askReason("return");
 
             // create return query
             IssueQuery returnQuery = new IssueQuery(reason);
@@ -373,18 +378,20 @@ public class BuyerMenu extends Menu {
         return productFound;
     }
 
-    // Asks products to return
-    private HashMap<Product, Integer> askReturnProducts(Order order) {
-        HashMap<Product, Integer> returnProducts = new HashMap<>(); // product list to return
+    // Asks products to return/exchange
+    private HashMap<Product, Integer> askProducts(Order order, String returnOrExchange) {
+        HashMap<Product, Integer> selectedProducts = new HashMap<>(); // product list to return/exchange
         ArrayList<String> orderProducts = new ArrayList<>(); // list of order product titles
-        for (Product product : order.getProducts().keySet()) {
-            orderProducts.add(product.getTitle());
-        }
+        for (Product product : order.getProducts().keySet()) orderProducts.add(product.getTitle());
 
-        // ask product(s) to return
-        boolean moreProdcutsToReturn = true;
-        while (moreProdcutsToReturn) {
-            System.out.println("Enter the name of the product you would like to return. The product must be listed above.");
+        // ask product(s) to return/exchange
+        boolean moreProducts = true;
+        while (moreProducts) {
+            // ask title of product
+            switch (returnOrExchange) {
+                case "return" -> System.out.println("Enter the name of the product you would like to return. The product must be listed above.");
+                case "exchange" -> System.out.println("Enter the name of the product you would like to exchange. The product must be listed above.");
+            }
             String productTitle = InputManager.getInstance().nextLine();
 
             // validate product title
@@ -397,64 +404,93 @@ public class BuyerMenu extends Menu {
             Product product = getProductFromOrder(order.getProducts(), productTitle);
 
             // check if product is already in return product list
-            if (returnProducts.containsKey(product) && Objects.equals(returnProducts.get(product), order.getProducts().get(product))) {
-                System.out.println("A maximum of " + order.getProducts().get(product) + product.getTitle() + " can be returned.");
-                System.out.println("Would you like to return another item? (y/n)");
-                String returnChoice = "";
-                while (!returnChoice.matches("[yn]")) {
-                    returnChoice = InputManager.getInstance().nextLine();
+            if (selectedProducts.containsKey(product) && selectedProducts.get(product) >= order.getProducts().get(product)) {
+                switch (returnOrExchange) {
+                    case "return":
+                        System.out.println("A maximum of " + order.getProducts().get(product) + " " + product.getTitle() + " can be returned.");
+                        System.out.println("Would you like to return another item? (y/n)");
+                    case "exchange":
+                        System.out.println("A maximum of " + order.getProducts().get(product) + " " + product.getTitle() + " can be exchanged.");
+                        System.out.println("Would you like to exchange another item? (y/n)");
                 }
-                if (Objects.equals(returnChoice, "n")) break;
+                String choice = "";
+                while (!choice.matches("[yn]")) choice = InputManager.getInstance().nextLine();
+                if (Objects.equals(choice, "n")) break;
             }
 
             // if > 1 units available to return, ask quantity to return
             if (order.getProducts().get(product) > 1) {
-                System.out.println("Enter the quantity of " + productTitle + " you would like to return.");
+                // ask product quantity
+                switch (returnOrExchange) {
+                    case "return" -> System.out.println("Enter the quantity of " + productTitle + " you would like to return.");
+                    case "exchange" -> System.out.println("Enter the quantity of " + productTitle + " you would like to exchange.");
+                }
                 int productQuantity = uiUtilities.getUserInputAsInteger();
 
                 // validate product quantity
                 while (productQuantity <= 0 || productQuantity > order.getProducts().get(product)) {
-                    System.out.println("Please enter a valid quantity! You can only return up to " + order.getProducts().get(product) + " units.");
+                    switch (returnOrExchange) {
+                        case "return" -> System.out.println("Please enter a valid quantity! You can only return up to " + order.getProducts().get(product) + " units.");
+                        case "exchange" -> System.out.println("Please enter a valid quantity! You can only exchange up to " + order.getProducts().get(product) + " units.");
+                    }
                     productQuantity = uiUtilities.getUserInputAsInteger();
                 }
 
                 // add product to return product list
-                returnProducts.put(product, productQuantity);
-            } else returnProducts.put(product, 1);
+                selectedProducts.put(product, productQuantity);
+            } else selectedProducts.put(product, 1);
 
             // ask more products to return
             System.out.println("Would you like to return another item? (y/n)");
-            String returnChoice = "";
-            while (!returnChoice.matches("[yn]")) {
-                returnChoice = InputManager.getInstance().nextLine();
-            }
-            if (Objects.equals(returnChoice, "n")) moreProdcutsToReturn = false;
+            String choice = "";
+            while (!choice.matches("[yn]")) choice = InputManager.getInstance().nextLine();
+            if (Objects.equals(choice, "n")) moreProducts = false;
         }
 
         // return list of products to return
-        return returnProducts;
+        return selectedProducts;
     }
 
-    // Asks the reason of the return
-    private String askReturnReason() {
-        System.out.println("What is the reason of your return?");
+    // Asks the reason of the return/exchange
+    private String askReason(String returnOrExchange) {
+        switch (returnOrExchange) {
+            case "return" -> System.out.println("What is the reason of your return?");
+            case "exchange" -> System.out.println("What is the reason of your exchange?");
+        }
         System.out.println("1. Wrong product(s) ordered");
         System.out.println("2. Wrong product(s) received");
-        System.out.println("3. No longer need the product(s)");
-        System.out.println("4. Not satisfied with the product(s)");
-        System.out.println("5. Did not make this order");
-        System.out.println("6. Other");
+        switch (returnOrExchange) {
+            case "return" :
+                System.out.println("3. No longer need the product(s)");
+                System.out.println("4. Not satisfied with the product(s)");
+                System.out.println("5. Did not make this order");
+                System.out.println("6. Other");
+            case "exchange" :
+                System.out.println("3. Not satisfied with the product(s)");
+                System.out.println("4. Other");
+        }
+
         int choice = uiUtilities.getUserInputAsInteger();
         String reason = "";
-        switch (choice) {
-            case 1 -> reason = "Wrong product(s) ordered";
-            case 2 -> reason = "Wrong product(s) received";
-            case 3 -> reason = "No longer need the product(s)";
-            case 4 -> reason = "Not satisfied with the product(s)";
-            case 5 -> reason = "Did not make this order";
-            case 6 -> reason = "Other";
-            default -> System.out.println("Invalid selection. Please try again.");
+        if (returnOrExchange.equals("return")) {
+            switch (choice) {
+                case 1 -> reason = "Wrong product(s) ordered";
+                case 2 -> reason = "Wrong product(s) received";
+                case 3 -> reason = "No longer need the product(s)";
+                case 4 -> reason = "Not satisfied with the product(s)";
+                case 5 -> reason = "Did not make this order";
+                case 6 -> reason = "Other";
+                default -> System.out.println("Invalid selection. Please try again.");
+            }
+        } else if (returnOrExchange.equals("exchange")) {
+            switch (choice) {
+                case 1 -> reason = "Wrong product(s) ordered";
+                case 2 -> reason = "Wrong product(s) received";
+                case 3 -> reason = "Not satisfied with the product(s)";
+                case 4 -> reason = "Other";
+            }
         }
+
         return reason;
     }
 
@@ -506,7 +542,465 @@ public class BuyerMenu extends Menu {
         return true;
     }
 
+    // Exchanges an order
+    private void exchangeOrder(Order order) {
+        // display order products
+        order.productsToString();
+
+        // confirm exchange process
+        System.out.println("Do you want to make an exchange? (y/n)");
+        InputManager im = InputManager.getInstance();
+        String exchangeChoice = "";
+        while (!exchangeChoice.matches("[yn]")) exchangeChoice = im.nextLine();
+
+        // begin exchange process
+        if (Objects.equals(exchangeChoice, "y")) {
+            // ask products to exchange
+            HashMap<Product, Integer> exchangeProducts = askProducts(order, "exchange");
+
+            // ask reason of exchange
+            String reason = askReason("exchange");
+
+            // ask replacement products
+            HashMap<Product, Integer> replacementProducts = askReplacementProducts(order);
+
+            // create exchange query
+            IssueQuery exchangeQuery = new IssueQuery(reason);
+            exchangeQuery.setSolutionDescription("Exchange");
+            exchangeQuery.setReshipmentProducts(exchangeProducts);
+            exchangeQuery.setReplacementProducts(replacementProducts);
+            order.setIssue(exchangeQuery);
+
+            // pay or refund price/points difference
+            float priceDiff = calculatePriceDiff(exchangeProducts, replacementProducts, order, order.getProducts().entrySet().iterator().next().getKey().getSeller());
+            int pointsDiff = calculatePointsDiff(exchangeProducts, replacementProducts, order, order.getProducts().entrySet().iterator().next().getKey().getSeller());
+            switch (order.getPaymentType()) {
+                case "credit card" :
+                    String priceAction = payPriceDiffOrRefund(priceDiff);
+                    switch (priceAction) {
+                        case "refund" -> refundPriceDiff(priceDiff, replacementProducts, order);
+                        case "pay" -> payPriceDiff(priceDiff, replacementProducts, order);
+                        case "nothing" -> System.out.println("No payment due.");
+                    }
+                    break;
+                case "points" :
+                    String pointsAction = payPointsDiffOrRefund(pointsDiff);
+                    switch (pointsAction) {
+                        case "refund" -> refundPointsDiff(pointsDiff, replacementProducts, order);
+                        case "pay" -> payPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
+                        case "nothing" -> System.out.println("No payment due.");
+                    }
+                    break;
+            }
+
+            // update order status
+            order.setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
+
+            // confirm exchange query creation
+            System.out.println("You have successfully requested an exchange!");
+
+            // send notification to seller
+            sendSellerNotification(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller(), "Return requested: " + exchangeQuery.getId(), user.getId() + " requested an exchange.");
+
+            // print reshipment label
+            printReshipmentLabel(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller());
+
+            // show next instructions
+            System.out.println("Please follow the next steps:");
+            System.out.println("1. Prepare the reshipment package with the given label.");
+            System.out.println("2. Give the package to your closest post service.");
+        }
+    }
+
+    // Asks replacement products
+    private HashMap<Product, Integer> askReplacementProducts(Order order) {
+        HashMap<Product, Integer> replacementProducts = new HashMap<>(); // list of replacement products
+        Seller seller = order.getProducts().entrySet().iterator().next().getKey().getSeller(); // seller of the order
+        ArrayList<Product> sellerProducts = seller.getProducts(); // seller's products
+        ArrayList<String> sellerProductTitles = new ArrayList<>(); // list of titles of seller's products
+        for (Product product : sellerProducts) sellerProductTitles.add(product.getTitle());
+
+        // display seller products
+        System.out.println("Available replacement products");
+        seller.productsToString();
+
+        // ask replacement products
+        boolean moreProducts = true;
+        while (moreProducts) {
+            // ask title of replacement product
+            System.out.println("Please enter the name of the desired replacement product.");
+            String productTitle = InputManager.getInstance().nextLine();
+
+            // validate replacement product title
+            while (Objects.equals(productTitle, "") || !sellerProductTitles.contains(productTitle)) {
+                System.out.println("Please enter a valid product!");
+                productTitle = InputManager.getInstance().nextLine();
+            }
+
+            // get replacement Product object
+            Product product = getProductFromSeller(sellerProducts, productTitle);
+
+            // get replacement product's index from seller's product list
+            int index = sellerProducts.indexOf(product);
+
+            // check if product is already in return product list
+            if (replacementProducts.containsKey(product) && replacementProducts.get(product) >= sellerProducts.get(index).getQuantity()) {
+                System.out.println("A maximum of " + sellerProducts.get(index).getQuantity() + " " + product.getTitle() + " can be selected.");
+                System.out.println("Would you like to select another item? (y/n)");
+                String choice = "";
+                while (!choice.matches("[yn]")) choice = InputManager.getInstance().nextLine();
+                if (Objects.equals(choice, "n")) break;
+            }
+
+            // if > 1 units can be selected, ask quantity of replacement product
+            if (sellerProducts.get(index).getQuantity() > 1) {
+                // ask replacement product quantity
+                System.out.println("Enter the quantity of " + productTitle + ".");
+                int productQuantity = uiUtilities.getUserInputAsInteger();
+
+                // validate product quantity
+                while (productQuantity <= 0 || productQuantity > sellerProducts.get(index).getQuantity()) {
+                    System.out.println("Please enter a valid quantity! You can only select up to " + sellerProducts.get(index).getQuantity() + " units.");
+                    productQuantity = uiUtilities.getUserInputAsInteger();
+                }
+
+                // add product to replacement products list
+                replacementProducts.put(product, productQuantity);
+            } else replacementProducts.put(product, 1);
+
+            // as more replacement products
+            System.out.println("Would you like to select another item? (y/n)");
+            String choice = "";
+            while (!choice.matches("[yn]")) choice = InputManager.getInstance().nextLine();
+            if (Objects.equals(choice, "n")) moreProducts = false;
+        }
+
+        // return list of replacement products
+        return replacementProducts;
+    }
+
+    // Gets Product object with product title from seller's list of products
+    private Product getProductFromSeller(ArrayList<Product> products, String title) {
+        Product productFound = null;
+        for (Product product : products) {
+            if (Objects.equals(product.getTitle(), title)) productFound = product;
+        }
+        return productFound;
+    }
+
+    // Determines if the buyer should pay the price difference or get a refund
+    private String payPriceDiffOrRefund(float priceDiff) {
+        // refund > replacement
+        if (priceDiff < 0) return "refund";
+
+        // refund < replacement
+        if (priceDiff > 0) return "pay";
+
+        // refund = replacement
+        return "nothing";
+    }
+
+    // Determines if the buyer should pay the points difference or get a refund
+    private String payPointsDiffOrRefund(int pointsDiff) {
+        // refund > replacement
+        if (pointsDiff < 0) return "refund";
+
+        // refund < replacement
+        if (pointsDiff > 0) return "pay";
+
+        // refund = replacement
+        return "nothing";
+    }
+
+    // Pays price difference
+    private void payPriceDiff(float priceDiff, HashMap<Product, Integer> replacementProducts, Order order) {
+        // (remove money)
+        System.out.println("Payment in process...");
+
+        // confirm payment
+        System.out.println("Payment confirmed!");
+
+        // create order
+        Order exchangeOrder = new Order(user, "credit card", replacementProducts);
+        exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+        exchangeOrder.setShippingAddress(order.getShippingAddress());
+        exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+        exchangeOrder.setTotalCost(priceDiff);
+
+        // add order to buyer's and seller's order history
+        user.addOrder(exchangeOrder);
+        Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+        seller.addOrder(exchangeOrder);
+
+        // add order to database
+        database.addOrder(exchangeOrder);
+
+        // update product quantities in database and seller's inventory
+        updateDatabaseProductQuantities(replacementProducts);
+        updateInventoryQuantities(replacementProducts, seller);
+
+        // send notification to buyer and seller
+        sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
+        sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
+    }
+
+    // Pays points difference
+    private void payPointsDiff(int pointsDiff, float priceDiff, HashMap<Product, Integer> replacementProducts, Order order) {
+        // if buyer does not have enough points, pay with credit card
+        if (user.getPoints() < pointsDiff) {
+            System.out.println("Not enough points. You need " + (pointsDiff - user.getPoints()) + " more points to pay this order");
+
+            // ask buyer to use registered credit card
+            System.out.println("Do you want to use your registered credit card for this order? (y/n)");
+            String choice = "";
+            InputManager im = InputManager.getInstance();
+            while (!choice.matches("[yn]")) choice = im.nextLine();
+
+            // if buyer does not have registered credit card, ask to enter credit card info
+            if (user.getCard() == null) {
+                System.out.println("You don't have a credit card registered");
+                System.out.println("Enter your credit card number:");
+                String cardNumber = im.nextLine();
+                System.out.println("Enter your credit card expiration date:");
+                String expirationDate = im.nextLine();
+                System.out.println("Enter your credit card owner's first name:");
+                String ownerName = im.nextLine();
+                System.out.println("Enter your credit card owner's last name:");
+                String ownerLastName = im.nextLine();
+                user.setCard(new CreditCard(cardNumber, ownerName, ownerLastName, expirationDate));
+            }
+
+            // if buyer has registered credit card
+            if (Objects.equals(choice, "y")) {
+                payPriceDiff(priceDiff, replacementProducts, order);
+                return;
+            }
+        }
+
+        // remove points
+        System.out.println("Payment in process...");
+        user.removePoints(pointsDiff);
+
+        // confirm payment
+        System.out.println("Payment confirmed!");
+
+        // create order
+        Order exchangeOrder = new Order(user, "points", replacementProducts);
+        exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+        exchangeOrder.setShippingAddress(order.getShippingAddress());
+        exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+        exchangeOrder.setTotalCost(priceDiff);
+
+        // add order to buyer's and seller's order history
+        user.addOrder(exchangeOrder);
+        Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+        seller.addOrder(exchangeOrder);
+
+        // add order to database
+        database.addOrder(exchangeOrder);
+
+        // update product quantities in database and seller's inventory
+        updateDatabaseProductQuantities(replacementProducts);
+        updateInventoryQuantities(replacementProducts, seller);
+
+        // send notification to buyer and seller
+        sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
+        sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
+    }
+
+    // Refunds price difference
+    private void refundPriceDiff(float priceDiff, HashMap<Product, Integer> replacementProducts, Order order) {
+        // (refund to original credit card)
+        System.out.println("Refund in process...");
+
+        // update product quantities in database and seller's inventory
+        updateDatabaseProductQuantities(replacementProducts);
+        updateInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
+
+        // send notification to buyer
+        sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + Math.abs(priceDiff) + " from your exchange request " + order.getIssue().getId() + ".");
+
+        // confirm refund
+        System.out.println("Refund completed!");
+    }
+
+    // Refunds points difference
+    private void refundPointsDiff(int pointsDiff, HashMap<Product, Integer> replacementProducts, Order order) {
+        // refund points
+        System.out.println("Refund in process...");
+        user.addPoints(Math.abs(pointsDiff));
+
+        // update product quantities in database and seller's inventory
+        updateInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
+        updateDatabaseProductQuantities(replacementProducts);
+
+        // send notification to buyer
+        sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + Math.abs(pointsDiff) + " from your exchange request " + order.getIssue().getId() + ".");
+
+        // confirme refund
+        System.out.println("Refund completed!");
+    }
+
+    // Calculates price difference for order exchange
+    private float calculatePriceDiff(HashMap<Product, Integer> exchangeProducts, HashMap<Product, Integer> replacementProducts, Order order, Seller seller) {
+        float priceDiff = 0; // price difference to pay
+        float refund = 0; // cost of products to reship
+        float replacementCost = 0; // cost of replacement products
+        HashMap<Product, Integer> orderProducts = order.getProducts(); // order's product list
+        ArrayList<Product> sellerProducts = seller.getProducts(); // seller's product list
+
+        // calculate cost of products to reship
+        refund = calculateCostToRefund(exchangeProducts, orderProducts);
+
+        // calculate cost of replacement products
+        replacementCost = calculateReplacementCost(replacementProducts, sellerProducts);
+
+        // calculate price difference
+        priceDiff = replacementCost - refund;
+
+        // return price difference
+        return priceDiff;
+    }
+
+    // Calculates points difference for order exchange
+    private int calculatePointsDiff(HashMap<Product, Integer> exchangeProducts, HashMap<Product, Integer> replacementProducts, Order order, Seller seller) {
+        int pointsDiff = 0; // points difference to pay
+        int refund = 0; // points for products to reship
+        int replacementPoints = 0; // points for replacement products
+        HashMap<Product, Integer> orderProducts = order.getProducts(); // order's product list
+        ArrayList<Product> sellerProducts = seller.getProducts(); // seller's product list
+
+        // calculate points for products to reship
+        refund = calculatePointsToRefund(exchangeProducts, orderProducts);
+
+        // calculate points for replacement products
+        replacementPoints = calculateReplacementPoints(replacementProducts, sellerProducts);
+
+        // calculate points difference
+        pointsDiff = replacementPoints - refund;
+
+        // return points difference
+        return pointsDiff;
+    }
+
+    // Calculates cost to refund
+    private float calculateCostToRefund(HashMap<Product, Integer> exchangeProducts, HashMap<Product, Integer> orderProducts) {
+        float sum = 0; // sum to refund
+        Set<Product> orderProductsList = orderProducts.keySet();
+
+        // calculate sum
+        for (Map.Entry<Product, Integer> exchangeProduct : exchangeProducts.entrySet()) {
+
+            int quantity = exchangeProduct.getValue();
+            float price = 0;
+
+            // find the corresponding product in the order
+            for (Product orderProduct : orderProductsList)
+                if (Objects.equals(orderProduct, exchangeProduct.getKey())) price = orderProduct.getPrice();
+
+            // add price to sum
+            sum += quantity * price;
+        }
+
+        // return sum
+        return sum;
+    }
+
+    // Calculates points to refund
+    private int calculatePointsToRefund(HashMap<Product, Integer> exchangeProducts, HashMap<Product, Integer> orderProducts) {
+        int sum = 0;
+        Set<Product> orderProductsList = orderProducts.keySet();
+
+        // calculate sum
+        for (Map.Entry<Product, Integer> exchangeProduct : exchangeProducts.entrySet()) {
+
+            int quantity = exchangeProduct.getValue();
+            int points = 0;
+
+            // find the corresponding product in the order
+            for (Product orderProduct : orderProductsList)
+                if (Objects.equals(orderProduct, exchangeProduct.getKey())) points = orderProduct.getBasePoints();
+
+            // add price to sum
+            sum += quantity * points;
+        }
+
+        // return sum
+        return sum;
+    }
+
+    // Calculates replacement products' cost
+    private float calculateReplacementCost(HashMap<Product, Integer> replacementProducts, ArrayList<Product> sellerProducts) {
+        float sum = 0;
+
+        // calculate sum
+        for (Map.Entry<Product, Integer> replacementProduct : replacementProducts.entrySet()) {
+            int quantity = replacementProduct.getValue();
+            float price = 0;
+
+            // find the corresponding product in the order
+            for (Product sellerProduct : sellerProducts)
+                if (Objects.equals(sellerProduct, replacementProduct.getKey())) price = sellerProduct.getPrice();
+
+            // add price to sum
+            sum += quantity * price;
+        }
+
+        // return sum
+        return sum;
+    }
+
+    // Calculates replacement products' points
+    private int calculateReplacementPoints(HashMap<Product, Integer> replacementProducts, ArrayList<Product> sellerProducts) {
+        int sum = 0;
+
+        // calculate sum
+        for (Map.Entry<Product, Integer> replacementProduct : replacementProducts.entrySet()) {
+            int quantity = replacementProduct.getValue();
+            int points = 0;
+
+            // find the corresponding product in the order
+            for (Product sellerProduct : sellerProducts)
+                if (Objects.equals(sellerProduct, replacementProduct.getKey())) points = sellerProduct.getBasePoints();
+
+            // add price to sum
+            sum += quantity * points;
+        }
+
+        // return sum
+        return sum;
+    }
+
+    // Updates product quantities in database
+    private void updateDatabaseProductQuantities(HashMap<Product, Integer> replacementProducts) {
+        ArrayList<Product> databaseProducts = database.getProducts();
+        for (Map.Entry<Product, Integer> replacementProduct : replacementProducts.entrySet()) {
+            // find product in seller inventory
+            for (Product product : databaseProducts) {
+                if (Objects.equals(product, replacementProduct.getKey())) {
+                    int index = databaseProducts.indexOf(product);
+                    database.getProducts().get(index).setQuantity(product.getQuantity() - replacementProduct.getValue());
+                }
+            }
+        }
+    }
+
+    // Updates product quantities in seller's inventory
+    private void updateInventoryQuantities(HashMap<Product, Integer> replacementProducts, Seller seller) {
+        ArrayList<Product> inventory = seller.getProducts();
+        for (Map.Entry<Product, Integer> replacementProduct : replacementProducts.entrySet()) {
+            // find product in seller inventory
+            for (Product product : inventory) {
+                if (Objects.equals(product, replacementProduct.getKey())) {
+                    int index = inventory.indexOf(product);
+                    seller.getProducts().get(index).setQuantity(product.getQuantity() - replacementProduct.getValue());
+                }
+            }
+        }
+    }
+
     // SHOPPING CART
+
     public boolean displayCart() {
         System.out.println(user.getCart().toString());
         System.out.println();
@@ -531,7 +1025,9 @@ public class BuyerMenu extends Menu {
         }
         return true;  // continue the loop
     }
+
     // METRICS
+
     public void displayMetricsProfil() {
         System.out.println(user.getMetrics().getSelectedMetrics().get(0));
         System.out.println(user.getMetrics().getSelectedMetrics().get(1));

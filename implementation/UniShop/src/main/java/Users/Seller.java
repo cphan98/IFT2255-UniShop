@@ -8,12 +8,35 @@ import productClasses.Product;
 import java.util.ArrayList;
 
 public class Seller extends User implements java.io.Serializable {
+    // ATTRIBUTES
 
     private Category category;
     private ArrayList<Product> products;
     private ArrayList<Buyer> followers;
     private SellerMetrics metrics;
     private int likes;
+
+    // GETTERS
+
+    public Category getCategory() {
+        return category;
+    }
+    public SellerMetrics getMetrics() {
+        return metrics;
+    }
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+    public int getLikes() {
+        return likes;
+    }
+
+    // SETTERS
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    // CONSTRUCTOR
 
     public Seller(String id, String password, String email, String phoneNumber, Address address, Category category) {
         super(id, password, email, phoneNumber, address);
@@ -24,6 +47,8 @@ public class Seller extends User implements java.io.Serializable {
         this.likes = 0;
 
     }
+
+    // OPERATIONS
 
     public void changeProductQuantity(Product product, int quantity) {
         product.setQuantity(quantity);
@@ -49,23 +74,6 @@ public class Seller extends User implements java.io.Serializable {
         metrics.updateProductsSold(metrics.getProductsSold() + quantity);
     }
 
-    public Category getCategory() {
-        return category;
-    }
-    public SellerMetrics getMetrics() {
-        return metrics;
-    }
-    public ArrayList<Product> getProducts() {
-        return products;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Seller: ").append(getId()).append("\n");
@@ -78,4 +86,18 @@ public class Seller extends User implements java.io.Serializable {
         return sb.toString();
     }
 
+    // print seller's products
+    public String productsToString() {
+        StringBuilder sb = new StringBuilder();
+        products.forEach(product -> sb
+                .append("\t")
+                .append(product.getTitle())
+                .append(" - Quantity: ")
+                .append(product.getQuantity())
+                .append(", Price: ")
+                .append(product.getPrice())
+                .append("$")
+                .append("\n"));
+        return sb.toString();
+    }
 }
