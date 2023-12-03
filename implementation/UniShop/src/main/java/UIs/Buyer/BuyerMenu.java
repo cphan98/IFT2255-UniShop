@@ -166,6 +166,13 @@ public class BuyerMenu extends Menu {
         if (check30DaysFromReshipmentRequest(order.getIssue())) {
             order.setStatus(OrderState.RESHIPMENT_CANCELLED);
 
+            // update product quantities in database and seller's inventory
+            // if issue's solution description is 'exchange', put back quantities of replacement products
+            if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
+                addIventoryQuantities(order.getIssue().getReplacementProduct(), order.getIssue().getReplacementProduct().entrySet().iterator().next().getKey().getSeller());
+                addDatabaseProductQuantities(order.getIssue().getReplacementProduct());
+            }
+
             // send notification to buyer and seller
             sendBuyerNotification(user, "Reshipment for order " + order.getId() + " is cancelled", "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
             sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Issue " + order.getIssue().getId() + " cancelled", "The reshipment package has not been received within 30 days of the reshipment request.");
@@ -608,8 +615,8 @@ public class BuyerMenu extends Menu {
                     database.addOrder(exchangeOrder);
 
                     // update product quantities in database and seller's inventory
-                    updateDatabaseProductQuantities(replacementProducts);
-                    updateInventoryQuantities(replacementProducts, seller);
+                    removeDatabaseProductQuantities(replacementProducts);
+                    removeInventoryQuantities(replacementProducts, seller);
 
                     // send notification to buyer and seller
                     sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
@@ -759,8 +766,8 @@ public class BuyerMenu extends Menu {
         database.addOrder(exchangeOrder);
 
         // update product quantities in database and seller's inventory
-        updateDatabaseProductQuantities(replacementProducts);
-        updateInventoryQuantities(replacementProducts, seller);
+        removeDatabaseProductQuantities(replacementProducts);
+        removeInventoryQuantities(replacementProducts, seller);
 
         // send notification to buyer and seller
         sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
@@ -823,8 +830,8 @@ public class BuyerMenu extends Menu {
         database.addOrder(exchangeOrder);
 
         // update product quantities in database and seller's inventory
-        updateDatabaseProductQuantities(replacementProducts);
-        updateInventoryQuantities(replacementProducts, seller);
+        removeDatabaseProductQuantities(replacementProducts);
+        removeInventoryQuantities(replacementProducts, seller);
 
         // send notification to buyer and seller
         sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
@@ -852,8 +859,8 @@ public class BuyerMenu extends Menu {
         database.addOrder(exchangeOrder);
 
         // update product quantities in database and seller's inventory
-        updateDatabaseProductQuantities(replacementProducts);
-        updateInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
+        removeDatabaseProductQuantities(replacementProducts);
+        removeInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
 
         // send notification to buyer
         sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + Math.abs(priceDiff) + " from your exchange request " + order.getIssue().getId() + ".");
@@ -885,8 +892,8 @@ public class BuyerMenu extends Menu {
         database.addOrder(exchangeOrder);
 
         // update product quantities in database and seller's inventory
-        updateInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
-        updateDatabaseProductQuantities(replacementProducts);
+        removeInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
+        removeDatabaseProductQuantities(replacementProducts);
 
         // send notification to buyer
         sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + Math.abs(pointsDiff) + " from your exchange request " + order.getIssue().getId() + ".");
@@ -1026,8 +1033,8 @@ public class BuyerMenu extends Menu {
         return sum;
     }
 
-    // Updates product quantities in database
-    private void updateDatabaseProductQuantities(HashMap<Product, Integer> replacementProducts) {
+    // Removes product quantities from database
+    private void removeDatabaseProductQuantities(HashMap<Product, Integer> replacementProducts) {
         ArrayList<Product> databaseProducts = database.getProducts();
         for (Map.Entry<Product, Integer> replacementProduct : replacementProducts.entrySet()) {
             // find product in seller inventory
@@ -1040,8 +1047,36 @@ public class BuyerMenu extends Menu {
         }
     }
 
-    // Updates product quantities in seller's inventory
-    private void updateInventoryQuantities(HashMap<Product, Integer> replacementProducts, Seller seller) {
+    // Removes product quantities from seller's inventory
+    private void removeInventoryQuantities(HashMap<Product, Integer> replacementProducts, Seller seller) {
+        ArrayList<Product> inventory = seller.getProducts();
+        for (Map.Entry<Product, Integer> replacementProduct : replacementProducts.entrySet()) {
+            // find product in seller inventory
+            for (Product product : inventory) {
+                if (Objects.equals(product, replacementProduct.getKey())) {
+                    int index = inventory.indexOf(product);
+                    seller.getProducts().get(index).setQuantity(product.getQuantity() - replacementProduct.getValue());
+                }
+            }
+        }
+    }
+
+    // Put backs product quantities to database
+    private void addDatabaseProductQuantities(HashMap<Product, Integer> replacementProducts) {
+        ArrayList<Product> databaseProducts = database.getProducts();
+        for (Map.Entry<Product, Integer> replacementProduct : replacementProducts.entrySet()) {
+            // find product in seller inventory
+            for (Product product : databaseProducts) {
+                if (Objects.equals(product, replacementProduct.getKey())) {
+                    int index = databaseProducts.indexOf(product);
+                    database.getProducts().get(index).setQuantity(product.getQuantity() + replacementProduct.getValue());
+                }
+            }
+        }
+    }
+
+    // Put backs product quantities to seller's inventory
+    private void addIventoryQuantities(HashMap<Product, Integer> replacementProducts, Seller seller) {
         ArrayList<Product> inventory = seller.getProducts();
         for (Map.Entry<Product, Integer> replacementProduct : replacementProducts.entrySet()) {
             // find product in seller inventory
