@@ -194,6 +194,10 @@ public class SellerMenu extends Menu {
                 // if issue's solution description is 'return', refund buyer
                 if (Objects.equals(order.getIssue().getSolutionDescription(), "Return")) refund(order);
 
+                // put back reshipment products quantities in seller's inventory and database
+                addDatabaseProductQuantities(order.getIssue().getReshipmentProducts());
+                addInventoryQuantities(order.getIssue().getReshipmentProducts());
+
                 // confirm reshipment
                 System.out.println("Reshipment confirmed!");
 
@@ -278,15 +282,15 @@ public class SellerMenu extends Menu {
         }
 
         // update product quantities in database and seller's inventory
-        updateDatabaseProductQuantities(returnProducts);
-        updateInventoryQuantities(returnProducts);
+        addDatabaseProductQuantities(returnProducts);
+        addInventoryQuantities(returnProducts);
 
         // confirm refund
         System.out.println("Refund completed!");
     }
 
-    // Update product quantities in database
-    private void updateDatabaseProductQuantities(HashMap<Product, Integer> returnProducts) {
+    // Adds product quantities from database
+    private void addDatabaseProductQuantities(HashMap<Product, Integer> returnProducts) {
         ArrayList<Product> databaseProducts = database.getProducts();
         for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
             // find product in seller inventory
@@ -299,8 +303,8 @@ public class SellerMenu extends Menu {
         }
     }
 
-    // Update product quantities in seller's inventory
-    private void updateInventoryQuantities(HashMap<Product, Integer> returnProducts) {
+    // Adds product quantities from seller's inventory
+    private void addInventoryQuantities(HashMap<Product, Integer> returnProducts) {
         ArrayList<Product> inventory = user.getProducts();
         for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
             // find product in seller inventory
