@@ -52,10 +52,10 @@ public class SellerMenu extends Menu {
                     continueLoop = displayInventory();
                     break;
                 case 4:
-                    continueLoop = displayNotifications();
+                    displayNotifications();
                     break;
                 case 5:
-                    continueLoop = displayMetrics();
+                    displayMetrics();
                     break;
                 case 6:
                     return false;  // Add this to handle log out
@@ -606,8 +606,8 @@ public class SellerMenu extends Menu {
         System.out.println(user.getMetrics().getSelectedMetrics().get(1));
         System.out.println(user.getMetrics().getSelectedMetrics().get(2));
     }
-
-    public boolean displayMetrics(){
+  
+    public void displayMetrics(){
         boolean continueLoop = true;
         while (continueLoop){
             System.out.println("All metrics available for " + user.getId() + " : ");
@@ -625,6 +625,5 @@ public class SellerMenu extends Menu {
                 case 2: continueLoop = false;
             }
         }
-        return true;
     }
 }

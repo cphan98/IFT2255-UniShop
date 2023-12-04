@@ -32,6 +32,14 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         }
         averageNoteReceived = Math.round((sum / notesReceived.size()) * 10) / 10f;
     }
+    public void removeAverageNoteReceived(float note) {
+        notesReceived.remove(note);
+        float sum = 0;
+        for (float n : notesReceived) {
+            sum += n;
+        }
+        averageNoteReceived = Math.round((sum / notesReceived.size()) * 10) / 10f;
+    }
     public void updateLikes(int likes) {
         this.likes = likes;
     }

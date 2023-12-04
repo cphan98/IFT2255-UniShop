@@ -57,7 +57,13 @@ public class BuyerMenu extends Menu {
             System.out.println("3. Display Cart");
             System.out.println("4. Display Wishlist");
             System.out.println("5. Display Catalog");
-            System.out.println("6. Display Notifications");
+            int notificationsUnread = 0;
+            for (Notification notification : user.getNotifications()) {
+                if (!notification.isRead()) {
+                    notificationsUnread++;
+                }
+            }
+            System.out.println("6. Display Notifications " + (notificationsUnread == 0 ? "" : "(" + notificationsUnread + " unread)"));
 
             System.out.println("7. Display Metrics");
             System.out.println("8. Log out");
@@ -69,8 +75,8 @@ public class BuyerMenu extends Menu {
                 case 3 -> continueLoop = displayCart();
                 case 4 -> continueLoop = displayWishList();
                 case 5 -> continueLoop = displayCatalog();
-                case 6 -> continueLoop = displayNotifications();
-                case 7 -> continueLoop = displayMetrics();
+                case 6 -> displayNotifications();
+                case 7 -> displayMetrics();
                 case 8 -> {
                     return false;  // Add this to handle log out
                 }
@@ -89,10 +95,10 @@ public class BuyerMenu extends Menu {
             System.out.println("PROFILE");
             System.out.println("Name: " + user.getId());
             System.out.println("Email: " + user.getEmail());
-            System.out.println("Buying points: " + user.getPoints());
+            System.out.println("Buying points: " + user.getMetrics().getBuyPoints());
             System.out.println();
             System.out.println("METRICS");
-            displayMetricsProfil();
+            displayMetricsProfile();
 
             line();
             System.out.println();
@@ -115,7 +121,7 @@ public class BuyerMenu extends Menu {
                     return false;
                 default:
                     System.out.println("Invalid selection. Please try again.");
-                    return false;  // continue the loop
+                    return false;
             }
         }
         return true;  // continue the loop
@@ -290,10 +296,19 @@ public class BuyerMenu extends Menu {
 
                 // send notification to buyer
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
-
-                // confirm reception
-                System.out.println("Order confirmed!");
-
+            
+                // add points
+                int buyPointsWon = 0;
+                for (Product product : order.getProducts().keySet()) {
+                    buyPointsWon += (int) (product.getPrice() * order.getProducts().get(product));
+                }
+                user.getMetrics().addBuyPoints(buyPointsWon);
+                user.getMetrics().addExpPoints(10);
+                System.out.println("You have won " + buyPointsWon + " buy points and 10 experience points by confirming this order!");
+                
+                // confirm order reception
+                System.out.println("Order confirmed");
+            
                 break;
 
             case 6: // return order history
@@ -1168,14 +1183,17 @@ public class BuyerMenu extends Menu {
     }
 
     // METRICS
-
-    public void displayMetricsProfil() {
-        System.out.println(user.getMetrics().getSelectedMetrics().get(0));
-        System.out.println(user.getMetrics().getSelectedMetrics().get(1));
-        System.out.println(user.getMetrics().getSelectedMetrics().get(2));
+    public void displayMetricsProfile() {
+        if (user.getMetrics().getSelectedMetrics().isEmpty()) {
+            System.out.println("No metrics selected");
+        } else {
+            for (String metric : user.getMetrics().getSelectedMetrics()) {
+                System.out.println(metric);
+            }
+        }
     }
 
-    public boolean displayMetrics(){
+    public void displayMetrics(){
         boolean continueLoop = true;
         while (continueLoop){
             System.out.println("All metrics available for " + user.getId() + " : ");
@@ -1193,7 +1211,6 @@ public class BuyerMenu extends Menu {
                 case 2: continueLoop = false;
             }
         }
-        return true;
     }
 
     // CATALOG
@@ -1251,7 +1268,7 @@ public class BuyerMenu extends Menu {
 
     private void searchAndDisplayProduct() {
         if (searchProduct(catalog)) {
-            System.out.println(pointedProduct);
+
             interactWithProduct();
         } else {
             System.out.println("Product not found. Please try again.");
@@ -1272,6 +1289,7 @@ public class BuyerMenu extends Menu {
     private void interactWithProduct() {
         boolean continueInteraction = true;
         while (continueInteraction) {
+            System.out.println(pointedProduct);
             System.out.println("\n1. Add product to cart");
             if (user.getWishList().contains(pointedProduct)) {
                 System.out.println("2. Remove product from wishlist");
@@ -1300,39 +1318,57 @@ public class BuyerMenu extends Menu {
 
     private void interactWithEvaluations() {
         System.out.println("Enter the number of the evaluation you want to interact with, or 0 to return:");
-        int choice = uiUtilities.getUserInputAsInteger();
-        if (choice == 0) {
+        int evaluationIndex = uiUtilities.getUserInputAsInteger();
+        if (evaluationIndex == 0) {
             System.out.println("Returning to product...");
-        } else if (choice > pointedProduct.getEvaluations().size()) {
+        } else if (evaluationIndex > pointedProduct.getEvaluations().size()) {
             System.out.println("Invalid selection. Please try again.");
         } else {
-            Evaluation pointedEvaluation = pointedProduct.getEvaluations().get(choice - 1);
+            Evaluation pointedEvaluation = pointedProduct.getEvaluations().get(evaluationIndex - 1);
             System.out.println(pointedEvaluation);
-            if (user.getEvaluationsLiked().contains(pointedEvaluation)) {
-                System.out.println("1. Unlike this evaluation");
+            if (user.getEvaluationsMade().containsValue(pointedEvaluation)) {
+                System.out.println("1. Delete evaluation");
+                System.out.println("2. Return to product");
+                int decisionOnOwnEvaluation = uiUtilities.getUserInputAsInteger();
+                switch (decisionOnOwnEvaluation) {
+                    case 1:
+                        System.out.println("Deleting evaluation...");
+                        database.removeEvaluationFromProduct(pointedProduct, pointedEvaluation);
+                        break;
+                    case 2:
+                        System.out.println("Returning to product...");
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Please try again.");
+                        break;
+                }
             } else {
-                System.out.println("1. Like this evaluation");
-            }
-            if (user.getBuyersFollowed().contains(pointedEvaluation.getAuthor())) {
-                System.out.println("2. Unfollow this buyer");
-            } else {
-                System.out.println("2. Follow this buyer");
-            }
-            System.out.println("3. Return to product");
-            int choice2 = uiUtilities.getUserInputAsInteger();
-            switch (choice2) {
-                case 1:
-                    uiUtilities.toggleEvaluationLike(user, pointedEvaluation);
-                    break;
-                case 2:
-                    uiUtilities.toggleBuyerToFollowing(user, pointedEvaluation.getAuthor());
-                    break;
-                case 3:
-                    System.out.println("Returning to product...");
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please try again.");
-                    break;
+                if (user.getEvaluationsLiked().contains(pointedEvaluation)) {
+                    System.out.println("1. Unlike this evaluation");
+                } else {
+                    System.out.println("1. Like this evaluation");
+                }
+                if (user.getBuyersFollowed().contains(pointedEvaluation.getAuthor())) {
+                    System.out.println("2. Unfollow this buyer");
+                } else {
+                    System.out.println("2. Follow this buyer");
+                }
+                System.out.println("3. Return to product");
+                int decisionOnOtherEvaluation = uiUtilities.getUserInputAsInteger();
+                switch (decisionOnOtherEvaluation) {
+                    case 1:
+                        uiUtilities.toggleEvaluationLike(user, pointedEvaluation);
+                        break;
+                    case 2:
+                        uiUtilities.toggleBuyerToFollowing(user, pointedEvaluation.getAuthor());
+                        break;
+                    case 3:
+                        System.out.println("Returning to product...");
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Please try again.");
+                        break;
+                }
             }
         }
     }
@@ -1539,6 +1575,10 @@ public class BuyerMenu extends Menu {
     // EVALUATIONS
 
     public void addEvaluationToProduct(Product product) {
+        if (user.getEvaluationsMade().containsKey(product)) {
+            System.out.println("You already made an evaluation on this product");
+            return;
+        }
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter a comment:");
         String comment = inputManager.nextLine();
@@ -1547,10 +1587,12 @@ public class BuyerMenu extends Menu {
             System.out.println("Enter a rating between 0 and 5:");
             rating = Float.parseFloat(inputManager.nextLine());
         }
-        product.addEvaluation(new Evaluation(comment, rating, user));
+        Evaluation evaluation = new Evaluation(comment, rating, user);
+        database.addEvaluationToProduct(product, evaluation);
         String title = "You got a new evaluation!";
         String summary = this.user + " added a new comment on " + product.getTitle() + "!";
         product.getSeller().addNotification(new Notification(title, summary));
+        user.getEvaluationsMade().put(product, evaluation);
     }
 
     // SHOPPING CART
@@ -1589,7 +1631,7 @@ public class BuyerMenu extends Menu {
 
     public void makeCheckout() {
         InputManager im = InputManager.getInstance();
-        System.out.println("You currently have " + user.getPoints() + " points\n");
+        System.out.println("You currently have " + user.getMetrics().getBuyPoints() + " buying points\n");
         System.out.println("Do you want to use your registered info for this order? (y/n)");
         String choice = "";
         while (!choice.matches("[yn]")) {
@@ -1618,11 +1660,11 @@ public class BuyerMenu extends Menu {
                 System.out.println("Order successful!");
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
-                if (user.getPoints() < user.getCart().getTotalPrice() * 50) {
-                    System.out.println("Not enough points. You need " + (user.getCart().getTotalPrice() * 50 - user.getPoints()) + " more points to pay this order");
+                if (user.getMetrics().getBuyPoints() < user.getCart().getTotalPrice() * 50) {
+                    System.out.println("Not enough points. You need " + (user.getCart().getTotalPrice() * 50 - user.getMetrics().getBuyPoints()) + " more points to pay this order");
                     return;
                 }
-                user.removePoints((int) user.getCart().getTotalPrice() * 50);
+                user.getMetrics().removeBuyPoints((int) user.getCart().getTotalPrice() * 50);
                 database.generateAndAddOrders(user, paymentType);
                 System.out.println("Order successful!");
             }
@@ -1658,11 +1700,11 @@ public class BuyerMenu extends Menu {
                 System.out.println("Order successful!");
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
-                if (user.getPoints() < user.getCart().getTotalPrice() * 50) {
-                    System.out.println("Not enough points. You need " + Math.ceil((user.getCart().getTotalPrice() * 50 - user.getPoints())) + " more points to pay this order");
+                if (user.getMetrics().getBuyPoints() < user.getCart().getTotalPrice() * 50) {
+                    System.out.println("Not enough points. You need " + Math.ceil((user.getCart().getTotalPrice() * 50 - user.getMetrics().getBuyPoints())) + " more points to pay this order");
                     return;
                 }
-                user.removePoints((int) user.getCart().getTotalPrice() * 50);
+                user.getMetrics().removeBuyPoints((int) user.getCart().getTotalPrice() * 50);
                 database.generateAndAddOrders(user, paymentType, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }

@@ -6,6 +6,7 @@ import UtilityObjects.CreditCard;
 import UtilityObjects.Notification;
 import Users.Seller;
 import Users.User;
+import productClasses.Usages.Evaluation;
 import productClasses.Usages.Order;
 import productClasses.Product;
 
@@ -199,10 +200,6 @@ public class DataBase implements java.io.Serializable {
     private HashMap<Seller, HashMap<Product, Integer>> splitCartBeforeOrder(Buyer user) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = new HashMap<>();
         HashMap<Product, Integer> cartProducts = user.getCart().getProducts();
-        for (Product product : user.getCart().getProducts().keySet()) {
-            user.addPoints(product.getBasePoints()*user.getCart().getProducts().get(product));
-            System.out.println("With this purchase, you won " + product.getBasePoints()*user.getCart().getProducts().get(product) + " buying points!\n");
-        }
         for (Product product : cartProducts.keySet()) {
             Seller seller = product.getSeller();
             HashMap<Product, Integer> sellerProducts;
@@ -225,6 +222,24 @@ public class DataBase implements java.io.Serializable {
             }
         }
         return splitCart;
+    }
+
+    public void addEvaluationToProduct(Product product, Evaluation evaluation) {
+        evaluation.getAuthor().getEvaluationsMade().put(product, evaluation);
+        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() + 1);
+        evaluation.getAuthor().getMetrics().updateAverageNoteGiven(evaluation.getRating());
+        product.getEvaluations().add(evaluation);
+        product.getSeller().getMetrics().updateAverageNoteReceived(evaluation.getRating());
+        product.updateOverallRating();
+    }
+
+    public void removeEvaluationFromProduct(Product product, Evaluation evaluation) {
+        evaluation.getAuthor().getEvaluationsMade().remove(product);
+        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() - 1);
+        evaluation.getAuthor().getMetrics().removeAverageNoteGiven(evaluation.getRating());
+        product.getEvaluations().remove(evaluation);
+        product.getSeller().getMetrics().removeAverageNoteReceived(evaluation.getRating());
+        product.updateOverallRating();
     }
     @Override
     public String toString() {
