@@ -3,10 +3,11 @@ import Users.Buyer;
 import Users.Seller;
 import productClasses.Product;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class Catalog
+public class Catalog implements Serializable
 {
     private final HashSet<Product> books_catalog;
     private final HashSet<Product> learningRes_catalog;

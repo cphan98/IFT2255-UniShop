@@ -4,23 +4,24 @@ import Metrics.BuyerMetrics;
 import UtilityObjects.Address;
 import productClasses.Usages.Cart;
 import UtilityObjects.CreditCard;
-import UtilityObjects.Notification;
 import productClasses.Usages.Evaluation;
 import productClasses.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Buyer extends User {
+public class Buyer extends User implements java.io.Serializable {
+    // ATTRIBUTES
+
     private String firstName;
     private String lastName;
     private final Cart cart;
-    private int points;
     private final BuyerMetrics metrics;
     private CreditCard card;
     private final ArrayList<Seller> sellersFollowed;
     private final ArrayList<Buyer> buyersFollowed;
     private final ArrayList<Evaluation> evaluationsLiked;
+    private final HashMap<Product, Evaluation> evaluationsMade;
     private final ArrayList<Product> wishList;
     public Buyer(String firstName, String lastName, String id, String password, String email, String phoneNumber, Address address) {
         super(id, password, email, phoneNumber, address);
@@ -39,55 +40,20 @@ public class Buyer extends User {
     }
     public void removePoints(int points) {
         this.points -= points;
+
+    // GETTERS
+
+    public int getExpPoints() {
+        return expPoints;
     }
     public int getPoints() {
         return points;
-    }
-    public HashMap<Seller, HashMap<Product, Integer>> splitCartBeforeOrder() {
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = new HashMap<>();
-        HashMap<Product, Integer> cartProducts = cart.getProducts();
-        for (Product product : cart.getProducts().keySet()) {
-            addPoints(product.getBasePoints()*cart.getProducts().get(product));
-            System.out.println("With this purchase, you won " + product.getBasePoints()*cart.getProducts().get(product) + " buying points!\n");
-        }
-        for (Product product : cartProducts.keySet()) {
-            Seller seller = product.getSeller();
-            HashMap<Product, Integer> sellerProducts;
-            if (splitCart.containsKey(seller)) {
-                sellerProducts = splitCart.get(seller);
-            } else {
-                sellerProducts = new HashMap<>();
-            }
-            sellerProducts.put(product, cartProducts.get(product));
-            splitCart.put(seller, sellerProducts);
-
-        }
-        for ( Seller seller : splitCart.keySet())
-        {
-            for (Product product : splitCart.get(seller).keySet())
-            {
-                String title = "New order!";
-                String summary = this.getId() + " just bought your " + product.getTitle() + "!";
-                seller.addNotification(new Notification(title, summary));
-            }
-        }
-        return splitCart;
     }
     public String getFirstName() {
         return firstName;
     }
     public String getLastName() {
         return lastName;
-    }
-    public void setFirstName(String firstName) {
-        if (firstName != null && !firstName.isEmpty()) {
-            this.firstName = firstName;
-        }
-    }
-    public void setLastName(String lastName) {
-        if (lastName != null && !lastName.isEmpty()) {
-            this.lastName = lastName;
-        }
     }
     public ArrayList<Seller> getSellersFollowed() {
         return sellersFollowed;
@@ -100,6 +66,7 @@ public class Buyer extends User {
         followers.remove(follower);
         follower.getBuyersFollowed().remove(this);
     }
+
     public Cart getCart() {
         return cart;
     }
@@ -114,9 +81,6 @@ public class Buyer extends User {
     public CreditCard getCard() {
         return card;
     }
-    public void setCard(CreditCard card) {
-        this.card = card;
-    }
     public ArrayList<Product> getWishList() {
         return wishList;
     }
@@ -126,52 +90,23 @@ public class Buyer extends User {
     public ArrayList<Evaluation> getEvaluationsLiked() {
         return evaluationsLiked;
     }
-    public void toggleProductToWishList(Product product) {
-        if (wishList.contains(product)) {
-            wishList.remove(product);
-            product.setLikes(product.getLikes() - 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
-            System.out.println("Product removed from wish list!");
-        } else {
-            wishList.add(product);
-            product.setLikes(product.getLikes() + 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
-            System.out.println("Product added to wish list!");
+
+    // SETTERS
+
+    public void setFirstName(String firstName) {
+        if (firstName != null && !firstName.isEmpty()) {
+            this.firstName = firstName;
         }
     }
-    public void toggleSellerToFollowing(Seller seller) {
-        if (!sellersFollowed.contains(seller)) {
-            sellersFollowed.add(seller);
-            seller.getMetrics().updateLikes(seller.getMetrics().getLikes() + 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
-            seller.addFollower(this);   //seller has a new follower
-            addSellersFollowers(seller);        // keep track of buyer's following
-            System.out.println("You are now following " + seller.getId() + "!");
-        } else {
-            sellersFollowed.remove(seller);
-            seller.getMetrics().updateLikes(seller.getMetrics().getLikes() - 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
-            seller.removeFollower(this);
-            System.out.println("You are no longer following " + seller.getId() + "!");
+    public void setLastName(String lastName) {
+        if (lastName != null && !lastName.isEmpty()) {
+            this.lastName = lastName;
         }
     }
-    public void toggleEvaluationLike(Evaluation evaluation) {
-        if (evaluation.getAuthor() == this) {
-            System.out.println("You cannot like your own evaluation!");
-            return;
-        }
-        if (!evaluationsLiked.contains(evaluation)) {
-            evaluationsLiked.add(evaluation);
-            evaluation.setLikes(evaluation.getLikes() + 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
-            System.out.println("You liked " + evaluation.getAuthor().getId() + "'s evaluation!");
-        } else {
-            evaluationsLiked.remove(evaluation);
-            evaluation.setLikes(evaluation.getLikes() - 1);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
-            System.out.println("You unliked " + evaluation.getAuthor().getId() + "'s evaluation!");
-        }
+    public void setCard(CreditCard card) {
+        this.card = card;
     }
+      
     public void toggleBuyerToFollowing(Buyer buyer) {
         if (buyer == this) {
             System.out.println("You cannot follow yourself!");
@@ -191,7 +126,40 @@ public class Buyer extends User {
             this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
             System.out.println("You are no longer following " + buyer.getId() + "!");
         }
+
+    // CONSTRUCTOR
+
+    public Buyer(String firstName, String lastName, String id, String password, String email, String phoneNumber, Address address) {
+        super(id, password, email, phoneNumber, address);
+        this.metrics = new BuyerMetrics();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.cart = new Cart();
+        this.points = 0;
+        this.wishList = new ArrayList<>();
+        this.sellersFollowed = new ArrayList<>();
+        this.buyersFollowed = new ArrayList<>();
+        this.evaluationsLiked = new ArrayList<>();
     }
+
+    // OPERATIONS
+
+    public void addPoints(int points) {
+        this.points += points;
+    }
+
+    public void removePoints(int points) {
+        this.points -= points;
+    }
+
+    public void addExpPoints(int points) {
+        this.expPoints += points;
+    }
+
+    public void removeExpPoints(int points) {
+        this.expPoints -= points;
+    }
+  
     public String wishListToString() {
         if (wishList.isEmpty()) {
             return "Your wish list is empty!";
@@ -205,5 +173,4 @@ public class Buyer extends User {
         }
         return sb.toString();
     }
-
 }

@@ -1,26 +1,50 @@
 import BackEndUtility.DataBase;
+import UIs.Buyer.BuyerMenu;
 import UIs.HomeScreen;
 import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
-import productClasses.Usages.Order;
 import BackEndUtility.Category;
 import BackEndUtility.OrderState;
 import productClasses.*;
 import productClasses.Inheritances.*;
 import productClasses.Usages.Evaluation;
+import serializationUtil.SerializationUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class UniShop {
+    private static final String DATA_FILE = "dataBase.ser";
     private static DataBase database;
     public static void main(String[] args) {
-        makeFakeData();
+        try {
+            // Try to load existing data
+            database = SerializationUtil.loadDataBase(DATA_FILE);
+        } catch (IOException | ClassNotFoundException e) {
+            // If no data is found or an error occurs, create new data
+            makeFakeData();
+        }
+
         HomeScreen homeScreen = new HomeScreen(database);
         printBigVoidBefore();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                SerializationUtil.saveDataBase(database, DATA_FILE);
+                System.out.println("Data saved successfully.");
+            } catch (IOException e) {
+                System.out.println("Error saving data: " + e.getMessage());
+            }
+        }));
         homeScreen.initialize();
+
+        // Save the data when exiting
+        try {
+            SerializationUtil.saveDataBase(database, DATA_FILE);
+        } catch (IOException e) {
+            System.out.println("Error saving data: " + e.getMessage());
+        }
     }
     private static void printBigVoidBefore() {
         for (int i=0; i<100; i++) {
@@ -37,44 +61,36 @@ public class UniShop {
             Product product = putFakeProduct(seller);
             database.addProduct(product);
             product.setLikes(Math.round(new Random().nextFloat() * 1000));
-
             float randomRating;
             for (int i=0; i<5; i++) {
                 randomRating = (float) Math.round(Math.random()*50)/10;
                 String comment = "This is a " + prompts[Math.max(0,Math.round(randomRating)-1)] + " " + product.getTitle().toLowerCase() + "!";
-                product.addEvaluation(new Evaluation(comment, randomRating, (Buyer) users.get(i)));
+                database.addEvaluationToProduct(product, new Evaluation(comment, randomRating, (Buyer) users.get(i)));
             }
         });
         simulateSomeActions();
     }
     private static void simulateSomeActions() {
         Buyer cynthia = (Buyer) database.getUsers().get(0);
-        cynthia.toggleBuyerToFollowing((Buyer) database.getUsers().get(1));
-        cynthia.toggleBuyerToFollowing((Buyer) database.getUsers().get(2));
-        cynthia.toggleBuyerToFollowing((Buyer) database.getUsers().get(3));
-        cynthia.toggleBuyerToFollowing((Buyer) database.getUsers().get(4));
-        ((Buyer) database.getUsers().get(4)).toggleProductToWishList(database.getProducts().get(0));
-        ((Buyer) database.getUsers().get(4)).toggleProductToWishList(database.getProducts().get(1));
-        ((Buyer) database.getUsers().get(3)).toggleProductToWishList(database.getProducts().get(1));
-        ((Buyer) database.getUsers().get(3)).toggleProductToWishList(database.getProducts().get(2));
-        ((Buyer) database.getUsers().get(2)).toggleProductToWishList(database.getProducts().get(2));
-        ((Buyer) database.getUsers().get(2)).toggleProductToWishList(database.getProducts().get(3));
-        ((Buyer) database.getUsers().get(1)).toggleProductToWishList(database.getProducts().get(3));
-        ((Buyer) database.getUsers().get(1)).toggleProductToWishList(database.getProducts().get(4));
-
-        Buyer random = (Buyer) database.getUsers().get(1);
-        random.getWishList().add(database.getProducts().get(0));
-        random.getWishList().add(database.getProducts().get(1));
+        BuyerMenu buyerMenu = new BuyerMenu(cynthia, database);
+        buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) database.getUsers().get(1));
+        buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) database.getUsers().get(2));
+        buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) database.getUsers().get(3));
+        buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) database.getUsers().get(4));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(4)), database.getProducts().get(0));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(4)), database.getProducts().get(1));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(3)), database.getProducts().get(1));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(3)), database.getProducts().get(2));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(2)), database.getProducts().get(2));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(2)), database.getProducts().get(3));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(1)), database.getProducts().get(3));
+        buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) database.getUsers().get(1)), database.getProducts().get(4));
 
         cynthia.setCard(new CreditCard("123456789012", "Cynthia", "Phan", "2022-01-01"));
         cynthia.getCart().addProduct(database.getProducts().get(0), 2);
         cynthia.getCart().addProduct(database.getProducts().get(1), 4);
         cynthia.getCart().addProduct(database.getProducts().get(2), 1);
-        HashMap<Seller, HashMap<Product, Integer>> splitCart = cynthia.splitCartBeforeOrder();
-        for (Seller seller : splitCart.keySet()) {
-            Order order = new Order(cynthia, "credit card", splitCart.get(seller));
-            database.addOrder(order);
-        }
+        database.generateAndAddOrders(cynthia, "credit card");
         cynthia.getCart().getProducts().clear();
 
         cynthia.getOrderHistory().get(1).changeStatus(OrderState.IN_DELIVERY);

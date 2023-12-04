@@ -1,17 +1,19 @@
 package BackEndUtility;
 
 import Users.Buyer;
+import UtilityObjects.Address;
+import UtilityObjects.CreditCard;
 import UtilityObjects.Notification;
 import Users.Seller;
 import Users.User;
+import productClasses.Usages.Evaluation;
 import productClasses.Usages.Order;
 import productClasses.Product;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DataBase {
+public class DataBase implements java.io.Serializable {
     private final ArrayList<User> users;
     private final ArrayList<Product> products = new ArrayList<>();
     private final ArrayList<Order> orders = new ArrayList<>();
@@ -20,6 +22,11 @@ public class DataBase {
     public DataBase(ArrayList<User> users) {
         this.users = users;
     }
+    
+    public DataBase() {
+        this.users = new ArrayList<>();
+    }
+
     public User getUser(String id, String password) {
         for (User user : users) {
             if (user.getId().equals(id) && user.getPassword().equals(password)) {
@@ -311,6 +318,85 @@ public class DataBase {
             }
         }
         return user.getChecked24H();
+    }
+
+    public void generateAndAddOrders(Buyer user, String paymentType, Address shippingAddress, String phoneNumber) {
+        HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
+        for (Seller seller : splitCart.keySet()) {
+            HashMap<Product, Integer> sellerProducts = splitCart.get(seller);
+            addOrder(new Order(user, paymentType, shippingAddress, phoneNumber, sellerProducts));
+        }
+    }
+    public void generateAndAddOrders(Buyer user, CreditCard creditCard, Address shippingAddress, String phoneNumber) {
+        HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
+        for (Seller seller : splitCart.keySet()) {
+            HashMap<Product, Integer> sellerProducts = splitCart.get(seller);
+            addOrder(new Order(user, "credit card", creditCard, shippingAddress, phoneNumber, sellerProducts));
+        }
+    }
+    public void generateAndAddOrders(Buyer user) {
+        HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
+        for (Seller seller : splitCart.keySet()) {
+            HashMap<Product, Integer> products = splitCart.get(seller);
+            addOrder(new Order(user, "credit card", user.getCard(), products));
+        }
+    }
+    public void generateAndAddOrders(Buyer user, String paymentType) {
+        HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
+        for (Seller seller : splitCart.keySet()) {
+            HashMap<Product, Integer> products = splitCart.get(seller);
+
+            for(Product product : user.getCart().getProducts().keySet()){
+                getSeller(seller).sellProduct(product, splitCart.size());
+            }
+
+            addOrder(new Order(user, paymentType, products));
+        }
+    }
+
+    private HashMap<Seller, HashMap<Product, Integer>> splitCartBeforeOrder(Buyer user) {
+        HashMap<Seller, HashMap<Product, Integer>> splitCart = new HashMap<>();
+        HashMap<Product, Integer> cartProducts = user.getCart().getProducts();
+        for (Product product : cartProducts.keySet()) {
+            Seller seller = product.getSeller();
+            HashMap<Product, Integer> sellerProducts;
+            if (splitCart.containsKey(seller)) {
+                sellerProducts = splitCart.get(seller);
+            } else {
+                sellerProducts = new HashMap<>();
+            }
+            sellerProducts.put(product, cartProducts.get(product));
+            splitCart.put(seller, sellerProducts);
+
+        }
+        for ( Seller seller : splitCart.keySet())
+        {
+            for (Product product : splitCart.get(seller).keySet())
+            {
+                String title = "New order!";
+                String summary = user.getId() + " just bought your " + product.getTitle() + "!";
+                seller.addNotification(new Notification(title, summary));
+            }
+        }
+        return splitCart;
+    }
+
+    public void addEvaluationToProduct(Product product, Evaluation evaluation) {
+        evaluation.getAuthor().getEvaluationsMade().put(product, evaluation);
+        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() + 1);
+        evaluation.getAuthor().getMetrics().updateAverageNoteGiven(evaluation.getRating());
+        product.getEvaluations().add(evaluation);
+        product.getSeller().getMetrics().updateAverageNoteReceived(evaluation.getRating());
+        product.updateOverallRating();
+    }
+
+    public void removeEvaluationFromProduct(Product product, Evaluation evaluation) {
+        evaluation.getAuthor().getEvaluationsMade().remove(product);
+        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() - 1);
+        evaluation.getAuthor().getMetrics().removeAverageNoteGiven(evaluation.getRating());
+        product.getEvaluations().remove(evaluation);
+        product.getSeller().getMetrics().removeAverageNoteReceived(evaluation.getRating());
+        product.updateOverallRating();
     }
     @Override
     public String toString() {
