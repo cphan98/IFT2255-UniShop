@@ -33,7 +33,7 @@ public abstract class Menu {
         System.out.println("You have " + user.getFollowers().size() + " followers: ");
         System.out.println("1. Get the follower");
         System.out.println("2. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1 -> searchFollower();
             case 2 -> System.out.println("Returning to menu...");
@@ -55,7 +55,7 @@ public abstract class Menu {
     public void interactWithFollower(Buyer pointedFollower) {
         System.out.println("1. Remove this follower");
         System.out.println("2. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1 -> user.removeFollower(pointedFollower);
             case 2 -> System.out.println("Returning to menu...");
