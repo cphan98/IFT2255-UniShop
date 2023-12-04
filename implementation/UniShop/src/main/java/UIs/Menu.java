@@ -24,6 +24,7 @@ public abstract class Menu {
     }
     public abstract boolean displayMenu();
     public abstract boolean displayProfile();
+
     public boolean displayFollowers() {
         int i = 0;
         for (Buyer buyer : user.getFollowers()) {

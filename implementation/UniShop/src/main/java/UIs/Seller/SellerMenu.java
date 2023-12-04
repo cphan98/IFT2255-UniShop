@@ -3,6 +3,8 @@ package UIs.Seller;
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import UIs.Menu;
+import Users.Buyer;
+import UtilityObjects.Address;
 import Users.Seller;
 import UtilityObjects.Notification;
 import productClasses.Usages.Order;
@@ -38,7 +40,9 @@ public class SellerMenu extends Menu {
             int unreadNotifications = user.getNotifications().stream().filter(notification -> !notification.isRead()).toArray().length;
             System.out.println("4. Display Notifications" + (unreadNotifications == 0 ? "" : " (" + unreadNotifications  + " new)"));
             System.out.println("5. Display Metrics");
-            System.out.println("6. Log out");
+            System.out.println("6. Display Followers");
+            System.out.println("7. Display Your Customers");
+            System.out.println("8. Log out");
             int choice = uiUtilities.getUserInputAsInteger();
 
 
@@ -59,6 +63,12 @@ public class SellerMenu extends Menu {
                     displayMetrics();
                     break;
                 case 6:
+                    continueLoop = displayFollowers();
+                    break;
+                case 7:
+                    continueLoop = displayCustomers();
+                    break;
+                case 8:
                     return false;  // Add this to handle log out
                 default:
                     System.out.println("Invalid selection. Please try again.");
@@ -69,7 +79,6 @@ public class SellerMenu extends Menu {
     }
 
     // PROFILE
-
     public boolean displayProfile() {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -104,7 +113,15 @@ public class SellerMenu extends Menu {
         }
         return true;  // continue the loop
     }
-
+    public boolean displayCustomers() {
+        System.out.println("Your customers: ");
+        int i = 0;
+        for (Buyer customer : user.getCustomers()) {
+            System.out.println(i + ". " + customer.getId());
+        }
+        System.out.println("You have " + user.getCustomers().size() + " customers.");
+        return true;
+    }
     public void modifyProfile() {
         System.out.println("1. Modify personal info");
         System.out.println("2. Modify address");
