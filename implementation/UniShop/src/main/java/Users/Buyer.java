@@ -70,11 +70,6 @@ public class Buyer extends User implements java.io.Serializable {
     public Cart getCart() {
         return cart;
     }
-    public void addSellersCustomers() {
-        for (Product product : getCart().getProducts().keySet()) {
-            product.getSeller().addCustomers(this);
-        }
-    }
     public BuyerMetrics getMetrics() {
         return metrics;
     }
@@ -120,9 +115,7 @@ public class Buyer extends User implements java.io.Serializable {
         }
     }
 
-
     // CONSTRUCTOR
-
 
     // OPERATIONS
     @Override
