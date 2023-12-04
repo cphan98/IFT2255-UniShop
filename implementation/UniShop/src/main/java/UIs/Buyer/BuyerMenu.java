@@ -33,6 +33,7 @@ public class BuyerMenu extends Menu {
     private Seller pointedSeller = null;
     private Catalog catalog;
 
+
     // CONSTRUCTOR
 
     public BuyerMenu(Buyer user, DataBase database) {
@@ -50,6 +51,9 @@ public class BuyerMenu extends Menu {
             System.out.println("Welcome to UniShop, " + user.getId() + "!");
             line();
             System.out.println();
+            displayRanks();
+            System.out.println();
+            line();
             System.out.println("Please select an option:");
 
             System.out.println("1. Display Profile");
@@ -64,9 +68,9 @@ public class BuyerMenu extends Menu {
                 }
             }
             System.out.println("6. Display Notifications " + (notificationsUnread == 0 ? "" : "(" + notificationsUnread + " unread)"));
-
-            System.out.println("7. Display Metrics");
-            System.out.println("8. Log out");
+            System.out.println("7. Display Buyers");
+            System.out.println("8. Display Metrics");
+            System.out.println("9. Log out");
             int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
@@ -76,8 +80,9 @@ public class BuyerMenu extends Menu {
                 case 4 -> continueLoop = displayWishList();
                 case 5 -> continueLoop = displayCatalog();
                 case 6 -> displayNotifications();
-                case 7 -> displayMetrics();
-                case 8 -> {
+                case 7 -> continueLoop = displayBuyers();
+                case 8 -> displayMetrics();
+                case 9 -> {
                     return false;  // Add this to handle log out
                 }
                 default -> System.out.println("Invalid selection. Please try again.");
@@ -126,7 +131,15 @@ public class BuyerMenu extends Menu {
         }
         return true;  // continue the loop
     }
-
+    public void displayRanks() {
+        System.out.println("Your rank is the " + database.getYourRank(user));
+        int i = 0;
+        for (Buyer buyer : database.getTop5())
+        {
+            i++;
+            System.out.println(i + ")" + "\t\t" + buyer.getId() + ": " + buyer.getPoints());
+        }
+    }
     public void modifyProfile() {
         System.out.println("1. Modify personal info");
         System.out.println("2. Modify shipping address");
@@ -1235,11 +1248,47 @@ public class BuyerMenu extends Menu {
 
             switch (choice) {
                 case 1 -> searchAndDisplayProduct();
-                case 2 -> displaySellerInfo();
+                case 2 -> searchSeller();
                 case 3 -> filterProducts();
                 case 4 -> filterSellers();
                 case 5 -> displayProductsLikedByFollowing();
                 case 6 -> {
+                    System.out.println("Returning to menu...");
+                    continueLoop = false;
+                }
+                default -> System.out.println("Invalid selection. Please try again.");
+            }
+        }
+        return true;
+    }
+    public boolean displayBuyers() {
+        line();
+        System.out.println("BUYERS");
+        line();
+        ArrayList<Buyer> buyers = database.getBuyers();
+        for (Buyer buyer : buyers) {
+            if (user.getBuyersFollowed().contains(buyer)) {
+                System.out.println("You are following this buyer!");
+            }
+            System.out.println("ID: " + buyer.getId());
+            System.out.println("Name: " + buyer.getFirstName());
+            System.out.println("Points: " + buyer.getPoints());
+        }
+        line();
+
+        boolean continueLoop = true;
+        while (continueLoop) {
+            System.out.println("1. Get a buyer's profile");
+            System.out.println("2. Filter buyers");
+            System.out.println("3. Display your followers");
+            System.out.println("4. Return to menu");
+            int choice = getUserInputAsInteger();
+
+            switch (choice) {
+                case 1 -> continueLoop = searchBuyer();
+                case 2 -> continueLoop = filterBuyers();
+                case 3 -> continueLoop = displayFollowers();
+                case 4 -> {
                     System.out.println("Returning to menu...");
                     continueLoop = false;
                 }
@@ -1263,6 +1312,151 @@ public class BuyerMenu extends Menu {
         }
         for (Product product : productsLikedByFollowing.keySet()) {
             System.out.println(product.smallToString());
+        }
+    }
+    private boolean searchBuyer() {
+        line();
+        ArrayList<Buyer> pointedBuyer = null;
+        boolean continueLoop = true;
+        while (continueLoop) {
+            System.out.println("1. Search by ID");
+            System.out.println("2. Search by name");
+            System.out.println("3. Return to menu");
+            int choice = getUserInputAsInteger();
+
+            switch (choice) {
+                case 1 -> {
+                    System.out.println("Enter the id of the buyer you want to view:");
+                    String id = InputManager.getInstance().nextLine();
+                    pointedBuyer = database.searchBuyerById(id);
+                    if (pointedBuyer == null) {
+                        System.out.println("Buyer not found.");
+                    } else {
+                        System.out.println(pointedBuyer);
+                        while (true) {
+                            System.out.println("Enter the desired buyer to view their profile:");
+                            int i = 0;
+                            for (Buyer buyer : pointedBuyer) {
+                                i++;
+                                System.out.println(i + ") " + buyer.getId());
+                            }
+                            int index = getUserInputAsInteger();
+                            if (index > 0 && index <= pointedBuyer.size()) {
+                                interactWithBuyer(pointedBuyer.get(index-1));
+                                break;
+                            } else {
+                                System.out.println("Invalid selection. Please try again.");
+                            }
+                        }
+
+                    }
+                }
+
+                case 2 -> {
+                    System.out.println("Enter the name of the buyer you want to view:");
+                    String name = InputManager.getInstance().nextLine();
+                    pointedBuyer = database.searchBuyerByName(name);
+                    if (pointedBuyer == null) {
+                        System.out.println("Buyer not found.");
+                    } else {
+                        System.out.println(pointedBuyer);
+                        while (true) {
+                            System.out.println("Enter the desired buyer to view their profile:");
+                            int i = 0;
+                            for (Buyer buyer : pointedBuyer) {
+                                i++;
+                                System.out.println(i + ") " + buyer.getId());
+                            }
+                            int index = getUserInputAsInteger();
+                            if (index > 0 && index <= pointedBuyer.size()) {
+                                interactWithBuyer(pointedBuyer.get(index-1));
+                                break;
+                            } else {
+                                System.out.println("Invalid selection. Please try again.");
+                            }
+                        }
+                    }
+                }
+                case 3 -> {
+                    System.out.println("Returning to menu...");
+                    continueLoop = false;
+                }
+                default -> System.out.println("Invalid selection. Please try again.");
+            }
+        }
+        return true;
+    }
+    private void searchSeller() {
+        line();
+        ArrayList<Seller> listOfSellers = null;
+        boolean continueLoop = true;
+        while (continueLoop) {
+            System.out.println("1. Search by ID");
+            System.out.println("2. Search by address");
+            System.out.println("3. Return to menu");
+            int choice = getUserInputAsInteger();
+
+            switch (choice) {
+                case 1 -> {
+                    System.out.println("Enter the id of the seller you want to view:");
+                    String id = InputManager.getInstance().nextLine();
+                    listOfSellers = database.searchSellerById(id);
+                    if (listOfSellers == null) {
+                        System.out.println("Seller not found.");
+                    } else {
+                        System.out.println(listOfSellers);
+                        while (true) {
+                            System.out.println("Enter the desired seller to view their profile:");
+                            int i = 0;
+                            for (Seller seller : listOfSellers) {
+                                i++;
+                                System.out.println(i + ") " + seller.getId());
+                            }
+                            int index = getUserInputAsInteger();
+                            if (index > 0 && index <= listOfSellers.size()) {
+                                pointedSeller = listOfSellers.get(index-1);
+                                interactWithSeller();
+                                break;
+                            } else {
+                                System.out.println("Invalid selection. Please try again.");
+                            }
+                        }
+
+                    }
+                }
+
+                case 2 -> {
+                    System.out.println("Enter the address of the seller you want to view:");
+                    String address = InputManager.getInstance().nextLine();
+                    listOfSellers = database.searchSellerByAddress(address);
+                    if (listOfSellers == null) {
+                        System.out.println("Seller not found.");
+                    } else {
+                        System.out.println(listOfSellers);
+                        while (true) {
+                            System.out.println("Enter the desired seller to view their profile:");
+                            int i = 0;
+                            for (Seller seller : listOfSellers) {
+                                i++;
+                                System.out.println(i + ") " + seller.getId());
+                            }
+                            int index = getUserInputAsInteger();
+                            if (index > 0 && index <= listOfSellers.size()) {
+                                pointedSeller = listOfSellers.get(index-1);
+                                interactWithSeller();
+                                break;
+                            } else {
+                                System.out.println("Invalid selection. Please try again.");
+                            }
+                        }
+                    }
+                }
+                case 3 -> {
+                    System.out.println("Returning to menu...");
+                    continueLoop = false;
+                }
+                default -> System.out.println("Invalid selection. Please try again.");
+            }
         }
     }
 
@@ -1372,20 +1566,30 @@ public class BuyerMenu extends Menu {
             }
         }
     }
+    private void displayBuyersProfile(Buyer buyer) {
+        line();
+        System.out.println("Buyer's name: " + buyer.getFirstName() + "\t" + buyer.getLastName());
+        System.out.println("Buyer's ID: " + buyer.getId());
+        System.out.println(buyer.getMetrics().toString());
+    }
 
     private void displaySellerInfo() {
-        System.out.println("Enter the name of the seller you want to check out:");
+        System.out.println("Enter the name of the seller you want to view:");
         String id = InputManager.getInstance().nextLine();
         pointedSeller = catalog.searchSellerByName(id);
         if (pointedSeller == null) {
             System.out.println("Seller not found.");
         } else {
             System.out.println(pointedSeller);
+            interactWithSeller();
         }
-        interactWithSeller();
     }
 
     private void interactWithSeller() {
+        line();
+        System.out.println(pointedSeller.toString());
+        line();
+        System.out.println();
         if (user.getSellersFollowed().contains(pointedSeller)) {
             System.out.println("1. Unfollow this seller");
         } else {
@@ -1398,6 +1602,25 @@ public class BuyerMenu extends Menu {
             case 2 -> {
                 System.out.println("Returning to catalog...");
                 catalog.displayCatalog();
+            }
+            default -> System.out.println("Invalid selection. Please try again.");
+        }
+    }
+  
+    public void interactWithBuyer(Buyer pointedBuyer) {
+        if (user.getBuyersFollowed().contains(pointedBuyer)) {
+            System.out.println("1. Unfollow this buyer");
+        } else {
+            System.out.println("1. Follow this buyer");
+        }
+        System.out.println("2. View Profile");
+        System.out.println("3. Return to menu");
+        int choice = getUserInputAsInteger();
+        switch (choice) {
+            case 1 -> user.toggleBuyerToFollowing(pointedBuyer);
+            case 2 -> displayBuyersProfile(pointedBuyer);
+            case 3 -> {
+                System.out.println("Returning to menu...");
             }
             default -> System.out.println("Invalid selection. Please try again.");
         }
@@ -1466,6 +1689,62 @@ public class BuyerMenu extends Menu {
                 }
             }
         }
+    }
+    public boolean filterBuyers() {
+        System.out.println("1. Sort by name");
+        System.out.println("2. Sort by ID");
+        System.out.println("3. Sort by followers");
+        System.out.println("4. Sort by experience points");
+        System.out.println("5. Return to menu");
+        int choice = getUserInputAsInteger();
+        switch (choice) {
+            case 1:
+                System.out.println("1. Ascending");
+                System.out.println("2. Descending");
+                System.out.println("3. Return to menu");
+                int choice1 = getUserInputAsInteger();
+                switch (choice1) {
+                    case 1 -> database.sortBuyer(true, "name");
+                    case 2 -> database.sortBuyer(false, "name");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
+                }
+
+            case 2:
+                System.out.println("1. Ascending");
+                System.out.println("2. Descending");
+                System.out.println("3. Return to menu");
+                int choice2 = getUserInputAsInteger();
+                switch (choice2) {
+                    case 1 -> database.sortBuyer(true, "ID");
+                    case 2 -> database.sortBuyer(false, "ID");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
+                }
+            case 3:
+                System.out.println("1. Ascending");
+                System.out.println("2. Descending");
+                System.out.println("3. Return to menu");
+                int choice3 = getUserInputAsInteger();
+                switch (choice3) {
+                    case 1 -> database.sortBuyer(true, "followers");
+                    case 2 -> database.sortBuyer(false, "followers");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
+                }
+            case 4:
+                System.out.println("1. Ascending");
+                System.out.println("2. Descending");
+                System.out.println("3. Return to menu");
+                int choice4 = getUserInputAsInteger();
+                switch (choice4) {
+                    case 1 -> database.sortBuyer(true, "xp");
+                    case 2 -> database.sortBuyer(false, "xp");
+                    case 3 -> System.out.println("Returning to menu...");
+                    default -> System.out.println("Invalid selection. Please try again.");
+                }
+        }
+        return true;
     }
 
     public void filterSellers() {
@@ -1708,9 +1987,8 @@ public class BuyerMenu extends Menu {
                 database.generateAndAddOrders(user, paymentType, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }
-
         }
-
+        user.addSellersCustomers();
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
     }

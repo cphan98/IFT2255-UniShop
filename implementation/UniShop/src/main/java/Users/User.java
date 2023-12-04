@@ -60,6 +60,14 @@ public abstract class User implements java.io.Serializable {
     public void setFollowers(ArrayList<Buyer> followers) {
         this.followers = followers;
     }
+    public User getFollower(String id) {
+        for (User follower : getFollowers()) {
+            if (follower.getId().equals(id)) {
+                return follower;
+            }
+        }
+        return null;
+    }
     public void addFollower(Buyer buyer) {
         followers.add(buyer);
     }
