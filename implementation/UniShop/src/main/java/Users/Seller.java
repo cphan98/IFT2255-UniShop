@@ -11,16 +11,17 @@ public class Seller extends User {
 
     private Category category;
     private ArrayList<Product> products;
-    private ArrayList<Buyer> followers;
+    private ArrayList<Buyer> customers;
     private SellerMetrics metrics;
     private int likes;
 
+
     public Seller(String id, String password, String email, String phoneNumber, Address address, Category category) {
         super(id, password, email, phoneNumber, address);
-        this.metrics = new SellerMetrics();
         this.category = category;
         this.products = new ArrayList<>();
-        this.followers = new ArrayList<>();
+        this.customers = new ArrayList<>();
+        this.metrics = new SellerMetrics();
         this.likes = 0;
 
     }
@@ -58,14 +59,18 @@ public class Seller extends User {
     public ArrayList<Product> getProducts() {
         return products;
     }
-
+    public ArrayList<Buyer> getCustomers() {
+        return customers;
+    }
+    public void addCustomers(Buyer buyer) {
+        getCustomers().add(buyer);
+    }
     public int getLikes() {
         return likes;
     }
     public void setLikes(int likes) {
         this.likes = likes;
     }
-
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Seller: ").append(getId()).append("\n");

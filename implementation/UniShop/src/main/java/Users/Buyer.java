@@ -37,7 +37,6 @@ public class Buyer extends User {
     public void addPoints(int points) {
         this.points += points;
     }
-
     public void removePoints(int points) {
         this.points -= points;
     }
@@ -96,8 +95,18 @@ public class Buyer extends User {
     public void addSellersFollowers(Seller seller){
         sellersFollowed.add(seller);
     }
+    @Override
+    public void removeFollower(Buyer follower) {
+        followers.remove(follower);
+        follower.getBuyersFollowed().remove(this);
+    }
     public Cart getCart() {
         return cart;
+    }
+    public void addSellersCustomers() {
+        for (Product product : getCart().getProducts().keySet()) {
+            product.getSeller().addCustomers(this);
+        }
     }
     public BuyerMetrics getMetrics() {
         return metrics;
@@ -170,7 +179,7 @@ public class Buyer extends User {
         }
         if (!buyersFollowed.contains(buyer)) {
             buyersFollowed.add(buyer);
-            buyer.getFollowers().add(this);
+            buyer.addFollower(this);
             this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
             String title = "You have a new follower!";
             String summary = getId() + " is now following you !";

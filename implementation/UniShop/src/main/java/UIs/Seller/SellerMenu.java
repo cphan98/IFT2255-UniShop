@@ -3,6 +3,7 @@ package UIs.Seller;
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import UIs.Menu;
+import Users.Buyer;
 import UtilityObjects.Address;
 import Users.Seller;
 import productClasses.Usages.Order;
@@ -39,7 +40,9 @@ public class SellerMenu extends Menu {
             System.out.println("2. Display Order History");
             System.out.println("3. Display Inventory");
             System.out.println("4. Display Notifications");
-            System.out.println("5. Log out");
+            System.out.println("5. Display Followers");
+            System.out.println("6. Display Your Customers");
+            System.out.println("7. Log out");
             int choice = getUserInputAsInteger();
 
             switch (choice) {
@@ -56,6 +59,10 @@ public class SellerMenu extends Menu {
                     continueLoop = displayNotifications();
                     break;
                 case 5:
+                    continueLoop = displayFollowers();
+                case 6:
+                    continueLoop = displayCustomers();
+                case 7:
                     return false;  // Add this to handle log out
                 default:
                     System.out.println("Invalid selection. Please try again.");
@@ -178,6 +185,15 @@ public class SellerMenu extends Menu {
                 System.out.println("Wrong password");
             }
         }
+    }
+    public boolean displayCustomers() {
+        System.out.println("Your customers: ");
+        int i = 0;
+        for (Buyer customer : user.getCustomers()) {
+            System.out.println(i + ". " + customer.getId());
+        }
+        System.out.println("You have " + user.getCustomers().size() + " customers.");
+        return true;
     }
 
     // ORDERS
