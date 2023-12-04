@@ -138,7 +138,7 @@ public class SellerMenu extends Menu {
                     System.out.println("This order has already been prepared.");
                     break;
                 } else if (order.getStatus() == OrderState.IN_PRODUCTION) {
-                    printLabel(user, order);
+                    printLabel(order);
                     InputManager im = InputManager.getInstance();
                     System.out.println("Please enter shipping information.");
                     System.out.println("Shipping company:");
@@ -201,6 +201,12 @@ public class SellerMenu extends Menu {
                 // confirm reshipment
                 System.out.println("Reshipment confirmed!");
 
+                // if issue's solution description is 'exchange', ask buyer to prepare order
+                if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
+                    prepareReplacementOrder(order.getIssue().getReplacementOrder());
+                    break;
+                }
+
                 break;
 
             // return to order history
@@ -215,7 +221,8 @@ public class SellerMenu extends Menu {
         }
     }
 
-    public void printLabel(Seller user, Order order) {
+    // Prints shipping label
+    public void printLabel(Order order) {
         System.out.println("Printing label...");
         System.out.println();
         System.out.println("--------------------------------------------------");
@@ -236,7 +243,7 @@ public class SellerMenu extends Menu {
         System.out.println();
     }
 
-    // Refund buyer
+    // Refunds buyer
     private void refund(Order order) {
         HashMap<Product, Integer> returnProducts = order.getIssue().getReshipmentProducts(); // list of products to return
         Set<Product> orderProducts = order.getProducts().keySet(); // list of products from the order
@@ -315,6 +322,50 @@ public class SellerMenu extends Menu {
                 }
             }
         }
+    }
+
+    // Prepares replacement order
+    private void prepareReplacementOrder(Order replacementOrder) {
+        System.out.println();
+        System.out.println("The buyer requested an exchange.");
+        System.out.println("Preparing replacement order...");
+
+        // change replacement order status
+        replacementOrder.setStatus(OrderState.REPLACEMENT_IN_PRODUCTION);
+
+        // send notification to buyer
+        sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed", "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
+
+        // display replacement products
+        System.out.println("Replacement products:");
+        replacementOrder.productsToString();
+
+        // print label
+        printLabel(replacementOrder);
+
+        // enter shipping information
+        InputManager im = InputManager.getInstance();
+        System.out.println("Please enter shipping information.");
+        System.out.println("Shipping company:");
+        String company = im.nextLine();
+        replacementOrder.setShippingCompany(company);
+        String number = "a";
+        while (!number.matches("\\d+")) {
+            System.out.println("Shipping number:");
+            number = im.nextLine();
+        }
+
+        // add shipping number to replacement order
+        replacementOrder.setShippingNumber(number);
+
+        // change replacement order status
+        replacementOrder.setStatus(OrderState.REPLACEMENT_IN_DELIVERY);
+
+        // send notification to buyer
+        sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed", "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
+
+        // confirm replacement order prepared
+        System.out.println("Your order is ready to be shipped!");
     }
 
     // ISSUES

@@ -145,19 +145,6 @@ public class Order implements java.io.Serializable {
 
     // OPERATIONS
 
-    // ORDER STATUS
-
-    public void changeStatus(OrderState status) {
-        switch (status) {
-            case PENDING -> setStatus(OrderState.PENDING);
-            case ACCEPTED -> setStatus(OrderState.ACCEPTED);
-            case REJECTED -> setStatus(OrderState.REJECTED);
-            case IN_PRODUCTION -> setStatus(OrderState.IN_PRODUCTION);
-            case IN_DELIVERY -> setStatus(OrderState.IN_DELIVERY);
-            case DELIVERED -> setStatus(OrderState.DELIVERED);
-        }
-    }
-
     // ETA
 
     public String makeRandomETA() {

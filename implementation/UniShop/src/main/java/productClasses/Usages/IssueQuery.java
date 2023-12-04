@@ -16,7 +16,8 @@ public class IssueQuery {
     private HashMap<Product, Integer> reshipmentProducts = new HashMap<>();
     private String reshipmentTrackingNum;
     private Boolean reshipmentReceived = false;
-    private HashMap<Product, Integer> replacementProducts;
+    private HashMap<Product, Integer> replacementProducts = new HashMap<>();
+    private Order replacementOrder;
     private String replacementTrackingNum;
     private Boolean replacementReceived = false;
 
@@ -32,6 +33,7 @@ public class IssueQuery {
     public Boolean getReplacementReceived() { return replacementReceived; }
     public HashMap<Product, Integer> getReshipmentProducts() { return reshipmentProducts; }
     public String getRequestDate() { return requestDate; }
+    public Order getReplacementOrder() { return replacementOrder; }
 
     // SETTERS
 
@@ -45,6 +47,7 @@ public class IssueQuery {
     public void setReplacementReceived(Boolean replacementReceived) { this.replacementReceived = replacementReceived; }
     public void setReshipmentProducts(HashMap<Product, Integer> reshipmentProducts) { this.reshipmentProducts = reshipmentProducts; }
     public void setRequestDate(String requestDate) { this.requestDate = requestDate; }
+    public void setReplacementOrder(Order replacementOrder) { this.replacementOrder = replacementOrder; }
 
     // CONSTRUCTOR
 

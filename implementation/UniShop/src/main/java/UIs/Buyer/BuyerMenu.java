@@ -585,45 +585,81 @@ public class BuyerMenu extends Menu {
                 case "credit card" :
                     String priceAction = payPriceDiffOrRefund(priceDiff);
                     switch (priceAction) {
-                        case "refund" -> refundPriceDiff(priceDiff, replacementProducts, order);
-                        case "pay" -> payPriceDiff(priceDiff, replacementProducts, order);
+                        case "refund" :
+                            refundPriceDiff(priceDiff, replacementProducts, order);
+                            break;
+                        case "pay" :
+                            payPriceDiff(priceDiff, replacementProducts, order);
+                            break;
+                        default :
+                            System.out.println("No payment due.");
+
+                            // create order
+                            Order exchangeOrder = new Order(user, "points", replacementProducts);
+                            exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+                            exchangeOrder.setShippingAddress(order.getShippingAddress());
+                            exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+                            exchangeOrder.setTotalCost(priceDiff);
+
+                            // add exchange order to issue
+                            order.getIssue().setReplacementOrder(exchangeOrder);
+
+                            // add order to buyer's and seller's order history
+                            user.addOrder(exchangeOrder);
+                            Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+                            seller.addOrder(exchangeOrder);
+
+                            // add order to database
+                            database.addOrder(exchangeOrder);
+
+                            // update product quantities in database and seller's inventory
+                            removeDatabaseProductQuantities(replacementProducts);
+                            removeInventoryQuantities(replacementProducts, seller);
+
+                            // send notification to buyer and seller
+                            sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
+                            sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
                     }
                     break;
                 case "points" :
                     String pointsAction = payPointsDiffOrRefund(pointsDiff);
                     switch (pointsAction) {
-                        case "refund" -> refundPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
-                        case "pay" -> payPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
+                        case "refund" :
+                            refundPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
+                            break;
+                        case "pay" :
+                            payPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
+                            break;
+                        default :
+                            System.out.println("No payment due.");
+
+                            // create order
+                            Order exchangeOrder = new Order(user, "points", replacementProducts);
+                            exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+                            exchangeOrder.setShippingAddress(order.getShippingAddress());
+                            exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+                            exchangeOrder.setTotalCost(priceDiff);
+
+                            // add exchange order to issue
+                            order.getIssue().setReplacementOrder(exchangeOrder);
+
+                            // add order to buyer's and seller's order history
+                            user.addOrder(exchangeOrder);
+                            Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+                            seller.addOrder(exchangeOrder);
+
+                            // add order to database
+                            database.addOrder(exchangeOrder);
+
+                            // update product quantities in database and seller's inventory
+                            removeDatabaseProductQuantities(replacementProducts);
+                            removeInventoryQuantities(replacementProducts, seller);
+
+                            // send notification to buyer and seller
+                            sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
+                            sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
                     }
                     break;
-                default :
-                    System.out.println("No payment due.");
-
-                    // create order
-                    Order exchangeOrder = new Order(user, "points", replacementProducts);
-                    exchangeOrder.setPaymentInfo(order.getPaymentInfo());
-                    exchangeOrder.setShippingAddress(order.getShippingAddress());
-                    exchangeOrder.setPhoneNumber(order.getPhoneNumber());
-                    exchangeOrder.setTotalCost(priceDiff);
-
-                    // add tracking number to issue
-                    order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
-
-                    // add order to buyer's and seller's order history
-                    user.addOrder(exchangeOrder);
-                    Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
-                    seller.addOrder(exchangeOrder);
-
-                    // add order to database
-                    database.addOrder(exchangeOrder);
-
-                    // update product quantities in database and seller's inventory
-                    removeDatabaseProductQuantities(replacementProducts);
-                    removeInventoryQuantities(replacementProducts, seller);
-
-                    // send notification to buyer and seller
-                    sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
-                    sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
             }
 
             // update order status
@@ -760,8 +796,8 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setPhoneNumber(order.getPhoneNumber());
         exchangeOrder.setTotalCost(priceDiff);
 
-        // add tracking number to issue
-        order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
+        // add exchange order to issue
+        order.getIssue().setReplacementOrder(exchangeOrder);
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
@@ -827,8 +863,8 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setPhoneNumber(order.getPhoneNumber());
         exchangeOrder.setTotalCost(priceDiff);
 
-        // add tracking number to issue
-        order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
+        // add exchange order to issue
+        order.getIssue().setReplacementOrder(exchangeOrder);
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
@@ -859,8 +895,8 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setPhoneNumber(order.getPhoneNumber());
         exchangeOrder.setTotalCost(priceDiff);
 
-        // add tracking number to issue
-        order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
+        // add exchange order to issue
+        order.getIssue().setReplacementOrder(exchangeOrder);
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
@@ -895,8 +931,8 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setPhoneNumber(order.getPhoneNumber());
         exchangeOrder.setTotalCost(priceDiff);
 
-        // add tracking number to issue
-        order.getIssue().setReshipmentTrackingNum(exchangeOrder.getId());
+        // add exchange order to issue
+        order.getIssue().setReplacementOrder(exchangeOrder);
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
