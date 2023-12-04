@@ -6,6 +6,7 @@ import UIs.UIUtilities;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class IssueQuery {
     // ATTRIBUTES
@@ -21,7 +22,6 @@ public class IssueQuery {
     private Order replacementOrder;
     private String replacementTrackingNum;
     private Boolean replacementReceived = false;
-    private UIUtilities uiUtilities;
 
     // GETTERS
 
@@ -79,8 +79,7 @@ public class IssueQuery {
         this.reshipmentTrackingNum = makeReshipmentTrackingNum();
     }
     public void createTicket(){
-        boolean continueLoop = true;
-        while(continueLoop){
+        while (true) {
             System.out.println("What is the problem with the order?");
             System.out.println("1. Wrong item received");
             System.out.println("2. Defective product");
@@ -95,12 +94,9 @@ public class IssueQuery {
             System.out.println("11. Return");
 
             int choice = getUserInputAsInteger();
-            if(choice < 11){
-                id =makeId();
-            }
-            switch (choice){
-                case 1:
 
+            switch (choice) {
+                case 1:
                     issueDescription = "Wrong item received";
                     break;
                 case 2:
@@ -138,10 +134,17 @@ public class IssueQuery {
                 case 10:
                     issueDescription = "Fraudulent purchase";
                     break;
-
-
+                case 11:
+                    System.out.println("Returning to menu...");
+                    break;
+                default:
+                    System.out.println("Invalid selection. Please try again.");
+                    break;
             }
-            System.out.println("the seller will be notified shortly");
+            if(choice < 11){
+                id =makeId();
+                System.out.println("the seller will be notified shortly");
+            }
             break;
         }
     }
@@ -150,31 +153,26 @@ public class IssueQuery {
         System.out.println("The seller has proposed:  " + solutionDescription);
         System.out.println("1. Yes");
         System.out.println("2. No");
-        System.out.println("3. Return");
         int choice = getUserInputAsInteger();
             switch (choice){
             case 1:
-                if (solutionDescription == "Repair the defective product"){
-                    reshipmentTrackingNum = makeReshipmentTrackingNum();
-                }
-                if (solutionDescription == "Reshipment of a replacement product"){
-                    replacementTrackingNum = makeReshipmentTrackingNum();
-                }
-                System.out.println("Please confirm your choice");
+                replacementTrackingNum = makeReshipmentTrackingNum();
                 return true;
-
-                case 2:
+            case 2:
                 System.out.println("Sorry :( ");
                 return false;
+            default:
+                System.out.println("Invalid selection. Please try again.");
+                break;
+
         }
         System.out.println("Thanks for accepting the solution!");
          return true;
     }
 
 
-    public void proposeSolution(){
-        boolean continueLooop = true;
-        while (continueLooop){
+    public void proposeSolution() {
+        while (true){
             System.out.println("Which solution do you want to propose to the buyer?");
             System.out.println("1. Repair the defective product");
             System.out.println("2. Reshipment of a replacement product");

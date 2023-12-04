@@ -253,7 +253,7 @@ public class BuyerMenu extends Menu {
 
                 order.reportProblem();
                 for (Product product : order.getProducts().keySet()){
-                    product.getSeller().addNotification(new Notification("there is a problem with a product", user.getFirstName() +" reported a problem with a " + product));
+                    product.getSeller().addNotification(new Notification("there is a problem with a product", user.getFirstName() +" reported a problem with a " + product.getTitle()));
                 }
 
                 break;
@@ -262,16 +262,20 @@ public class BuyerMenu extends Menu {
                 if (order.getIssue() == null){
                     System.out.println("You haven't reported a problem yet");
                 }else{
-                    order.getIssue().acceptSolution();
-                    if (order.getIssue().acceptSolution()){
-                        for (Product product : order.getProducts().keySet()){
-                            product.getSeller().addNotification(new Notification("Reponse to proposed solution", order.getBuyer().getFirstName() + " has accepted your solution"));
-                        }
-                        break;
 
-                    }else{
-                        break;
+                    if (order.getIssue().acceptSolution()) {
+                        for (Product product : order.getProducts().keySet()){
+                            product.getSeller().addNotification(new Notification("Response to proposed solution", order.getBuyer().getFirstName() + " has accepted your solution"));
+                        }
+                        if (Objects.equals(order.getIssue().getSolutionDescription(), "Reshipment of a replacement product")) {
+                            break; //TODO: implement catalog of seller to ask for another product to replace the defect one
+                        } else {
+                            System.out.println("We'll repair it for you lol");
+                            break;
+                        }
+
                     }
+                    break;
                 }
                 break;
 
@@ -532,11 +536,13 @@ public class BuyerMenu extends Menu {
     }
     // METRICS
     public void displayMetricsProfil() {
-
-        System.out.println(user.getMetrics().getSelectedMetrics().get(0));
-        System.out.println(user.getMetrics().getSelectedMetrics().get(1));
-        System.out.println(user.getMetrics().getSelectedMetrics().get(2));
-
+        if (user.getMetrics().getSelectedMetrics().isEmpty()) {
+            System.out.println("No metrics selected");
+            return;
+        }
+        for (String metrics : user.getMetrics().getSelectedMetrics()) {
+            System.out.println(metrics);
+        }
     }
 
     public void displayMetrics(){
@@ -1019,7 +1025,6 @@ public class BuyerMenu extends Menu {
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
     }
-
 
     public void emptyCart() {
         InputManager im = InputManager.getInstance();

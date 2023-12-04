@@ -75,6 +75,10 @@ public abstract class Menu {
         }
         Order order = null;
         while (order == null) {
+            if (choice > user.getOrderHistory().size()) {
+                System.out.println("Invalid selection. Please try again.");
+                choice = uiUtilities.getUserInputAsInteger();
+            }
             order = user.getOrderHistory().get(choice - 1);
             if (order == null) {
                 System.out.println("Invalid selection. Please try again.");

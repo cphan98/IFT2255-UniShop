@@ -93,8 +93,8 @@ public class UniShop {
         database.generateAndAddOrders(cynthia, "credit card");
         cynthia.getCart().getProducts().clear();
 
-        cynthia.getOrderHistory().get(1).changeStatus(OrderState.IN_DELIVERY);
-        cynthia.getOrderHistory().get(2).changeStatus(OrderState.DELIVERED);
+        cynthia.getOrderHistory().get(1).setStatus(OrderState.IN_DELIVERY);
+        cynthia.getOrderHistory().get(2).setStatus(OrderState.DELIVERED);
     }
 
     private static Product putFakeProduct(Seller seller) {

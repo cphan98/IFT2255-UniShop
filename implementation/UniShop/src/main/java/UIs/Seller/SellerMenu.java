@@ -53,10 +53,10 @@ public class SellerMenu extends Menu {
                     continueLoop = displayInventory();
                     break;
                 case 4:
-                    continueLoop = displayNotifications();
+                    displayNotifications();
                     break;
                 case 5:
-                    continueLoop = displayMetrics();
+                    displayMetrics();
                     break;
                 case 6:
                     return false;  // Add this to handle log out
@@ -152,7 +152,7 @@ public class SellerMenu extends Menu {
                     }
                     order.setShippingNumber(number);
 
-                    order.changeStatus(OrderState.IN_DELIVERY);
+                    order.setStatus(OrderState.IN_DELIVERY);
                     sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
                     System.out.println("Your order is ready to be shipped!");
                     break;
@@ -324,6 +324,7 @@ public class SellerMenu extends Menu {
             System.out.println("Solution: waiting for a solution...");
             order.getIssue().proposeSolution();
             order.getBuyer().addNotification(new Notification("Seller: " +  user+ " has proposed a solution", user + "thinks it's pertinent to: " + order.getIssue().getSolutionDescription()));
+            return;
         } else {
             System.out.println("Solution: " + order.getIssue().getSolutionDescription());
         }
@@ -343,7 +344,7 @@ public class SellerMenu extends Menu {
         if (order.getIssue().getReplacementProduct() == null) {
             System.out.println("Replacement product: N/A");
         } else {
-            System.out.println("Replacement product: " + order.getIssue().getReplacementProduct().getTitle());
+            System.out.println("Replacement product: " + order.getIssue().getReplacementProduct());
         }
 
         if (order.getIssue().getReplacementTrackingNum() == null) {
@@ -552,7 +553,7 @@ public class SellerMenu extends Menu {
             System.out.println(user.getMetrics().getSelectedMetrics().get(2));
         }
     }
-    public boolean displayMetrics(){
+    public void  displayMetrics() {
         boolean continueLoop = true;
         while (continueLoop){
             System.out.println("All metrics available for " + user.getId() + " : ");
@@ -570,7 +571,6 @@ public class SellerMenu extends Menu {
                 case 2: continueLoop = false;
             }
         }
-        return true;
     }
 
 }
