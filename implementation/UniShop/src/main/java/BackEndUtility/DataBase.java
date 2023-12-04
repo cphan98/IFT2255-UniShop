@@ -241,7 +241,7 @@ public class DataBase implements java.io.Serializable {
     public Stream<Map.Entry<Buyer, Integer>> sortBuyersByXp(boolean ascending) {
         HashMap<Buyer, Integer> buyersXP = new HashMap<>();
         for (Buyer buyer : getBuyers()) {
-            buyersXP.put(buyer, buyer.getPoints());
+            buyersXP.put(buyer, buyer.getMetrics().getExpPoints());
         }
 
         Stream<Map.Entry<Buyer, Integer>> sortedStream = buyersXP.entrySet().stream()

@@ -147,19 +147,6 @@ public abstract class Product implements java.io.Serializable {
         }
         this.overallRating = Math.round((total / evaluations.size()) * 10.0) / 10.0F;
     }
-    public ArrayList<Evaluation> getEvaluations() {
-        return this.evaluations;
-    }
-
-    public int getLikes()
-    {
-       return this.likes;
-    }
-    public void setLikes(int likes) {
-        this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() - this.likes);
-        this.likes = likes;
-        this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() + this.likes);
-    }
 
     public String toString() {
         return "Title: " + title + "\n" +

@@ -137,7 +137,7 @@ public class BuyerMenu extends Menu {
         for (Buyer buyer : database.getTop5())
         {
             i++;
-            System.out.println(i + ")" + "\t\t" + buyer.getId() + ": " + buyer.getPoints());
+            System.out.println(i + ")" + "\t\t" + buyer.getId() + ": " + buyer.getMetrics().getExpPoints());
         }
     }
     public void modifyProfile() {
@@ -847,8 +847,8 @@ public class BuyerMenu extends Menu {
     // Pays points difference
     private void payPointsDiff(int pointsDiff, float priceDiff, HashMap<Product, Integer> replacementProducts, Order order) {
         // if buyer does not have enough points, pay with credit card
-        if (user.getPoints() < pointsDiff) {
-            System.out.println("Not enough points. You need " + (pointsDiff - user.getPoints()) + " more points to pay this order");
+        if (user.getMetrics().getBuyPoints() < pointsDiff) {
+            System.out.println("Not enough points. You need " + (pointsDiff - user.getMetrics().getBuyPoints()) + " more points to pay this order");
 
             // ask buyer to use registered credit card
             System.out.println("Do you want to use your registered credit card for this order? (y/n)");
@@ -879,7 +879,7 @@ public class BuyerMenu extends Menu {
 
         // remove points
         System.out.println("Payment in process...");
-        user.removePoints(pointsDiff);
+        user.getMetrics().removeBuyPoints(pointsDiff);
 
         // confirm payment
         System.out.println("Payment confirmed!");
@@ -950,7 +950,7 @@ public class BuyerMenu extends Menu {
     private void refundPointsDiff(int pointsDiff, float priceDiff, HashMap<Product, Integer> replacementProducts, Order order) {
         // refund points
         System.out.println("Refund in process...");
-        user.addPoints(Math.abs(pointsDiff));
+        user.getMetrics().addBuyPoints(Math.abs(pointsDiff));
 
         // create order
         Order exchangeOrder = new Order(user, "points", replacementProducts);
@@ -1272,7 +1272,7 @@ public class BuyerMenu extends Menu {
             }
             System.out.println("ID: " + buyer.getId());
             System.out.println("Name: " + buyer.getFirstName());
-            System.out.println("Points: " + buyer.getPoints());
+            System.out.println("Points: " + buyer.getMetrics().getExpPoints());
         }
         line();
 
@@ -1282,7 +1282,7 @@ public class BuyerMenu extends Menu {
             System.out.println("2. Filter buyers");
             System.out.println("3. Display your followers");
             System.out.println("4. Return to menu");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> continueLoop = searchBuyer();
@@ -1322,7 +1322,7 @@ public class BuyerMenu extends Menu {
             System.out.println("1. Search by ID");
             System.out.println("2. Search by name");
             System.out.println("3. Return to menu");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> {
@@ -1340,7 +1340,7 @@ public class BuyerMenu extends Menu {
                                 i++;
                                 System.out.println(i + ") " + buyer.getId());
                             }
-                            int index = getUserInputAsInteger();
+                            int index = uiUtilities.getUserInputAsInteger();
                             if (index > 0 && index <= pointedBuyer.size()) {
                                 interactWithBuyer(pointedBuyer.get(index-1));
                                 break;
@@ -1367,7 +1367,7 @@ public class BuyerMenu extends Menu {
                                 i++;
                                 System.out.println(i + ") " + buyer.getId());
                             }
-                            int index = getUserInputAsInteger();
+                            int index = uiUtilities.getUserInputAsInteger();
                             if (index > 0 && index <= pointedBuyer.size()) {
                                 interactWithBuyer(pointedBuyer.get(index-1));
                                 break;
@@ -1394,7 +1394,7 @@ public class BuyerMenu extends Menu {
             System.out.println("1. Search by ID");
             System.out.println("2. Search by address");
             System.out.println("3. Return to menu");
-            int choice = getUserInputAsInteger();
+            int choice = uiUtilities.getUserInputAsInteger();
 
             switch (choice) {
                 case 1 -> {
@@ -1412,7 +1412,7 @@ public class BuyerMenu extends Menu {
                                 i++;
                                 System.out.println(i + ") " + seller.getId());
                             }
-                            int index = getUserInputAsInteger();
+                            int index = uiUtilities.getUserInputAsInteger();
                             if (index > 0 && index <= listOfSellers.size()) {
                                 pointedSeller = listOfSellers.get(index-1);
                                 interactWithSeller();
@@ -1440,7 +1440,7 @@ public class BuyerMenu extends Menu {
                                 i++;
                                 System.out.println(i + ") " + seller.getId());
                             }
-                            int index = getUserInputAsInteger();
+                            int index = uiUtilities.getUserInputAsInteger();
                             if (index > 0 && index <= listOfSellers.size()) {
                                 pointedSeller = listOfSellers.get(index-1);
                                 interactWithSeller();
@@ -1615,9 +1615,9 @@ public class BuyerMenu extends Menu {
         }
         System.out.println("2. View Profile");
         System.out.println("3. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
-            case 1 -> user.toggleBuyerToFollowing(pointedBuyer);
+            case 1 -> uiUtilities.toggleBuyerToFollowing(user, pointedBuyer);
             case 2 -> displayBuyersProfile(pointedBuyer);
             case 3 -> {
                 System.out.println("Returning to menu...");
@@ -1696,13 +1696,13 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Sort by followers");
         System.out.println("4. Sort by experience points");
         System.out.println("5. Return to menu");
-        int choice = getUserInputAsInteger();
+        int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
             case 1:
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice1 = getUserInputAsInteger();
+                int choice1 = uiUtilities.getUserInputAsInteger();
                 switch (choice1) {
                     case 1 -> database.sortBuyer(true, "name");
                     case 2 -> database.sortBuyer(false, "name");
@@ -1714,7 +1714,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice2 = getUserInputAsInteger();
+                int choice2 = uiUtilities.getUserInputAsInteger();
                 switch (choice2) {
                     case 1 -> database.sortBuyer(true, "ID");
                     case 2 -> database.sortBuyer(false, "ID");
@@ -1725,7 +1725,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice3 = getUserInputAsInteger();
+                int choice3 = uiUtilities.getUserInputAsInteger();
                 switch (choice3) {
                     case 1 -> database.sortBuyer(true, "followers");
                     case 2 -> database.sortBuyer(false, "followers");
@@ -1736,7 +1736,7 @@ public class BuyerMenu extends Menu {
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
                 System.out.println("3. Return to menu");
-                int choice4 = getUserInputAsInteger();
+                int choice4 = uiUtilities.getUserInputAsInteger();
                 switch (choice4) {
                     case 1 -> database.sortBuyer(true, "xp");
                     case 2 -> database.sortBuyer(false, "xp");

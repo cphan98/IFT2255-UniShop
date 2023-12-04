@@ -75,27 +75,13 @@ public class Seller extends User implements java.io.Serializable {
         metrics.updateProductsSold(metrics.getProductsSold() + quantity);
     }
 
-    public Category getCategory() {
-        return category;
-    }
-    public SellerMetrics getMetrics() {
-        return metrics;
-    }
-    public ArrayList<Product> getProducts() {
-        return products;
-    }
     public ArrayList<Buyer> getCustomers() {
         return customers;
     }
     public void addCustomers(Buyer buyer) {
         getCustomers().add(buyer);
     }
-    public int getLikes() {
-        return likes;
-    }
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Seller: ").append(getId()).append("\n");
