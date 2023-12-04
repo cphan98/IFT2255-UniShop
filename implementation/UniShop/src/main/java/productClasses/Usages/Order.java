@@ -33,6 +33,7 @@ public class Order implements java.io.Serializable {
     private UIUtilities uiUtilities;
 
     // GETTERS
+
     public String getId() { return id; }
     public Buyer getBuyer() { return buyer; }
     public String getPaymentType() { return paymentType; }
@@ -49,6 +50,7 @@ public class Order implements java.io.Serializable {
     public float getTotalCost() { return totalCost; }
 
     // SETTERS
+
     public void setId(String id) { this.id = id; }
     public void setBuyer(Buyer buyer) { this.buyer = buyer; }
     public void setPaymentType(String paymentType) { this.paymentType = paymentType; }
@@ -144,19 +146,6 @@ public class Order implements java.io.Serializable {
     }
 
     // OPERATIONS
-
-    // ORDER STATUS
-
-    public void changeStatus(OrderState status) {
-        switch (status) {
-            case PENDING -> setStatus(OrderState.PENDING);
-            case ACCEPTED -> setStatus(OrderState.ACCEPTED);
-            case REJECTED -> setStatus(OrderState.REJECTED);
-            case IN_PRODUCTION -> setStatus(OrderState.IN_PRODUCTION);
-            case IN_DELIVERY -> setStatus(OrderState.IN_DELIVERY);
-            case DELIVERED -> setStatus(OrderState.DELIVERED);
-        }
-    }
 
     // ETA
 

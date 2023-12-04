@@ -63,8 +63,8 @@ public class BuyerMenu extends Menu {
                 case 3 -> continueLoop = displayCart();
                 case 4 -> continueLoop = displayWishList();
                 case 5 -> continueLoop = displayCatalog();
-                case 6 -> continueLoop = displayNotifications();
-                case 7 -> continueLoop = displayMetrics();
+                case 6 -> displayNotifications();
+                case 7 -> displayMetrics();
                 case 8 -> {
                     return false;  // Add this to handle log out
                 }
@@ -81,7 +81,7 @@ public class BuyerMenu extends Menu {
             System.out.println("PROFILE");
             System.out.println("Name: " + user.getId());
             System.out.println("Email: " + user.getEmail());
-            System.out.println("Buying points: " + user.getPoints());
+            System.out.println("Buying points: " + user.getMetrics().getBuyPoints());
             System.out.println();
             System.out.println("METRICS");
             displayMetricsProfil();
@@ -277,7 +277,7 @@ public class BuyerMenu extends Menu {
 
 
             case 6: // confirm order reception
-                order.changeStatus(OrderState.DELIVERED);
+                order.setStatus(OrderState.DELIVERED);
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
                 System.out.println("Order confirmed");
 
@@ -539,7 +539,7 @@ public class BuyerMenu extends Menu {
 
     }
 
-    public boolean displayMetrics(){
+    public void displayMetrics(){
         boolean continueLoop = true;
         while (continueLoop){
             System.out.println("All metrics available for " + user.getId() + " : ");
@@ -557,7 +557,7 @@ public class BuyerMenu extends Menu {
                 case 2: continueLoop = false;
             }
         }
-        return true;
+
     }
 
 
@@ -898,7 +898,7 @@ public class BuyerMenu extends Menu {
             System.out.println("Enter a rating between 0 and 5:");
             rating = Float.parseFloat(inputManager.nextLine());
         }
-        product.addEvaluation(new Evaluation(comment, rating, user));
+        database.addEvaluationToProduct(pointedProduct,new Evaluation(comment, rating, user));
         String title = "You got a new evaluation!";
         String summary = this.user + " added a new comment on " + product.getTitle() + "!";
         product.getSeller().addNotification(new Notification(title, summary));
@@ -936,7 +936,7 @@ public class BuyerMenu extends Menu {
     }
     public void makeCheckout() {
         InputManager im = InputManager.getInstance();
-        System.out.println("You currently have " + user.getPoints() + " points\n");
+        System.out.println("You currently have " + user.getMetrics().getBuyPoints() + " points\n");
         System.out.println("Do you want to use your registered info for this order? (y/n)");
         String choice = "";
         while (!choice.matches("[yn]")) {
@@ -965,11 +965,11 @@ public class BuyerMenu extends Menu {
                 System.out.println("Order successful!");
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
-                if (user.getPoints() < user.getCart().getTotalPrice() * 50) {
-                    System.out.println("Not enough points. You need " + (user.getCart().getTotalPrice() * 50 - user.getPoints()) + " more points to pay this order");
+                if (user.getMetrics().getBuyPoints() < user.getCart().getTotalPrice() * 50) {
+                    System.out.println("Not enough points. You need " + (user.getCart().getTotalPrice() * 50 - user.getMetrics().getBuyPoints()) + " more points to pay this order");
                     return;
                 }
-                user.removePoints((int) user.getCart().getTotalPrice() * 50);
+                user.getMetrics().removeBuyPoints((int) user.getCart().getTotalPrice() * 50);
                 database.generateAndAddOrders(user, paymentType);
                 System.out.println("Order successful!");
             }
@@ -1005,11 +1005,11 @@ public class BuyerMenu extends Menu {
                 System.out.println("Order successful!");
             }
             else if (Objects.equals(paymentType, "points")) { // 1 point for 2 cents
-                if (user.getPoints() < user.getCart().getTotalPrice() * 50) {
-                    System.out.println("Not enough points. You need " + Math.ceil((user.getCart().getTotalPrice() * 50 - user.getPoints())) + " more points to pay this order");
+                if (user.getMetrics().getBuyPoints() < user.getCart().getTotalPrice() * 50) {
+                    System.out.println("Not enough points. You need " + Math.ceil((user.getCart().getTotalPrice() * 50 - user.getMetrics().getBuyPoints())) + " more points to pay this order");
                     return;
                 }
-                user.removePoints((int) user.getCart().getTotalPrice() * 50);
+                user.getMetrics().removeBuyPoints((int) user.getCart().getTotalPrice() * 50);
                 database.generateAndAddOrders(user, paymentType, shippingAddress, phoneNumber);
                 System.out.println("Order successful!");
             }

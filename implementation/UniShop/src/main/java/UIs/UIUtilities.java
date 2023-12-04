@@ -29,12 +29,21 @@ public class UIUtilities {
             user.getEvaluationsLiked().add(evaluation);
             evaluation.setLikes(evaluation.getLikes() + 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() + 1);
+            evaluation.getAuthor().getMetrics().setLikesReceived(evaluation.getAuthor().getMetrics().getLikesReceived() + 1);
             System.out.println("You liked " + evaluation.getAuthor().getId() + "'s evaluation!");
+            if (evaluation.getLikes() == 1) {
+                evaluation.getAuthor().addNotification(new Notification("New like on evaluation!", "You have gotten the first like on one of your evaluations!"));
+                evaluation.getAuthor().getMetrics().addExpPoints(10);
+            }
         } else {
-            user.getEvaluationsLiked() .remove(evaluation);
+            user.getEvaluationsLiked().remove(evaluation);
             evaluation.setLikes(evaluation.getLikes() - 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() - 1);
+            evaluation.getAuthor().getMetrics().setLikesReceived(evaluation.getAuthor().getMetrics().getLikesReceived() + 1);
             System.out.println("You unliked " + evaluation.getAuthor().getId() + "'s evaluation!");
+            if (evaluation.getLikes() == 0) {
+                evaluation.getAuthor().getMetrics().removeExpPoints(10);
+            }
         }
     }
     public void toggleBuyerToFollowing(Buyer user, Buyer buyer) {
@@ -52,8 +61,8 @@ public class UIUtilities {
             System.out.println("You are now following " + buyer.getId() + "!");
             if (buyer.getBuyersFollowed().contains(user)) {
                 System.out.println("You are now following each other! You both earned 10 experience points!");
-                user.addExpPoints(10);
-                buyer.addExpPoints(10);
+                user.getMetrics().addExpPoints(10);
+                buyer.getMetrics().addExpPoints(10);
             }
 
 
@@ -64,8 +73,8 @@ public class UIUtilities {
             System.out.println("You are no longer following " + buyer.getId() + "!");
             if (buyer.getBuyersFollowed().contains(user)) {
                 System.out.println("You are no longer following each other! You both lost 10 experience points!");
-                user.removeExpPoints(10);
-                buyer.removeExpPoints(10);
+                user.getMetrics().removeExpPoints(10);
+                buyer.getMetrics().removeExpPoints(10);
             }
         }
     }

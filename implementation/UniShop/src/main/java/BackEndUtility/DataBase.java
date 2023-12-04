@@ -6,18 +6,23 @@ import UtilityObjects.CreditCard;
 import UtilityObjects.Notification;
 import Users.Seller;
 import Users.User;
+import productClasses.Usages.Evaluation;
 import productClasses.Usages.Order;
 import productClasses.Product;
-
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DataBase implements java.io.Serializable {
     private final ArrayList<User> users;
     private final ArrayList<Product> products = new ArrayList<>();
     private final ArrayList<Order> orders = new ArrayList<>();
+    private final ArrayList<Buyer> top5 = new ArrayList<>();
+
     public DataBase(ArrayList<User> users) {
         this.users = users;
     }
+    
     public DataBase() {
         this.users = new ArrayList<>();
     }
@@ -80,6 +85,22 @@ public class DataBase implements java.io.Serializable {
         Seller seller = getSeller(product.getSeller());
         seller.getProducts().remove(product);
     }
+    public Buyer getBuyer(Buyer buyer) {
+        for (User person : users) {
+            if (person.equals(buyer))
+                return buyer;
+        }
+        return null;
+    }
+    public ArrayList<Buyer> getBuyers() {
+        ArrayList<Buyer> buyers = new ArrayList<>();
+        for (User user : users) {
+            if (user instanceof Buyer) {
+                buyers.add((Buyer) user);
+            }
+        }
+        return buyers;
+    }
     public Seller getSeller(Seller seller) {
         for (User person : users) {
             if (person.equals(seller))
@@ -96,6 +117,147 @@ public class DataBase implements java.io.Serializable {
         }
         return sellers;
     }
+    public ArrayList<Buyer> getTop5() {
+        top5Buyers(false);
+        return top5;
+    }
+    public Integer getYourRank(Buyer buyer) {
+        List<Buyer> listOfBuyers = sortBuyersByXp(true).map(Map.Entry::getKey).toList();
+        return listOfBuyers.indexOf(buyer);
+    }
+    public ArrayList<Buyer> searchBuyerById(String id) {
+        ArrayList<Buyer> listOfBuyers = new ArrayList<>();
+        for (Buyer buyer : getBuyers()) {
+            if (buyer.getId().contains(id)) {
+                listOfBuyers.add(buyer);
+            }
+        }
+        return listOfBuyers;
+    }
+    public ArrayList<Seller> searchSellerById(String id) {
+        ArrayList<Seller> listOfSellers = new ArrayList<>();
+        for (Seller seller : getSellers()) {
+            if (seller.getId().contains(id)) {
+                listOfSellers.add(seller);
+            }
+        }
+        return listOfSellers;
+    }
+    public ArrayList<Buyer> searchBuyerByName(String name) {
+        ArrayList<Buyer> listOfBuyers = new ArrayList<>();
+        for (Buyer buyer : getBuyers()) {
+            if (buyer.getFirstName().contains(name)) {
+                listOfBuyers.add(buyer);
+            } else if (buyer.getLastName().contains(name)) {
+                listOfBuyers.add(buyer);
+            }
+        }
+        return listOfBuyers;
+    }
+    public ArrayList<Seller> searchSellerByAddress(String address) {
+        ArrayList<Seller> listOfSellers = new ArrayList<>();
+        for (Seller seller : getSellers()) {
+            if (seller.getAddress().getAddressLine().contains(address)) {
+                listOfSellers.add(seller);
+            }
+        }
+        return listOfSellers;
+    }
+    public void sortBuyer(boolean ascending, String filter) {
+        switch (filter) {
+            case "name":
+                System.out.println("Buyers ordered by name:");
+                sortBuyersByName(ascending).forEach(entry ->
+                        System.out.println("Name: " + entry.getValue() + "\n")
+                );
+                break;
+            case "ID":
+                System.out.println("Buyers ordered by id:");
+                sortBuyersById(ascending).forEach(entry ->
+                        System.out.println("ID: " + entry.getValue() + "\n")
+                );
+
+                break;
+            case "followers":
+                System.out.println("Buyers ordered by number of followers:");
+                sortBuyersByFollowers(ascending).forEach(entry ->
+                        System.out.println("Followers: " + entry.getValue() + "\n")
+                );
+
+                break;
+            case "xp":
+                System.out.println("Buyers ordered by number of points:");
+                sortBuyersByXp(ascending).forEach(entry ->
+                        System.out.println("Points: " + entry.getValue() + "\n")
+                );
+                break;
+        }
+    }
+    public Stream<Map.Entry<Buyer, String>> sortBuyersByName(boolean ascending) {
+        HashMap<Buyer, String> buyerName = new HashMap<>();
+        for (Buyer buyer : getBuyers()) {
+            buyerName.put(buyer, buyer.getFirstName());
+        }
+
+        Stream<Map.Entry<Buyer, String>> sortedStream = buyerName.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue());
+
+        if (!ascending) {
+            sortedStream = sortedStream.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+            return sortedStream;
+        }
+        return sortedStream;
+    }
+    public Stream<Map.Entry<Buyer, String>> sortBuyersById(boolean ascending) {
+        HashMap<Buyer, String> buyerId = new HashMap<>();
+        for (Buyer buyer : getBuyers()) {
+            buyerId.put(buyer, buyer.getId());
+        }
+
+        Stream<Map.Entry<Buyer, String>> sortedStream = buyerId.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue());
+
+        if (!ascending) {
+            sortedStream = sortedStream.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+            return sortedStream;
+        }
+        return sortedStream;
+    }
+    public Stream<Map.Entry<Buyer, Integer>> sortBuyersByFollowers(boolean ascending) {
+        HashMap<Buyer, Integer> buyerFollowers = new HashMap<>();
+        for (Buyer buyer : getBuyers()) {
+            buyerFollowers.put(buyer, buyer.getFollowers().size());
+        }
+
+        Stream<Map.Entry<Buyer, Integer>> sortedStream = buyerFollowers.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue());
+
+        if (!ascending) {
+            sortedStream = sortedStream.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+            return sortedStream;
+        }
+        return sortedStream;
+    }
+    public Stream<Map.Entry<Buyer, Integer>> sortBuyersByXp(boolean ascending) {
+        HashMap<Buyer, Integer> buyersXP = new HashMap<>();
+        for (Buyer buyer : getBuyers()) {
+            buyersXP.put(buyer, buyer.getMetrics().getExpPoints());
+        }
+
+        Stream<Map.Entry<Buyer, Integer>> sortedStream = buyersXP.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue());
+
+        if (!ascending) {
+            sortedStream = sortedStream.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+            return sortedStream;
+        }
+        return sortedStream;
+    }
+    public void top5Buyers(boolean ascending) {
+        sortBuyersByXp(ascending).limit(5).forEach(entry -> {
+            top5.add(entry.getKey());
+                });
+    }
     public void addUser(User user) {
         if ( validateNewUser(user.getId(), user.getEmail()) ) {
             users.add(user);
@@ -110,7 +272,6 @@ public class DataBase implements java.io.Serializable {
     public void changePassword(User user, String newPassword) {
         user.setPassword(newPassword);
     }
-
     public boolean validateNewUser(String id, String email) {
         for (User u : users) {
             if (u.getId().equals(id) || u.getEmail().equals(email)) {
@@ -119,13 +280,11 @@ public class DataBase implements java.io.Serializable {
         }
         return true;
     }
-
     public void updateOrderIDCounts() {
         for (int i = 0; i<orders.size(); i++) {
             orders.get(i).setId(orders.get(i).makeId(i+1));
         }
     }
-
     public void assignOrders() {
         getUsers().forEach(user -> user.setOrderHistory(new ArrayList<>()));
         for (Order order : orders) {
@@ -145,7 +304,6 @@ public class DataBase implements java.io.Serializable {
         }
         return valid;
     }
-
     public boolean check24H(User user) {
         if (!user.getChecked24H()) {
             Date startTime = user.getStartTime();
@@ -199,10 +357,6 @@ public class DataBase implements java.io.Serializable {
     private HashMap<Seller, HashMap<Product, Integer>> splitCartBeforeOrder(Buyer user) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = new HashMap<>();
         HashMap<Product, Integer> cartProducts = user.getCart().getProducts();
-        for (Product product : user.getCart().getProducts().keySet()) {
-            user.addPoints(product.getBasePoints()*user.getCart().getProducts().get(product));
-            System.out.println("With this purchase, you won " + product.getBasePoints()*user.getCart().getProducts().get(product) + " buying points!\n");
-        }
         for (Product product : cartProducts.keySet()) {
             Seller seller = product.getSeller();
             HashMap<Product, Integer> sellerProducts;
@@ -225,6 +379,24 @@ public class DataBase implements java.io.Serializable {
             }
         }
         return splitCart;
+    }
+
+    public void addEvaluationToProduct(Product product, Evaluation evaluation) {
+        evaluation.getAuthor().getEvaluationsMade().put(product, evaluation);
+        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() + 1);
+        evaluation.getAuthor().getMetrics().updateAverageNoteGiven(evaluation.getRating());
+        product.getEvaluations().add(evaluation);
+        product.getSeller().getMetrics().updateAverageNoteReceived(evaluation.getRating());
+        product.updateOverallRating();
+    }
+
+    public void removeEvaluationFromProduct(Product product, Evaluation evaluation) {
+        evaluation.getAuthor().getEvaluationsMade().remove(product);
+        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() - 1);
+        evaluation.getAuthor().getMetrics().removeAverageNoteGiven(evaluation.getRating());
+        product.getEvaluations().remove(evaluation);
+        product.getSeller().getMetrics().removeAverageNoteReceived(evaluation.getRating());
+        product.updateOverallRating();
     }
     @Override
     public String toString() {

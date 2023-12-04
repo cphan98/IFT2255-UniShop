@@ -13,6 +13,7 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
     private final ArrayList<Float> notesGiven;
     private float averageNoteGiven;
 
+    private int buyPoints;
     private int expPoints;
 
     public ArrayList<String> selectedMetrics; //to be shown on the users profile
@@ -24,6 +25,8 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
         likesGiven = 0;
         evaluationsMade = 0;
         averageNoteGiven = 0;
+        expPoints = 0;
+        buyPoints = 0;
         notesGiven = new ArrayList<>();
         selectedMetrics = new ArrayList<>();
     }
@@ -47,10 +50,23 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
     }
     public void setSelectedMetrics(ArrayList<String> selectedMetrics) {this.selectedMetrics = selectedMetrics; };
 
-    public void setExpPoints(int expPoints) {
-        this.expPoints = expPoints;
+
+    public void addExpPoints(int points) {
+        this.expPoints += points;
+    }
+    public void removeExpPoints(int points) {
+        this.expPoints -= points;
     }
     public int getExpPoints(){ return expPoints;}
+    public void addBuyPoints(int points) {
+        this.buyPoints += points;
+    }
+    public void removeBuyPoints(int points) {
+        this.buyPoints -= points;
+    }
+    public int getBuyPoints() {
+        return buyPoints;
+    }
 
     public int getOrdersMade() {
         return ordersMade;
@@ -97,6 +113,15 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
         averageNoteGiven = sum / notesGiven.size();
     }
 
+    public void removeAverageNoteGiven(float note) {
+        notesGiven.remove(note);
+        float sum = 0;
+        for (float n : notesGiven) {
+            sum += n;
+        }
+        averageNoteGiven = sum / notesGiven.size();
+    }
+
     public String AlltoString() {
         return
                 "Since inception," + "\n" +
@@ -113,22 +138,22 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
     public void configureMetrics(){
         ArrayList<String> allMetrics = new ArrayList<>();
         ArrayList<Number> allMetricsValues =new ArrayList<>();
-        allMetrics.add("Orders made");
+        allMetrics.add("Orders made : ");
         allMetricsValues.add(ordersMade);
-        allMetrics.add("Products bought" );
+        allMetrics.add("Products bought : " );
         allMetricsValues.add(productsBought);
-        allMetrics.add("Likes received on evaluation" );
+        allMetrics.add("Likes received on evaluation : " );
         allMetricsValues.add(likesReceived);
-        allMetrics.add("Likes given" );
+        allMetrics.add("Likes given : " );
         allMetricsValues.add(likesGiven);
-        allMetrics.add("Average note given");
+        allMetrics.add("Average note given : " );
         allMetricsValues.add(averageNoteGiven);
-        allMetrics.add("Experience points" );
+        allMetrics.add("Experience points : " );
         allMetricsValues.add(expPoints);
-        ArrayList<String> selectedMetrics = selectMetrics(allMetrics, allMetricsValues);
+        selectMetrics(allMetrics, allMetricsValues);
     }
 
-    private ArrayList<String> selectMetrics(ArrayList<String> allMetrics, ArrayList<Number> allMetricsValues){
+    private void selectMetrics(ArrayList<String> allMetrics, ArrayList<Number> allMetricsValues){
         System.out.println("Select metrics to be displayed in your profile (3 max.)");
         System.out.println("Enter the number corresponding to the metric to select or '0' to finish:");
         int count = 1;
@@ -136,11 +161,10 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
             System.out.println(count + ". " + metric);
             count++;
         }
-        boolean continueLoop = true;
-        while (continueLoop){
+        while (true) {
             int choice = getUserInputAsInteger();
             if (choice == 0){
-                break;
+                return;
             }
 
             if (choice > 0 && choice <= allMetrics.size()){
@@ -153,7 +177,7 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
                         System.out.println("Your selected metrics have been successfully added to your profile!");
                         System.out.println("--------------------------------------------------------------");
                         System.out.println();
-                        break;
+                        return;
                     }
                 } else {
                     System.out.println("Metric already displayed in profile");
@@ -162,7 +186,6 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
                 System.out.println("invalid selection");
             }
         }
-        return selectedMetrics;
     }
 
 

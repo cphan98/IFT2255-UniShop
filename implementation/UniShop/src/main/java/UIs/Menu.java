@@ -24,6 +24,45 @@ public abstract class Menu {
     }
     public abstract boolean displayMenu();
     public abstract boolean displayProfile();
+    public boolean displayFollowers() {
+        int i = 0;
+        for (Buyer buyer : user.getFollowers()) {
+            i++;
+            System.out.println(i + " " + buyer.getId());
+        }
+        System.out.println("You have " + user.getFollowers().size() + " followers: ");
+        System.out.println("1. Get the follower");
+        System.out.println("2. Return to menu");
+        int choice = uiUtilities.getUserInputAsInteger();
+        switch (choice) {
+            case 1 -> searchFollower();
+            case 2 -> System.out.println("Returning to menu...");
+        }
+        return true;
+    }
+    public void searchFollower() {
+        System.out.println("Enter the id of the follower you want to view:");
+        String id = InputManager.getInstance().nextLine();
+        Buyer pointedFollower = (Buyer) user.getFollower(id);
+        if (pointedFollower == null) {
+            System.out.println("Follower not found.");
+        } else {
+            System.out.println(pointedFollower);
+            interactWithFollower(pointedFollower);
+        }
+
+    }
+    public void interactWithFollower(Buyer pointedFollower) {
+        System.out.println("1. Remove this follower");
+        System.out.println("2. Return to menu");
+        int choice = uiUtilities.getUserInputAsInteger();
+        switch (choice) {
+            case 1 -> user.removeFollower(pointedFollower);
+            case 2 -> System.out.println("Returning to menu...");
+            default -> System.out.println("Invalid selection. Please try again.");
+        }
+    }
+
     // ORDER HISTORY
     public boolean displayOrderHistory() {
         System.out.println("ORDER HISTORY");
@@ -48,7 +87,7 @@ public abstract class Menu {
     }
     public abstract void interactWithOrder(Order order);
     // NOTIFICATIONS
-    public boolean displayNotifications() {
+    public void displayNotifications() {
         System.out.println("NOTIFICATIONS");
         System.out.println(user.notificationsToString());
         System.out.println("1. Return to menu");
@@ -61,7 +100,6 @@ public abstract class Menu {
             notification.setRead(true);
         }
         System.out.println("Returning to menu...");
-        return true;
     }
 
 
@@ -73,7 +111,7 @@ public abstract class Menu {
         seller.addNotification(new Notification(title, summary));
     }
 
-    public abstract boolean displayMetrics();
+    public abstract void displayMetrics();
 
     public abstract void modifyProfile();
 
