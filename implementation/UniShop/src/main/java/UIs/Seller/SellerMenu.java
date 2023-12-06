@@ -176,7 +176,7 @@ public class SellerMenu extends Menu {
                     break;
                 } else if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION) {
                     // print label
-                    printLabel(user, order);
+                    printLabel(order);
 
                     // ask shipping information
                     InputManager im = InputManager.getInstance();
@@ -274,7 +274,7 @@ public class SellerMenu extends Menu {
         }
     }
 
-    public void printLabel(Seller user, Order order) {
+    public void printLabel(Order order) {
         System.out.println();
         System.out.println("Printing label...");
         System.out.println();
