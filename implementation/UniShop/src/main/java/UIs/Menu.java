@@ -66,6 +66,7 @@ public abstract class Menu {
 
     // ORDER HISTORY
     public boolean displayOrderHistory() {
+        System.out.println();
         System.out.println("ORDER HISTORY");
         System.out.println(user.ordersMadeToString());
         System.out.println("Write the number of the order you want to see the details of, or write 0 to return to menu");
