@@ -121,10 +121,6 @@ public class DataBase implements java.io.Serializable {
         top5Buyers(false);
         return top5;
     }
-    public Integer getYourRank(Buyer buyer) {
-        List<Buyer> listOfBuyers = sortBuyersByXp(true).map(Map.Entry::getKey).toList();
-        return listOfBuyers.indexOf(buyer);
-    }
     public ArrayList<Buyer> searchBuyerById(String id) {
         ArrayList<Buyer> listOfBuyers = new ArrayList<>();
         for (Buyer buyer : getBuyers()) {
@@ -376,6 +372,7 @@ public class DataBase implements java.io.Serializable {
                 String title = "New order!";
                 String summary = user.getId() + " just bought your " + product.getTitle() + "!";
                 seller.addNotification(new Notification(title, summary));
+                seller.addCustomers(user);
             }
         }
         return splitCart;
