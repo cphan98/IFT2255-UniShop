@@ -532,6 +532,31 @@ public class BuyerMenu extends Menu {
                             product.getSeller().addNotification(new Notification("Response to proposed solution", order.getBuyer().getFirstName() + " has accepted your solution"));
                         }
                         if (Objects.equals(order.getIssue().getSolutionDescription(), "Reshipment of a replacement product")) {
+                            System.out.println("Which product from this seller would you like in exchange? ");
+
+                            for (Product product : order.getProducts().keySet()){
+                                for (Product replacementProducts : product.getSeller().getProducts()){
+                                    System.out.println(replacementProducts.getTitle());
+                                }
+                            }
+
+                            System.out.println("1. I want that as a replacement");
+                            System.out.println("2. I don't like any of these products");
+                            int choiceRepProduct = uiUtilities.getUserInputAsInteger();
+                            switch (choiceRepProduct){
+                                case 1 :
+                                    order.getIssue().setReplacementProducts(order.getProducts());
+                                    order.setStatus(OrderState.PENDING);
+                                    System.out.println("the seller will be notified and send you the product as soon as posible");
+                                    for (Product product : order.getProducts().keySet()){
+                                        product.getSeller().addNotification(new Notification(user + "Selected a reshipment product", "the selected product is" + product));
+                                    }
+                                    break;
+                                case 2 :
+                                    order.setStatus(OrderState.REJECTED);
+                                    System.out.println("we're sorry you don't like the option, try getting the product fixed");
+                                    break;
+                            }
                             break; //TODO: implement catalog of seller to ask for another product to replace the defect one
                         } else {
                             System.out.println("We'll repair it for you lol");
