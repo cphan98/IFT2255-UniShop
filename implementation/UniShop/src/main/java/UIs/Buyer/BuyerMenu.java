@@ -382,25 +382,28 @@ public class BuyerMenu extends Menu {
     // ORDERS
 
     public void interactWithOrder(Order order) {
-        // if the reshipment has not been received within 30 days of the request, cancel reshipment request
-        if (check30DaysFromReshipmentRequest(order.getIssue())) {
-            order.setStatus(OrderState.RESHIPMENT_CANCELLED);
+        // check if there is an issue
+        if (order.getIssue() != null) {
+            // if the reshipment has not been received within 30 days of the request, cancel reshipment request
+            if (check30DaysFromReshipmentRequest(order.getIssue())) {
+                order.setStatus(OrderState.RESHIPMENT_CANCELLED);
 
-            // update product quantities in database and seller's inventory
-            // if issue's solution description is 'exchange', put back quantities of replacement products
-            if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
-                addIventoryQuantities(order.getIssue().getReplacementProduct(), order.getIssue().getReplacementProduct().entrySet().iterator().next().getKey().getSeller());
-                addDatabaseProductQuantities(order.getIssue().getReplacementProduct());
+                // update product quantities in database and seller's inventory
+                // if issue's solution description is 'exchange', put back quantities of replacement products
+                if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
+                    addIventoryQuantities(order.getIssue().getReplacementProduct(), order.getIssue().getReplacementProduct().entrySet().iterator().next().getKey().getSeller());
+                    addDatabaseProductQuantities(order.getIssue().getReplacementProduct());
+                }
+
+                // send notification to buyer and seller
+                sendBuyerNotification(user, "Reshipment for order " + order.getId() + " is cancelled", "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
+                sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Issue " + order.getIssue().getId() + " cancelled", "The reshipment package has not been received within 30 days of the reshipment request.");
             }
-
-            // send notification to buyer and seller
-            sendBuyerNotification(user, "Reshipment for order " + order.getId() + " is cancelled", "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
-            sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Issue " + order.getIssue().getId() + " cancelled", "The reshipment package has not been received within 30 days of the reshipment request.");
         }
 
         System.out.println();
         System.out.println(order);
-        System.out.println();
+        System.out.println("Please make a selection:");
         System.out.println("1. Cancel order");
         System.out.println("2. Return order");
         System.out.println("3. Exchange order");
@@ -819,7 +822,7 @@ public class BuyerMenu extends Menu {
     // Checks if the reshipment has been received within 30 days of the return request
     private boolean check30DaysFromReshipmentRequest(IssueQuery query) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-        long diffInDays;
+        long diffInDays = 0;
 
         try {
             Date request = sdf.parse(query.getRequestDate());
@@ -831,7 +834,8 @@ public class BuyerMenu extends Menu {
             long diffInMs = Math.abs(request.getTime() - reception.getTime());
             diffInDays = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+//            throw new RuntimeException(e);
+            System.out.println("something went wrong");
         }
 
         if (diffInDays > 30) {
@@ -844,7 +848,9 @@ public class BuyerMenu extends Menu {
     // Exchanges an order
     private void exchangeOrder(Order order) {
         // display order products
-        order.productsToString();
+        System.out.println();
+        System.out.println("Products eligible for exchange:");
+        System.out.println(order.productsToString());
 
         // confirm exchange process
         System.out.println("Do you want to make an exchange? (y/n)");
@@ -982,8 +988,9 @@ public class BuyerMenu extends Menu {
         for (Product product : sellerProducts) sellerProductTitles.add(product.getTitle());
 
         // display seller products
-        System.out.println("Available replacement products");
-        seller.productsToString();
+        System.out.println();
+        System.out.println("Available replacement products:");
+        System.out.println(seller.productsToString());
 
         // ask replacement products
         boolean moreProducts = true;
@@ -1142,10 +1149,12 @@ public class BuyerMenu extends Menu {
         }
 
         // remove points
+        System.out.println();
         System.out.println("Payment in process...");
-        user.removePoints(pointsDiff);
+//        user.removePoints(pointsDiff);
 
         // confirm payment
+        System.out.println();
         System.out.println("Payment confirmed!");
 
         // create order

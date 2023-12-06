@@ -16,8 +16,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class UniShop {
+    // ATTRIBUTES
+
     private static final String DATA_FILE = "dataBase.ser";
     private static DataBase database;
+
+    // MAIN
+
     public static void main(String[] args) {
         try {
             // Try to load existing data
@@ -46,11 +51,16 @@ public class UniShop {
             System.out.println("Error saving data: " + e.getMessage());
         }
     }
+
+    // OPERATIONS
+
     private static void printBigVoidBefore() {
         for (int i=0; i<100; i++) {
             System.out.println();
         }
     }
+
+    // DATA INITIALIZATION
 
     private static void makeFakeData() {
         String[] prompts = {"terrible", "bad", "average", "good", "fantastic"};
@@ -70,6 +80,7 @@ public class UniShop {
         });
         simulateSomeActions();
     }
+
     private static void simulateSomeActions() {
         Buyer cynthia = (Buyer) database.getUsers().get(0);
         BuyerMenu buyerMenu = new BuyerMenu(cynthia, database);

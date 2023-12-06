@@ -28,6 +28,9 @@ public class Buyer extends User implements java.io.Serializable {
     private final ArrayList<Product> wishList;
     private final ArrayList<Buyer> top5;
     private int yourRank;
+
+    // CONSTRUCTOR
+
     public Buyer(String firstName, String lastName, String id, String password, String email, String phoneNumber, Address address) {
         super(id, password, email, phoneNumber, address);
         this.metrics = new BuyerMetrics();
@@ -45,7 +48,6 @@ public class Buyer extends User implements java.io.Serializable {
     }
 
     // GETTERS
-
 
     public String getFirstName() {
         return firstName;
@@ -85,6 +87,9 @@ public class Buyer extends User implements java.io.Serializable {
     public ArrayList<Evaluation> getEvaluationsLiked() {
         return evaluationsLiked;
     }
+    public HashMap<Product, Evaluation> getEvaluationsMade() {
+        return evaluationsMade;
+    }
 
     // SETTERS
 
@@ -101,11 +106,20 @@ public class Buyer extends User implements java.io.Serializable {
     public void setCard(CreditCard card) {
         this.card = card;
     }
+
+    // OPERATIONS
+    @Override
+    public void removeFollower(Buyer follower) {
+        followers.remove(follower);
+        follower.getBuyersFollowed().remove(this);
+    }
+
     public void updateTop5() {
         rankBuyers().limit(5).forEach(entry -> {
             top5.add(entry.getKey());
         });
     }
+
     public void updateYourRank() {
         ArrayList<Buyer> listOfBuyers = new ArrayList<>();
         rankBuyers().forEach(entry ->
@@ -115,14 +129,6 @@ public class Buyer extends User implements java.io.Serializable {
         }
     }
 
-    // CONSTRUCTOR
-
-    // OPERATIONS
-    @Override
-    public void removeFollower(Buyer follower) {
-        followers.remove(follower);
-        follower.getBuyersFollowed().remove(this);
-    }
     public Stream<Map.Entry<Buyer, Integer>> rankBuyers() {
         HashMap<Buyer, Integer> buyersXP = new HashMap<>();
         for (Buyer buyer : getBuyersFollowed()) {
@@ -135,9 +141,7 @@ public class Buyer extends User implements java.io.Serializable {
 
         return sortedStream;
     }
-    public HashMap<Product, Evaluation> getEvaluationsMade() {
-        return evaluationsMade;
-    }
+
     public void toggleBuyerToFollowing(Buyer buyer) {
         if (buyer == this) {
             System.out.println("You cannot follow yourself!");
@@ -171,5 +175,13 @@ public class Buyer extends User implements java.io.Serializable {
             i++;
         }
         return sb.toString();
+    }
+
+    public void addPoints(int points) {
+        this.points += points;
+    }
+
+    public void removePoints(int points) {
+        this.points -= points;
     }
 }
