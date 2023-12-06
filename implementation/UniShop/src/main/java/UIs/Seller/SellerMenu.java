@@ -17,12 +17,18 @@ import java.util.*;
 import static java.lang.Float.parseFloat;
 
 public class SellerMenu extends Menu {
+    // ATTRIBUTE
+
     private final Seller user;
-    // MENU
+
+    // CONSTRUCTOR
+
     public SellerMenu(Seller user, DataBase database) {
         super(user, database);
         this.user = user;
     }
+
+    // MAIN MENU
 
     public boolean displayMenu() {
         boolean continueLoop = true;
@@ -44,7 +50,6 @@ public class SellerMenu extends Menu {
             System.out.println("7. Display Your Customers");
             System.out.println("8. Log out");
             int choice = uiUtilities.getUserInputAsInteger();
-
 
             switch (choice) {
                 case 1:
@@ -79,6 +84,7 @@ public class SellerMenu extends Menu {
     }
 
     // PROFILE
+
     public boolean displayProfile() {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -96,23 +102,29 @@ public class SellerMenu extends Menu {
 
             switch (choice) {
                 case 1:
+                    System.out.println();
                     System.out.println("Modifying profile...");
                     modifyProfile();
                     break;
                 case 2:
+                    System.out.println();
                     System.out.println("Returning to menu...");
                     continueLoop = false;
                     break;
                 case 3:
+                    System.out.println();
+                    System.out.println("Deleting account...");
                     uiUtilities.deleteAccount();
                     return false;
                 default:
+                    System.out.println();
                     System.out.println("Invalid selection. Please try again.");
                     return false;  // continue the loop
             }
         }
         return true;  // continue the loop
     }
+
     public boolean displayCustomers() {
         System.out.println("Your customers: ");
         int i = 0;
@@ -122,6 +134,7 @@ public class SellerMenu extends Menu {
         System.out.println("You have " + user.getCustomers().size() + " customers.");
         return true;
     }
+
     public void modifyProfile() {
         System.out.println("1. Modify personal info");
         System.out.println("2. Modify address");
@@ -152,12 +165,22 @@ public class SellerMenu extends Menu {
         switch (choice) {
             // prepare order
             case 1:
-                if (order.getStatus() == OrderState.IN_DELIVERY) {
+                System.out.println();
+                System.out.println("Preparing order...");
+
+                // order can only be prepared when order status is 'in delivery' or 'replacement in delivery'
+                if (order.getStatus() == OrderState.IN_DELIVERY || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY) {
+                    System.out.println();
+                    System.out.println("WARNING : Cannot prepare order");
                     System.out.println("This order has already been prepared.");
                     break;
-                } else if (order.getStatus() == OrderState.IN_PRODUCTION) {
+                } else if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION) {
+                    // print label
                     printLabel(user, order);
+
+                    // ask shipping information
                     InputManager im = InputManager.getInstance();
+                    System.out.println();
                     System.out.println("Please enter shipping information.");
                     System.out.println("Shipping company:");
                     String company = im.nextLine();
@@ -169,12 +192,20 @@ public class SellerMenu extends Menu {
                     }
                     order.setShippingNumber(number);
 
+                    // change order status
                     order.setStatus(OrderState.IN_DELIVERY);
+
+                    // send notification to buyer
                     sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+                    // confirm order preparation
+                    System.out.println();
                     System.out.println("Your order is ready to be shipped!");
+
                     break;
                 } else {
-                    System.out.println("You cannot prepare this order.");
+                    System.out.println();
+                    System.out.println("WARNING : Cannot prepare order");
                 }
 
             // handle problem
@@ -187,7 +218,6 @@ public class SellerMenu extends Menu {
                 displayIssue(order);
 
                 order.getBuyer().addNotification(new Notification(user + "Has send a solution to the problem", "the seller thinks its pertinent to: " + order.getIssue().getSolutionDescription()));
-
 
                 break;
 
@@ -204,32 +234,48 @@ public class SellerMenu extends Menu {
                     System.out.println("You cannot confirm the reshipment reception.");
                     break;
                 }
+
+                // update status
                 order.setStatus(OrderState.RESHIPMENT_DELIVERED);
+                order.getIssue().setReshipmentReceived(true);
 
                 // send notification to buyer
                 sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
 
-                // refund buyer
-                refund(order);
+                // if issue's solution description is 'return', refund buyer
+                if (Objects.equals(order.getIssue().getSolutionDescription(), "Return")) refund(order);
+
+                // put back reshipment products quantities in seller's inventory and database
+                addDatabaseProductQuantities(order.getIssue().getReshipmentProducts());
+                addInventoryQuantities(order.getIssue().getReshipmentProducts());
 
                 // confirm reshipment
                 System.out.println("Reshipment confirmed!");
+
+                // if issue's solution description is 'exchange', ask buyer to prepare order
+                if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
+                    prepareReplacementOrder(order.getIssue().getReplacementOrder());
+                    break;
+                }
 
                 break;
 
             // return to order history
             case 4:
+                System.out.println();
                 System.out.println("Returning to order history...");
                 break;
 
             // invalid input
             default:
+                System.out.println();
                 System.out.println("Invalid selection. Please try again.");
                 break;
         }
     }
 
     public void printLabel(Seller user, Order order) {
+        System.out.println();
         System.out.println("Printing label...");
         System.out.println();
         System.out.println("--------------------------------------------------");
@@ -247,10 +293,9 @@ public class SellerMenu extends Menu {
         System.out.println("--------------------------------------------------");
         System.out.println();
         System.out.println("Label printed!");
-        System.out.println();
     }
 
-    // Refund buyer
+    // Refunds buyer
     private void refund(Order order) {
         HashMap<Product, Integer> returnProducts = order.getIssue().getReshipmentProducts(); // list of products to return
         Set<Product> orderProducts = order.getProducts().keySet(); // list of products from the order
@@ -265,9 +310,8 @@ public class SellerMenu extends Menu {
                 float price = 0;
 
                 // find the corresponding product in the order
-                for (Product orderProduct : orderProducts) {
+                for (Product orderProduct : orderProducts)
                     if (Objects.equals(orderProduct, returnProduct.getKey())) price = orderProduct.getPrice();
-                }
 
                 // add cost of returning products to sum
                 sum += quantity * price;
@@ -296,15 +340,16 @@ public class SellerMenu extends Menu {
             sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
         }
 
-        // update product quantities in database
-        updateDatabaseProductQuantities(returnProducts);
+        // update product quantities in database and seller's inventory
+        addDatabaseProductQuantities(returnProducts);
+        addInventoryQuantities(returnProducts);
 
-        // update product quantities in seller's inventory
-        updateInventoryQuantities(returnProducts);
+        // confirm refund
+        System.out.println("Refund completed!");
     }
 
-    // Update product quantities in database
-    private void updateDatabaseProductQuantities(HashMap<Product, Integer> returnProducts) {
+    // Adds product quantities from database
+    private void addDatabaseProductQuantities(HashMap<Product, Integer> returnProducts) {
         ArrayList<Product> databaseProducts = database.getProducts();
         for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
             // find product in seller inventory
@@ -317,8 +362,8 @@ public class SellerMenu extends Menu {
         }
     }
 
-    // Update product quantities in seller's inventory
-    private void updateInventoryQuantities(HashMap<Product, Integer> returnProducts) {
+    // Adds product quantities from seller's inventory
+    private void addInventoryQuantities(HashMap<Product, Integer> returnProducts) {
         ArrayList<Product> inventory = user.getProducts();
         for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
             // find product in seller inventory
@@ -329,6 +374,50 @@ public class SellerMenu extends Menu {
                 }
             }
         }
+    }
+
+    // Prepares replacement order
+    private void prepareReplacementOrder(Order replacementOrder) {
+        System.out.println();
+        System.out.println("The buyer requested an exchange.");
+        System.out.println("Preparing replacement order...");
+
+        // change replacement order status
+        replacementOrder.setStatus(OrderState.REPLACEMENT_IN_PRODUCTION);
+
+        // send notification to buyer
+        sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed", "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
+
+        // display replacement products
+        System.out.println("Replacement products:");
+        replacementOrder.productsToString();
+
+        // print label
+        printLabel(replacementOrder);
+
+        // enter shipping information
+        InputManager im = InputManager.getInstance();
+        System.out.println("Please enter shipping information.");
+        System.out.println("Shipping company:");
+        String company = im.nextLine();
+        replacementOrder.setShippingCompany(company);
+        String number = "a";
+        while (!number.matches("\\d+")) {
+            System.out.println("Shipping number:");
+            number = im.nextLine();
+        }
+
+        // add shipping number to replacement order
+        replacementOrder.setShippingNumber(number);
+
+        // change replacement order status
+        replacementOrder.setStatus(OrderState.REPLACEMENT_IN_DELIVERY);
+
+        // send notification to buyer
+        sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed", "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
+
+        // confirm replacement order prepared
+        System.out.println("Your order is ready to be shipped!");
     }
 
     // ISSUES
@@ -353,7 +442,7 @@ public class SellerMenu extends Menu {
         }
 
         if (!order.getIssue().getReshipmentReceived()) {
-            System.out.println("Reshipment received: N/A"); // TODO: change status according to order status
+            System.out.println("Reshipment received: N/A");
         } else {
             System.out.println("Reshipment received: yes");
         }
@@ -371,7 +460,7 @@ public class SellerMenu extends Menu {
         }
 
         if (!order.getIssue().getReplacementReceived()) {
-            System.out.println("Replacement received: N/A"); // TODO: change status according to order status
+            System.out.println("Replacement received: N/A");
         } else {
             System.out.println("Replacement received: yes");
         }
@@ -420,6 +509,7 @@ public class SellerMenu extends Menu {
         }
         return true;
     }
+
     public void modifyAdditionalPoints() {
         Product product = null;
         while (product == null) {
@@ -435,6 +525,7 @@ public class SellerMenu extends Menu {
         }
         product.setBasePoints(product.getBasePoints()+additionalPoints);
     }
+
     public void changeProductQty() {
         Product product = null;
         while (product == null) {
@@ -450,6 +541,7 @@ public class SellerMenu extends Menu {
         }
         user.changeProductQuantity(product, quantity);
     }
+
     public void removeProduct() {
         Product product = null;
         while (product == null) {
@@ -462,6 +554,7 @@ public class SellerMenu extends Menu {
         if (choice.equals("y")) {database.removeProduct(product);}
         else {System.out.println("Product not removed");}
     }
+
     public void addProduct() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
@@ -570,6 +663,7 @@ public class SellerMenu extends Menu {
             System.out.println(user.getMetrics().getSelectedMetrics().get(2));
         }
     }
+
     public void  displayMetrics() {
         boolean continueLoop = true;
         while (continueLoop){
@@ -589,5 +683,4 @@ public class SellerMenu extends Menu {
             }
         }
     }
-
 }
