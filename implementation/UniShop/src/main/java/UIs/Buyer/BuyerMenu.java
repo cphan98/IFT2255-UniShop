@@ -628,10 +628,8 @@ public class BuyerMenu extends Menu {
 
     // Returns an order
     private void returnOrder(Order order) {
-        // display order products
-        order.productsToString();
-
         // confirm return process
+        System.out.println();
         System.out.println("Do you want to make a return? (y/n)");
         InputManager im = InputManager.getInstance();
         String returnChoice = "";
@@ -639,6 +637,11 @@ public class BuyerMenu extends Menu {
 
         // begin return process
         if (Objects.equals(returnChoice, "y")) {
+            // display order products
+            System.out.println();
+            System.out.println("Products eligible for return:");
+            System.out.println(order.productsToString());
+
             // ask products to return
             HashMap<Product, Integer> returnProducts = askProducts(order, "return");
 
@@ -649,6 +652,8 @@ public class BuyerMenu extends Menu {
             IssueQuery returnQuery = new IssueQuery(reason);
             returnQuery.setSolutionDescription("Return");
             returnQuery.setReshipmentProducts(returnProducts);
+
+            // add issue query to buyer's order
             order.setIssue(returnQuery);
 
             // update order status

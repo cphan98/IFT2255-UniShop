@@ -14,12 +14,22 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class UIUtilities {
+    // ATTRIBUTES
+
     private final DataBase database;
     private final User user;
+
+    // CONSTRUCTOR
+
     public UIUtilities(DataBase database, User user) {
         this.database = database;
         this.user = user;
     }
+
+    // OPERATIONS
+
+    // TOGGLES
+
     public void toggleEvaluationLike(Buyer user, Evaluation evaluation) {
         if (evaluation.getAuthor() == user) {
             System.out.println("You cannot like your own evaluation!");
@@ -46,6 +56,7 @@ public class UIUtilities {
             }
         }
     }
+
     public void toggleBuyerToFollowing(Buyer user, Buyer buyer) {
         if (buyer == user) {
             System.out.println("You cannot follow yourself!");
@@ -93,6 +104,7 @@ public class UIUtilities {
             System.out.println("Product added to wish list!");
         }
     }
+
     public void toggleSellerToFollowing(Buyer user, Seller seller) {
         ArrayList<Seller> sellersFollowed = user.getSellersFollowed();
         if (!sellersFollowed.contains(seller)) {
@@ -110,6 +122,9 @@ public class UIUtilities {
             System.out.println("You are no longer following " + seller.getId() + "!");
         }
     }
+
+    // PROFILE
+
     public void deleteAccount() {
         System.out.println("Are you sure you want to delete your account? (y/n)");
         String input = InputManager.getInstance().nextLine();
@@ -127,6 +142,7 @@ public class UIUtilities {
             }
         }
     }
+
     public void modifyAddress() {
         System.out.println("Enter your street name:");
         String street = InputManager.getInstance().nextLine();
@@ -150,6 +166,7 @@ public class UIUtilities {
         }
         return email;
     }
+
     private String modifyPhoneNumber() {
         String phoneNumber = "a";
         while (!phoneNumber.matches("[0-9]+")) {
@@ -158,6 +175,7 @@ public class UIUtilities {
         }
         return phoneNumber;
     }
+
     public void modifyPersonalInfo(Buyer user) {
         System.out.println("Enter your first name:");
         String firstName = InputManager.getInstance().nextLine();
@@ -179,6 +197,7 @@ public class UIUtilities {
         user.setPhoneNumber(phoneNumber);
         System.out.println("Personal info modified");
     }
+
     public void modifyPersonalInfo(Seller user) {
         System.out.println("Enter your new id:");
         String id = InputManager.getInstance().nextLine();
@@ -194,6 +213,7 @@ public class UIUtilities {
         user.setPhoneNumber(phoneNumber);
         System.out.println("Personal info modified");
     }
+
     public void modifyPassword() {
         while (true) {
             System.out.println("Enter your current password:");
@@ -210,6 +230,9 @@ public class UIUtilities {
             }
         }
     }
+
+    // INPUTS
+
     public int getUserInputAsInteger() {
         while (true) {
             try {
