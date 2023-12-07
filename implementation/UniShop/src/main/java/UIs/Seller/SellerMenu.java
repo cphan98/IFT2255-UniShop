@@ -28,6 +28,8 @@ public class SellerMenu extends Menu {
         this.user = user;
     }
 
+    // OPERATIONS
+
     // MAIN MENU
 
     public boolean displayMenu() {
@@ -77,7 +79,6 @@ public class SellerMenu extends Menu {
                     return false;  // Add this to handle log out
                 default:
                     System.out.println("Invalid selection. Please try again.");
-                    break;
             }
         }
         return true;
@@ -167,46 +168,8 @@ public class SellerMenu extends Menu {
             case 1:
                 System.out.println();
                 System.out.println("Preparing order...");
-
-                // order can only be prepared when order status is 'in delivery' or 'replacement in delivery'
-                if (order.getStatus() == OrderState.IN_DELIVERY || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY) {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot prepare order");
-                    System.out.println("This order has already been prepared.");
-                    break;
-                } else if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION) {
-                    // print label
-                    printLabel(order);
-
-                    // ask shipping information
-                    InputManager im = InputManager.getInstance();
-                    System.out.println();
-                    System.out.println("Please enter shipping information.");
-                    System.out.println("Shipping company:");
-                    String company = im.nextLine();
-                    order.setShippingCompany(company);
-                    String number = "a";
-                    while (!number.matches("\\d+")) {
-                        System.out.println("Shipping number:");
-                        number = im.nextLine();
-                    }
-                    order.setShippingNumber(number);
-
-                    // change order status
-                    order.setStatus(OrderState.IN_DELIVERY);
-
-                    // send notification to buyer
-                    sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
-
-                    // confirm order preparation
-                    System.out.println();
-                    System.out.println("Your order is ready to be shipped!");
-
-                    break;
-                } else {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot prepare order");
-                }
+                prepareOrder(order);
+                break;
 
             // handle problem
             case 2:
@@ -223,41 +186,9 @@ public class SellerMenu extends Menu {
 
             // confirm reshipment reception
             case 3:
-                // if no issues, nothing to do
-                if (order.getIssue() == null) {
-                    System.out.println("No query in process.");
-                    break;
-                }
-
-                // reshipment reception can only be confirmed when status is 'reshipment in delivery'
-                if (order.getStatus() != OrderState.RESHIPMENT_IN_DELIVERY) {
-                    System.out.println("You cannot confirm the reshipment reception.");
-                    break;
-                }
-
-                // update status
-                order.setStatus(OrderState.RESHIPMENT_DELIVERED);
-                order.getIssue().setReshipmentReceived(true);
-
-                // send notification to buyer
-                sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
-
-                // if issue's solution description is 'return', refund buyer
-                if (Objects.equals(order.getIssue().getSolutionDescription(), "Return")) refund(order);
-
-                // put back reshipment products quantities in seller's inventory and database
-                addDatabaseProductQuantities(order.getIssue().getReshipmentProducts());
-                addInventoryQuantities(order.getIssue().getReshipmentProducts());
-
-                // confirm reshipment
-                System.out.println("Reshipment confirmed!");
-
-                // if issue's solution description is 'exchange', ask buyer to prepare order
-                if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
-                    prepareReplacementOrder(order.getIssue().getReplacementOrder());
-                    break;
-                }
-
+                System.out.println();
+                System.out.println("Confirm reshipment reception...");
+                confirmReshipmentReception(order);
                 break;
 
             // return to order history
@@ -270,7 +201,84 @@ public class SellerMenu extends Menu {
             default:
                 System.out.println();
                 System.out.println("Invalid selection. Please try again.");
-                break;
+        }
+    }
+
+    // Prepares order
+    private void prepareOrder(Order order) {
+        // order can only be prepared when order status is 'in delivery' or 'replacement in delivery'
+        if (order.getStatus() == OrderState.IN_DELIVERY || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY) {
+            System.out.println();
+            System.out.println("WARNING : Cannot prepare order");
+            System.out.println("This order has already been prepared.");
+        } else if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION) {
+            // print label
+            printLabel(order);
+
+            // ask shipping information
+            InputManager im = InputManager.getInstance();
+            System.out.println();
+            System.out.println("Please enter shipping information.");
+            System.out.println("Shipping company:");
+            String company = im.nextLine();
+            order.setShippingCompany(company);
+            String number = "a";
+            while (!number.matches("\\d+")) {
+                System.out.println("Shipping number:");
+                number = im.nextLine();
+            }
+            order.setShippingNumber(number);
+
+            // update status
+            order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).setStatus(OrderState.IN_DELIVERY);
+
+            // send notification to buyer
+            sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+            // confirm order preparation
+            System.out.println();
+            System.out.println("Your order is ready to be shipped!");
+        } else {
+            System.out.println();
+            System.out.println("WARNING : Cannot prepare order");
+        }
+    }
+
+    // Confirms reshipment reception
+    private void confirmReshipmentReception(Order order) {
+        // if no issues, nothing to do
+        if (order.getIssue() == null) {
+            System.out.println();
+            System.out.println("No query in process.");
+            return;
+        }
+
+        // reshipment reception can only be confirmed when status is 'reshipment in delivery'
+        if (order.getStatus() != OrderState.RESHIPMENT_IN_DELIVERY) {
+            System.out.println();
+            System.out.println("You cannot confirm the reshipment reception.");
+            return;
+        }
+
+        // update status
+        order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).setStatus(OrderState.IN_DELIVERY);
+        order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).getIssue().setReshipmentReceived(true);
+
+        // send notification to buyer
+        sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+        // if issue's solution description is 'return', refund buyer
+        if (Objects.equals(order.getIssue().getSolutionDescription(), "Return")) refund(order);
+
+        // put back reshipment products quantities in inventory
+        addInventoryQuantities(order.getIssue().getReshipmentProducts());
+
+        // confirm reshipment
+        System.out.println("Reshipment confirmed!");
+
+        // if issue's solution description is 'exchange', ask buyer to prepare order
+        if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
+            prepareReplacementOrder(order.getIssue().getReplacementOrder());
         }
     }
 
@@ -336,30 +344,19 @@ public class SellerMenu extends Menu {
                 sum += quantity * points;
             }
 
+            // put back points to buyer's points
+            database.getBuyers().get(database.getBuyers().indexOf(order.getBuyer())).addPoints(sum);
+
             // send notification to buyer
             sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
         }
 
-        // update product quantities in database and seller's inventory
-        addDatabaseProductQuantities(returnProducts);
+        // update product quantities in inventory
         addInventoryQuantities(returnProducts);
 
         // confirm refund
+        System.out.println();
         System.out.println("Refund completed!");
-    }
-
-    // Adds product quantities from database
-    private void addDatabaseProductQuantities(HashMap<Product, Integer> returnProducts) {
-        ArrayList<Product> databaseProducts = database.getProducts();
-        for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
-            // find product in seller inventory
-            for (Product product : databaseProducts) {
-                if (Objects.equals(product, returnProduct.getKey())) {
-                    int index = databaseProducts.indexOf(product);
-                    database.getProducts().get(index).setQuantity(product.getQuantity() + returnProduct.getValue());
-                }
-            }
-        }
     }
 
     // Adds product quantities from seller's inventory
@@ -379,17 +376,19 @@ public class SellerMenu extends Menu {
     // Prepares replacement order
     private void prepareReplacementOrder(Order replacementOrder) {
         System.out.println();
-        System.out.println("The buyer requested an exchange.");
+        System.out.println("The buyer requested an exchange");
+        System.out.println();
         System.out.println("Preparing replacement order...");
 
         // change replacement order status
-        replacementOrder.setStatus(OrderState.REPLACEMENT_IN_PRODUCTION);
+        replacementOrder.getBuyer().getOrderHistory().get(replacementOrder.getBuyer().getOrderHistory().indexOf(replacementOrder)).setStatus(OrderState.REPLACEMENT_IN_PRODUCTION);
 
         // send notification to buyer
         sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed", "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
 
         // display replacement products
-        System.out.println("Replacement products:");
+        System.out.println();
+        System.out.println("Available replacement products:");
         replacementOrder.productsToString();
 
         // print label
@@ -397,7 +396,8 @@ public class SellerMenu extends Menu {
 
         // enter shipping information
         InputManager im = InputManager.getInstance();
-        System.out.println("Please enter shipping information.");
+        System.out.println();
+        System.out.println("Please enter shipping information");
         System.out.println("Shipping company:");
         String company = im.nextLine();
         replacementOrder.setShippingCompany(company);
@@ -408,15 +408,16 @@ public class SellerMenu extends Menu {
         }
 
         // add shipping number to replacement order
-        replacementOrder.setShippingNumber(number);
+        replacementOrder.getBuyer().getOrderHistory().get(replacementOrder.getBuyer().getOrderHistory().indexOf(replacementOrder)).setShippingNumber(number);
 
         // change replacement order status
-        replacementOrder.setStatus(OrderState.REPLACEMENT_IN_DELIVERY);
+        replacementOrder.getBuyer().getOrderHistory().get(replacementOrder.getBuyer().getOrderHistory().indexOf(replacementOrder)).setStatus(OrderState.REPLACEMENT_IN_DELIVERY);
 
         // send notification to buyer
         sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed", "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
 
         // confirm replacement order prepared
+        System.out.println();
         System.out.println("Your order is ready to be shipped!");
     }
 
@@ -470,60 +471,66 @@ public class SellerMenu extends Menu {
 
     public boolean displayInventory() {
         boolean continueLoop = true;
-
         while (continueLoop) {
+            System.out.println();
             System.out.println("INVENTORY");
+
+            // display products
             System.out.println();
             user.getProducts().forEach(product -> System.out.println(product.toString()));
-            System.out.println();
+
+            // select option
             System.out.println("Please select an option:");
             System.out.println("1. Add item(s)");
             System.out.println("2. Remove item(s)");
             System.out.println("3. Change item quantity");
-            System.out.println("4. Modify additional points of product");
+            System.out.println("4. Add promotion");
             System.out.println("5. Return to menu");
-
             int choice = uiUtilities.getUserInputAsInteger();
 
+            // process selection
             switch (choice) {
+                // add item(s)
                 case 1:
+                    System.out.println();
                     System.out.println("Adding item(s)...");
                     addProduct();
                     break;
+
+                // remove item(s)
                 case 2:
+                    System.out.println();
                     System.out.println("Removing item(s)...");
                     removeProduct();
                     break;
+
+                // change item quantity
                 case 3:
+                    System.out.println();
                     System.out.println("Changing item quantity...");
                     changeProductQty();
                     break;
+
+                // add promotion
                 case 4:
-                    System.out.println("Modifying additional points of product...");
-                    modifyAdditionalPoints();
+                    System.out.println();
+                    System.out.println("Adding promotion...");
+                    continueLoop = addPromotion();
                     break;
+
+                // return to menu
                 case 5:
                     continueLoop = false; // Exit the inventory submenu
                     break;
+
+                default:
+                    System.out.println();
+                    System.out.println("Invalid selection. Please try again.");
             }
         }
-        return true;
-    }
 
-    public void modifyAdditionalPoints() {
-        Product product = null;
-        while (product == null) {
-            System.out.println("Please enter the title of the product:");
-            String title = InputManager.getInstance().nextLine();
-            product = user.findProductByTitle(title);
-        }
-        product.setBasePoints((int) Math.floor(product.getPrice()));
-        System.out.println("Please enter the additional points of the product:");
-        int additionalPoints = uiUtilities.getUserInputAsInteger();
-        if (additionalPoints > Math.floor(product.getPrice())*19) {
-            additionalPoints = (int) Math.floor(product.getPrice())*19;
-        }
-        product.setBasePoints(product.getBasePoints()+additionalPoints);
+        // continue loop
+        return true;
     }
 
     public void changeProductQty() {
@@ -555,18 +562,28 @@ public class SellerMenu extends Menu {
         else {System.out.println("Product not removed");}
     }
 
+    // Adds new product to database
     public void addProduct() {
         InputManager inputManager = InputManager.getInstance();
+
+        // ask title
+        System.out.println();
         System.out.println("Please enter the title of the product:");
         String title = inputManager.nextLine();
+
+        // ask description
         System.out.println("Please enter the description of the product:");
         String description = inputManager.nextLine();
+
+        // ask price
         String priceText = "a";
         while (!priceText.matches("\\d+(\\.\\d+)?")) {
             System.out.println("Please enter the price of the product:");
             priceText = inputManager.nextLine();
         }
         float price = parseFloat(priceText);
+
+        // ask bonus points
         System.out.println("Please enter the bonus points of the product:");
         int bonusPoints = uiUtilities.getUserInputAsInteger();
         if (bonusPoints < 0) {
@@ -575,10 +592,16 @@ public class SellerMenu extends Menu {
         if (Math.floor(price)*20 < Math.floor(price) + bonusPoints) {
             bonusPoints = (int) Math.floor(price)*19;
         }
+
+        // ask quantity
         System.out.println("Please enter the quantity of the product:");
         int quantity = uiUtilities.getUserInputAsInteger();
+
+        // ask sell date
         System.out.println("Please enter the sell date of the product:");
         String sellDate = inputManager.nextLine();
+
+        // ask details according to category
         Product product = null;
         String author, releaseDate, brand, model, subCategory;
         int ISBN, edition;
@@ -647,10 +670,212 @@ public class SellerMenu extends Menu {
                 product = new OfficeEquipment(title, description, price, (int) Math.floor(price) + bonusPoints, user, quantity, brand, model, subCategory, sellDate);
                 break;
         }
+
+        // check if product already exists
         if (database.verifyNewProduct(product)) {
+            // add product to database
             database.addProduct(product);
+
+            // send notification to followers
+            sendNewProductNotification(product);
         } else {
             System.out.println("Product already exists");
+        }
+    }
+
+    // Sends notification to followers when new product added
+    private void sendNewProductNotification(Product newProduct) {
+        ArrayList<Buyer> followers = user.getFollowers();
+        if (!followers.isEmpty())
+            for (Buyer follower : followers)
+                sendBuyerNotification(follower, "New Product", "New product added by " + user.getId() + ": " + newProduct.getTitle());
+    }
+
+    // Adds product promotion
+    private boolean addPromotion(){
+        // ask promotion type
+        System.out.println();
+        System.out.println("Please select the promotion type:");
+        System.out.println("1. Price reduction");
+        System.out.println("2. Bonus points");
+        System.out.println("3. Return to menu");
+        int promoChoice = uiUtilities.getUserInputAsInteger();
+
+        // process selection
+        switch (promoChoice) {
+            // price reduction
+            case 1:
+                addPriceReduction();
+                break;
+
+            // bonus points
+            case 2:
+                addBonusPoints();
+                break;
+
+            // return to menu
+            case 3:
+                return false;
+
+            // invalid input
+            default:
+                System.out.println();
+                System.out.println("Invalid selection. Please try again.");
+                promoChoice = uiUtilities.getUserInputAsInteger();
+        }
+
+        return true;
+    }
+
+    // Adds price reduction
+    private void addPriceReduction() {
+        // ask product title and get Product object
+        Product product = null;
+        while (product == null) {
+            System.out.println();
+            System.out.println("Please enter the title of the product:");
+            String title = InputManager.getInstance().nextLine();
+            product = user.findProductByTitle(title);
+        }
+
+        // ask reduced price
+        System.out.println();
+        System.out.println("Please enter the price of the product:");
+        InputManager im = InputManager.getInstance();
+        String priceText = "a";
+        while (!priceText.matches("\\d+(\\.\\d+)?")) {
+            priceText = im.nextLine();
+
+            // validate price
+            if (parseFloat(priceText) < 0) {
+                System.out.println();
+                System.out.println("WARNING : The price cannot be less than 0.00$");
+                continue;
+            }
+            if (parseFloat(priceText) >= product.getPrice()) {
+                System.out.println();
+                System.out.println("WARNING : The price has to be less than " + product.getPrice() + "$");
+            }
+        }
+        float reducedPrice = parseFloat(priceText);
+
+        // set reduced price to product
+        product.setPrice(reducedPrice);
+
+        // update info in inventory
+        ArrayList<Product> newInventory = new ArrayList<>();
+        Product oldProduct = null;
+        for (Product sellerProduct : user.getProducts()) {
+            // replace old product with new product with same title
+            if (Objects.equals(sellerProduct.getTitle(), product.getTitle())) {
+                newInventory.add(product);
+                oldProduct = sellerProduct;
+            }
+
+            // add product to list
+            newInventory.add(sellerProduct);
+        }
+        user.setProducts(newInventory);
+
+        // send notifications to buyers
+        sendPromoNotificationToLikes(oldProduct, "price reduction");
+        sendPromoNotificationToFollowers(oldProduct, "price reduction");
+        sendPromoNotificationToBuyer(oldProduct, "price reduction");
+    }
+
+    // Adds bonus points to product
+    private void addBonusPoints() {
+        // ask product title and get Product object
+        Product product = null;
+        while (product == null) {
+            System.out.println();
+            System.out.println("Please enter the title of the product:");
+            String title = InputManager.getInstance().nextLine();
+            product = user.findProductByTitle(title);
+        }
+
+        // reset base points
+        product.setBasePoints((int) Math.floor(product.getPrice()));
+
+        // asks bonus points to add to base points
+        System.out.println();
+        System.out.println("Please enter the number of bonus points:");
+        int bonusPoints = uiUtilities.getUserInputAsInteger();
+        // cannot add bonus points > 20x base points
+        if (bonusPoints > Math.floor(product.getPrice())*19)
+            bonusPoints = (int) Math.floor(product.getPrice())*19;
+
+        // set new points to product
+        product.setBasePoints(product.getBasePoints() + bonusPoints);
+
+        // update info in inventory
+        ArrayList<Product> newInventory = new ArrayList<>();
+        Product oldProduct = null;
+        for (Product sellerProduct : user.getProducts()) {
+            // replace old product with new product with same title
+            if (Objects.equals(sellerProduct.getTitle(), product.getTitle())) {
+                newInventory.add(product);
+                oldProduct = sellerProduct;
+            }
+
+            // add product to list
+            newInventory.add(sellerProduct);
+        }
+        user.setProducts(newInventory);
+
+        // send notification to buyers
+        sendPromoNotificationToLikes(oldProduct, "bonus points");
+        sendPromoNotificationToFollowers(oldProduct, "bonus points");
+        sendPromoNotificationToBuyer(oldProduct, "bonus points");
+    }
+
+    // Sends notification to buyers who liked the product
+    private void sendPromoNotificationToLikes(Product oldProduct, String bonusPointsOrPriceReduction) {
+        for (Buyer buyer : database.getBuyers())
+            if (buyer.getWishList().contains(oldProduct))
+                switch (bonusPointsOrPriceReduction) {
+                    case "bonus points":
+                        sendBuyerNotification(buyer, "New Promotion", user.getId() + " added bonus points to " + oldProduct.getTitle());
+                        break;
+                    case "price reduction":
+                        sendBuyerNotification(buyer, "New Promotion", user.getId() + " reduced the price of " + oldProduct.getTitle());
+                        break;
+                }
+
+    }
+
+    // Sends notification to followers
+    private void sendPromoNotificationToFollowers(Product oldProduct, String bonusPointsOrPriceReduction) {
+        for (Buyer buyer : user.getFollowers())
+            switch (bonusPointsOrPriceReduction) {
+                case "bonus points":
+                    sendBuyerNotification(buyer, "New Promotion", user.getId() + " added bonus points to " + oldProduct.getTitle());
+                    break;
+                case "price reduction":
+                    sendBuyerNotification(buyer, "New Promotion", user.getId() + " reduced the price of " + oldProduct.getTitle());
+                    break;
+            }
+    }
+
+    // Sends notification to buyer whose followers liked the product
+    private void sendPromoNotificationToBuyer(Product oldProduct, String bonusPointsOrPriceReduction) {
+        for (Buyer buyer : database.getBuyers()) {
+            boolean likedByFollowers = false;
+            for (Buyer follower : buyer.getFollowers()) {
+                if (follower.getWishList().contains(oldProduct)) {
+                    likedByFollowers = true;
+                    break;
+                }
+            }
+            if (likedByFollowers)
+                switch (bonusPointsOrPriceReduction) {
+                    case "bonus points":
+                        sendBuyerNotification(buyer, "New Promotion", user.getId() + " added bonus points to a product one of your followers liked: " +oldProduct.getTitle());
+                        break;
+                    case "price reduction":
+                        sendBuyerNotification(buyer, "New Promotion", user.getId() + " reduced the price of " + oldProduct.getTitle());
+                        break;
+                }
         }
     }
 
