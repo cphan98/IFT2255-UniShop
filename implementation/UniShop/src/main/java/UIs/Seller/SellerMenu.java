@@ -168,46 +168,8 @@ public class SellerMenu extends Menu {
             case 1:
                 System.out.println();
                 System.out.println("Preparing order...");
-
-                // order can only be prepared when order status is 'in delivery' or 'replacement in delivery'
-                if (order.getStatus() == OrderState.IN_DELIVERY || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY) {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot prepare order");
-                    System.out.println("This order has already been prepared.");
-                    break;
-                } else if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION) {
-                    // print label
-                    printLabel(order);
-
-                    // ask shipping information
-                    InputManager im = InputManager.getInstance();
-                    System.out.println();
-                    System.out.println("Please enter shipping information.");
-                    System.out.println("Shipping company:");
-                    String company = im.nextLine();
-                    order.setShippingCompany(company);
-                    String number = "a";
-                    while (!number.matches("\\d+")) {
-                        System.out.println("Shipping number:");
-                        number = im.nextLine();
-                    }
-                    order.setShippingNumber(number);
-
-                    // change order status
-                    order.setStatus(OrderState.IN_DELIVERY);
-
-                    // send notification to buyer
-                    sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
-
-                    // confirm order preparation
-                    System.out.println();
-                    System.out.println("Your order is ready to be shipped!");
-
-                    break;
-                } else {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot prepare order");
-                }
+                prepareOrder(order);
+                break;
 
             // handle problem
             case 2:
@@ -224,41 +186,9 @@ public class SellerMenu extends Menu {
 
             // confirm reshipment reception
             case 3:
-                // if no issues, nothing to do
-                if (order.getIssue() == null) {
-                    System.out.println("No query in process.");
-                    break;
-                }
-
-                // reshipment reception can only be confirmed when status is 'reshipment in delivery'
-                if (order.getStatus() != OrderState.RESHIPMENT_IN_DELIVERY) {
-                    System.out.println("You cannot confirm the reshipment reception.");
-                    break;
-                }
-
-                // update status
-                order.setStatus(OrderState.RESHIPMENT_DELIVERED);
-                order.getIssue().setReshipmentReceived(true);
-
-                // send notification to buyer
-                sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
-
-                // if issue's solution description is 'return', refund buyer
-                if (Objects.equals(order.getIssue().getSolutionDescription(), "Return")) refund(order);
-
-                // put back reshipment products quantities in seller's inventory and database
-                addDatabaseProductQuantities(order.getIssue().getReshipmentProducts());
-                addInventoryQuantities(order.getIssue().getReshipmentProducts());
-
-                // confirm reshipment
-                System.out.println("Reshipment confirmed!");
-
-                // if issue's solution description is 'exchange', ask buyer to prepare order
-                if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
-                    prepareReplacementOrder(order.getIssue().getReplacementOrder());
-                    break;
-                }
-
+                System.out.println();
+                System.out.println("Confirm reshipment reception...");
+                confirmReshipmentReception(order);
                 break;
 
             // return to order history
@@ -271,6 +201,84 @@ public class SellerMenu extends Menu {
             default:
                 System.out.println();
                 System.out.println("Invalid selection. Please try again.");
+        }
+    }
+
+    // Prepares order
+    private void prepareOrder(Order order) {
+        // order can only be prepared when order status is 'in delivery' or 'replacement in delivery'
+        if (order.getStatus() == OrderState.IN_DELIVERY || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY) {
+            System.out.println();
+            System.out.println("WARNING : Cannot prepare order");
+            System.out.println("This order has already been prepared.");
+        } else if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION) {
+            // print label
+            printLabel(order);
+
+            // ask shipping information
+            InputManager im = InputManager.getInstance();
+            System.out.println();
+            System.out.println("Please enter shipping information.");
+            System.out.println("Shipping company:");
+            String company = im.nextLine();
+            order.setShippingCompany(company);
+            String number = "a";
+            while (!number.matches("\\d+")) {
+                System.out.println("Shipping number:");
+                number = im.nextLine();
+            }
+            order.setShippingNumber(number);
+
+            // update status
+            order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).setStatus(OrderState.IN_DELIVERY);
+
+            // send notification to buyer
+            sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+            // confirm order preparation
+            System.out.println();
+            System.out.println("Your order is ready to be shipped!");
+        } else {
+            System.out.println();
+            System.out.println("WARNING : Cannot prepare order");
+        }
+    }
+
+    // Confirms reshipment reception
+    private void confirmReshipmentReception(Order order) {
+        // if no issues, nothing to do
+        if (order.getIssue() == null) {
+            System.out.println();
+            System.out.println("No query in process.");
+            return;
+        }
+
+        // reshipment reception can only be confirmed when status is 'reshipment in delivery'
+        if (order.getStatus() != OrderState.RESHIPMENT_IN_DELIVERY) {
+            System.out.println();
+            System.out.println("You cannot confirm the reshipment reception.");
+            return;
+        }
+
+        // update status
+        order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).setStatus(OrderState.IN_DELIVERY);
+        order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).getIssue().setReshipmentReceived(true);
+
+        // send notification to buyer
+        sendBuyerNotification(order.getBuyer(), "Order status changed", "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+        // if issue's solution description is 'return', refund buyer
+        if (Objects.equals(order.getIssue().getSolutionDescription(), "Return")) refund(order);
+
+        // put back reshipment products quantities in inventory
+        addInventoryQuantities(order.getIssue().getReshipmentProducts());
+
+        // confirm reshipment
+        System.out.println("Reshipment confirmed!");
+
+        // if issue's solution description is 'exchange', ask buyer to prepare order
+        if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
+            prepareReplacementOrder(order.getIssue().getReplacementOrder());
         }
     }
 
@@ -336,30 +344,19 @@ public class SellerMenu extends Menu {
                 sum += quantity * points;
             }
 
+            // put back points to buyer's points
+            database.getBuyers().get(database.getBuyers().indexOf(order.getBuyer())).addPoints(sum);
+
             // send notification to buyer
             sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
         }
 
-        // update product quantities in database and seller's inventory
-        addDatabaseProductQuantities(returnProducts);
+        // update product quantities in inventory
         addInventoryQuantities(returnProducts);
 
         // confirm refund
+        System.out.println();
         System.out.println("Refund completed!");
-    }
-
-    // Adds product quantities from database
-    private void addDatabaseProductQuantities(HashMap<Product, Integer> returnProducts) {
-        ArrayList<Product> databaseProducts = database.getProducts();
-        for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
-            // find product in seller inventory
-            for (Product product : databaseProducts) {
-                if (Objects.equals(product, returnProduct.getKey())) {
-                    int index = databaseProducts.indexOf(product);
-                    database.getProducts().get(index).setQuantity(product.getQuantity() + returnProduct.getValue());
-                }
-            }
-        }
     }
 
     // Adds product quantities from seller's inventory
@@ -379,17 +376,19 @@ public class SellerMenu extends Menu {
     // Prepares replacement order
     private void prepareReplacementOrder(Order replacementOrder) {
         System.out.println();
-        System.out.println("The buyer requested an exchange.");
+        System.out.println("The buyer requested an exchange");
+        System.out.println();
         System.out.println("Preparing replacement order...");
 
         // change replacement order status
-        replacementOrder.setStatus(OrderState.REPLACEMENT_IN_PRODUCTION);
+        replacementOrder.getBuyer().getOrderHistory().get(replacementOrder.getBuyer().getOrderHistory().indexOf(replacementOrder)).setStatus(OrderState.REPLACEMENT_IN_PRODUCTION);
 
         // send notification to buyer
         sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed", "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
 
         // display replacement products
-        System.out.println("Replacement products:");
+        System.out.println();
+        System.out.println("Available replacement products:");
         replacementOrder.productsToString();
 
         // print label
@@ -397,7 +396,8 @@ public class SellerMenu extends Menu {
 
         // enter shipping information
         InputManager im = InputManager.getInstance();
-        System.out.println("Please enter shipping information.");
+        System.out.println();
+        System.out.println("Please enter shipping information");
         System.out.println("Shipping company:");
         String company = im.nextLine();
         replacementOrder.setShippingCompany(company);
@@ -408,15 +408,16 @@ public class SellerMenu extends Menu {
         }
 
         // add shipping number to replacement order
-        replacementOrder.setShippingNumber(number);
+        replacementOrder.getBuyer().getOrderHistory().get(replacementOrder.getBuyer().getOrderHistory().indexOf(replacementOrder)).setShippingNumber(number);
 
         // change replacement order status
-        replacementOrder.setStatus(OrderState.REPLACEMENT_IN_DELIVERY);
+        replacementOrder.getBuyer().getOrderHistory().get(replacementOrder.getBuyer().getOrderHistory().indexOf(replacementOrder)).setStatus(OrderState.REPLACEMENT_IN_DELIVERY);
 
         // send notification to buyer
         sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed", "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
 
         // confirm replacement order prepared
+        System.out.println();
         System.out.println("Your order is ready to be shipped!");
     }
 
