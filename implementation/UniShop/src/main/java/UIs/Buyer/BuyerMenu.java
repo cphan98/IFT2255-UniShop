@@ -549,9 +549,11 @@ public class BuyerMenu extends Menu {
                                 case 1 :
                                     order.getIssue().setReplacementProducts(order.getProducts());
                                     order.setStatus(OrderState.PENDING);
+
                                     System.out.println("the seller will be notified and send you the product as soon as posible");
                                     for (Product product : order.getProducts().keySet()){
                                         product.getSeller().addNotification(new Notification(user + "Selected a reshipment product", "the selected product is" + product));
+
                                     }
                                     break;
                                 case 2 :
