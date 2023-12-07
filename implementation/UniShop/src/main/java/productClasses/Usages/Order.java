@@ -30,7 +30,6 @@ public class Order implements java.io.Serializable {
     private String shippingCompany;
     private String shippingNumber;
     private float totalCost;
-    private UIUtilities uiUtilities;
 
     // GETTERS
 

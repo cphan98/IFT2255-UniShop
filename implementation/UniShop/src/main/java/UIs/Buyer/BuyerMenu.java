@@ -471,7 +471,8 @@ public class BuyerMenu extends Menu {
                 // order can only be returned within 30 days since it's reception
                 if (!check30DaysFromOrderReception(order)) {
                     System.out.println();
-                    System.out.println("WARNING : Cannot return this order! More than 30 days have passed since the receipt of your order.");
+                    System.out.println("WARNING : Cannot return this order! More than 30 days have passed since you received your order.");
+
                     break;
                 }
 
@@ -501,7 +502,8 @@ public class BuyerMenu extends Menu {
                 // order can only be exchanged within 30 days since it's reception
                 if (!check30DaysFromOrderReception(order)) {
                     System.out.println();
-                    System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since the receipt of your order.");
+                    System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since you received your order.");
+
                     break;
                 }
 
@@ -607,6 +609,7 @@ public class BuyerMenu extends Menu {
             // return to order history
             case 7:
                 System.out.println("Returning to order history...");
+                displayOrderHistory();
                 break;
 
             // invalid input
@@ -644,11 +647,7 @@ public class BuyerMenu extends Menu {
             throw new RuntimeException(e);
         }
 
-        if (diffInDays > 30) {
-            return false;
-        }
-
-        return true;
+        return diffInDays <= 30;
     }
 
     // Returns an order
