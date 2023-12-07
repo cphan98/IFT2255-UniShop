@@ -341,7 +341,6 @@ public class BuyerMenu extends Menu {
         System.out.println("Buyer's ID: " + buyer.getId());
         System.out.println(buyer.getMetrics().toString());
     }
-
     public void modifyProfile() {
         System.out.println();
         System.out.println("1. Modify personal info");
@@ -417,191 +416,38 @@ public class BuyerMenu extends Menu {
         switch (choice) {
             // cancel order
             case 1:
-                System.out.println();
-                System.out.println("Cancelling order...");
-
-                // order can only be cancelled when status is 'in production'
-                if (order.getStatus() != OrderState.IN_PRODUCTION) {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot cancel this order!");
-                    if (order.getStatus() == OrderState.IN_DELIVERY)
-                        System.out.println("Your order is out for delivery.");
-                    if (order.getStatus() == OrderState.DELIVERED)
-                        System.out.println("You have already received your order.");
-                    if (order.getStatus() == OrderState.CANCELLED)
-                        System.out.println("You have already cancelled your order.");
-                    if (order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED)
-                        System.out.println("You cannot cancel a returning order.");
-                    break;
-                }
-
-                // cancel order
                 cancelOrder(user, order);
-
-                // send notification to buyer and seller
-                sendBuyerNotification(user, "Order cancelled", "Your order " + order.getId() + " has been cancelled!");
-                sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Order cancelled", "your order " + order.getId() + " has been cancelled!");
-
-                // confirm cancellation
-                System.out.println();
-                System.out.println("Order cancelled");
-
                 break;
-
             // return order
             case 2:
-                System.out.println();
-                System.out.println("Returning order...");
-
-                // order can only be returned when status is 'delivered'
-                if (order.getStatus() != OrderState.DELIVERED) {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot return this order!");
-                    if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.IN_DELIVERY)
-                        System.out.println("Your order is being processed.");
-                    if (order.getStatus() == OrderState.CANCELLED)
-                        System.out.println("Your order is cancelled.");
-                    if (order.getStatus() == OrderState.RESHIPMENT_DELIVERED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY)
-                        System.out.println("You have already requested a return.");
-                    if (order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY || order.getStatus() == OrderState.REPLACEMENT_DELIVERED)
-                        System.out.println("You cannot return this order.");
-                    break;
-                }
-
-                // order can only be returned within 30 days since it's reception
-                if (!check30DaysFromOrderReception(order)) {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot return this order! More than 30 days have passed since you received your order.");
-
-                    break;
-                }
-
-                // begin return process
                 returnOrder(order);
-
                 break;
-
             // exchange order
             case 3:
-                System.out.println();
-                System.out.println("Exchanging order...");
-
-                // order can only be exchanged when status is 'delivered'
-                if (order.getStatus() != OrderState.DELIVERED) {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot exchange this order!");
-                    if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.IN_DELIVERY)
-                        System.out.println("Your order is being processed.");
-                    if (order.getStatus() == OrderState.CANCELLED)
-                        System.out.println("Your order is cancelled.");
-                    if (order.getStatus() == OrderState.RESHIPMENT_DELIVERED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY)
-                        System.out.println("You have already requested an exchange.");
-                    break;
-                }
-
-                // order can only be exchanged within 30 days since it's reception
-                if (!check30DaysFromOrderReception(order)) {
-                    System.out.println();
-                    System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since you received your order.");
-
-                    break;
-                }
-
-                // begin exchange process
                 exchangeOrder(order);
-
                 break;
-
             // report a problem
             case 4:
-                System.out.println();
-                System.out.println("Reporting a problem...");
-                order.reportProblem();
-                for (Product product : order.getProducts().keySet()){
-                    product.getSeller().addNotification(new Notification("there is a problem with a product", user.getFirstName() +" reported a problem with a " + product.getTitle()));
-                }
-
+                reportProblem(order);
                 break;
-
             // confirm solution for the problem
             case 5:
-                if (order.getIssue() == null){
-                    System.out.println("You haven't reported a problem yet");
-                }else{
-
-                    if (order.getIssue().acceptSolution()) {
-                        for (Product product : order.getProducts().keySet()){
-                            product.getSeller().addNotification(new Notification("Response to proposed solution", order.getBuyer().getFirstName() + " has accepted your solution"));
-                        }
-                        if (Objects.equals(order.getIssue().getSolutionDescription(), "Reshipment of a replacement product")) {
-                            break; //TODO: implement catalog of seller to ask for another product to replace the defect one
-                        } else {
-                            System.out.println("We'll repair it for you lol");
-                            break;
-                        }
-
-                    }
-                    break;
-                }
+                confirmSolution(order);
                 break;
-
             // confirm order reception
             case 6:
-                // can only confirm when status is 'in delivery' or 'replacement in delivery'
-                if (order.getStatus() != OrderState.IN_DELIVERY || order.getStatus() != OrderState.REPLACEMENT_IN_DELIVERY) {
-                    System.out.println("WARNING : Cannot confirm this order!");
-                    if (order.getStatus() == OrderState.DELIVERED || order.getStatus() == OrderState.REPLACEMENT_DELIVERED)
-                        System.out.println("Your order has already been confirmed.");
-                    if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION)
-                        System.out.println("Your order has not been shipped yet.");
-                    if (order.getStatus() == OrderState.CANCELLED)
-                        System.out.println("Your order is cancelled.");
-                    if (order.getStatus() == OrderState.RESHIPMENT_CANCELLED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED)
-                        System.out.println("You cannot confirm a reshipment.");
-                    break;
-                }
-
-                // change status to 'delivered'
-                order.setStatus(OrderState.DELIVERED);
-
-                // send notification to buyer
-                sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
-
-                // add points
-                int buyPointsWon = 0;
-                for (Product product : order.getProducts().keySet()) {
-                    buyPointsWon += (int) (product.getPrice() * order.getProducts().get(product));
-                }
-                user.getMetrics().addBuyPoints(buyPointsWon);
-                user.getMetrics().addExpPoints(10);
-                System.out.println("You have won " + buyPointsWon + " buy points and 10 experience points by confirming this order!");
-
-                // confirm order reception
-                System.out.println("Order confirmed");
-
+                confirmOrder(order);
                 break;
-
             // return to order history
             case 7:
                 System.out.println("Returning to order history...");
                 displayOrderHistory();
                 break;
-
             // invalid input
             default:
                 System.out.println("Invalid selection. Please try again.");
                 break;
         }
-    }
-
-    public void cancelOrder(Buyer buyer, Order order) {
-        order.setStatus(OrderState.CANCELLED);
-        buyer.getMetrics().setOrdersMade((buyer.getMetrics().getOrdersMade() - 1));
-        int productsCancelled = 0;
-        for (Product p : order.getProducts().keySet()) {
-            productsCancelled += order.getProducts().get(p);
-        }
-        buyer.getMetrics().setProductsBought((buyer.getMetrics().getProductsBought() - productsCancelled));
     }
 
     // Checks if the time between the order reception and the return request is <= 30 days
@@ -624,9 +470,67 @@ public class BuyerMenu extends Menu {
 
         return diffInDays <= 30;
     }
+    public void cancelOrder(Buyer buyer, Order order) {
+        System.out.println();
+        System.out.println("Cancelling order...");
 
-    // Returns an order
+        // order can only be cancelled when status is 'in production'
+        if (order.getStatus() != OrderState.IN_PRODUCTION) {
+            System.out.println();
+            System.out.println("WARNING : Cannot cancel this order!");
+            if (order.getStatus() == OrderState.IN_DELIVERY)
+                System.out.println("Your order is out for delivery.");
+            if (order.getStatus() == OrderState.DELIVERED)
+                System.out.println("You have already received your order.");
+            if (order.getStatus() == OrderState.CANCELLED)
+                System.out.println("You have already cancelled your order.");
+            if (order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED)
+                System.out.println("You cannot cancel a returning order.");
+            return;
+        }
+
+        order.setStatus(OrderState.CANCELLED);
+        buyer.getMetrics().setOrdersMade((buyer.getMetrics().getOrdersMade() - 1));
+        int productsCancelled = 0;
+        for (Product p : order.getProducts().keySet()) {
+            productsCancelled += order.getProducts().get(p);
+        }
+        buyer.getMetrics().setProductsBought((buyer.getMetrics().getProductsBought() - productsCancelled));
+
+        // send notification to buyer and seller
+        sendBuyerNotification(user, "Order cancelled", "Your order " + order.getId() + " has been cancelled!");
+        sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Order cancelled", "your order " + order.getId() + " has been cancelled!");
+
+        // confirm cancellation
+        System.out.println();
+        System.out.println("Order cancelled");
+    }
     private void returnOrder(Order order) {
+        System.out.println();
+        System.out.println("Returning order...");
+
+        // order can only be returned when status is 'delivered'
+        if (order.getStatus() != OrderState.DELIVERED) {
+            System.out.println();
+            System.out.println("WARNING : Cannot return this order!");
+            if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.IN_DELIVERY)
+                System.out.println("Your order is being processed.");
+            if (order.getStatus() == OrderState.CANCELLED)
+                System.out.println("Your order is cancelled.");
+            if (order.getStatus() == OrderState.RESHIPMENT_DELIVERED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY)
+                System.out.println("You have already requested a return.");
+            if (order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY || order.getStatus() == OrderState.REPLACEMENT_DELIVERED)
+                System.out.println("You cannot return this order.");
+            return;
+        }
+
+        // order can only be returned within 30 days since it's reception
+        if (!check30DaysFromOrderReception(order)) {
+            System.out.println();
+            System.out.println("WARNING : Cannot return this order! More than 30 days have passed since you received your order.");
+
+            return;
+        }
         // display order products
         order.productsToString();
 
@@ -668,9 +572,248 @@ public class BuyerMenu extends Menu {
             System.out.println("2. Give the package to your closest post service.");
         }
     }
+    private void exchangeOrder(Order order) {
+        System.out.println();
+        System.out.println("Exchanging order...");
+
+        // order can only be exchanged when status is 'delivered'
+        if (order.getStatus() != OrderState.DELIVERED) {
+            System.out.println();
+            System.out.println("WARNING : Cannot exchange this order!");
+            if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.IN_DELIVERY)
+                System.out.println("Your order is being processed.");
+            if (order.getStatus() == OrderState.CANCELLED)
+                System.out.println("Your order is cancelled.");
+            if (order.getStatus() == OrderState.RESHIPMENT_DELIVERED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY)
+                System.out.println("You have already requested an exchange.");
+            return;
+        }
+
+        // order can only be exchanged within 30 days since it's reception
+        if (!check30DaysFromOrderReception(order)) {
+            System.out.println();
+            System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since you received your order.");
+
+            return;
+        }
+        // display order products
+        System.out.println();
+        System.out.println("Products eligible for exchange:");
+        System.out.println(order.productsToString());
+
+        // confirm exchange process
+        System.out.println("Do you want to make an exchange? (y/n)");
+        InputManager im = InputManager.getInstance();
+        String exchangeChoice = "";
+        while (!exchangeChoice.matches("[yn]")) exchangeChoice = im.nextLine();
+
+        // begin exchange process
+        if (Objects.equals(exchangeChoice, "y")) {
+            // ask products to exchange
+            HashMap<Product, Integer> exchangeProducts = askProducts(order, "exchange");
+
+            // ask reason of exchange
+            String reason = askReason("exchange");
+
+            // ask replacement products
+            HashMap<Product, Integer> replacementProducts = askReplacementProducts(order);
+
+            // create exchange query
+            IssueQuery exchangeQuery = new IssueQuery(reason);
+            exchangeQuery.setSolutionDescription("Exchange");
+            exchangeQuery.setReshipmentProducts(exchangeProducts);
+            exchangeQuery.setReplacementProducts(replacementProducts);
+            order.setIssue(exchangeQuery);
+
+            // pay or refund price/points difference
+            float priceDiff = calculatePriceDiff(exchangeProducts, replacementProducts, order, order.getProducts().entrySet().iterator().next().getKey().getSeller());
+            int pointsDiff = calculatePointsDiff(exchangeProducts, replacementProducts, order, order.getProducts().entrySet().iterator().next().getKey().getSeller());
+            switch (order.getPaymentType()) {
+                case "credit card" :
+                    String priceAction = payPriceDiffOrRefund(priceDiff);
+                    switch (priceAction) {
+                        case "refund" :
+                            refundPriceDiff(priceDiff, replacementProducts, order);
+                            break;
+                        case "pay" :
+                            payPriceDiff(priceDiff, replacementProducts, order);
+                            break;
+                        default :
+                            System.out.println("No payment due.");
+
+                            // create order
+                            Order exchangeOrder = new Order(user, "points", replacementProducts);
+                            exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+                            exchangeOrder.setShippingAddress(order.getShippingAddress());
+                            exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+                            exchangeOrder.setTotalCost(priceDiff);
+
+                            // add exchange order to issue
+                            order.getIssue().setReplacementOrder(exchangeOrder);
+
+                            // add order to buyer's and seller's order history
+                            user.addOrder(exchangeOrder);
+                            Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+                            seller.addOrder(exchangeOrder);
+
+                            // add order to database
+                            database.addOrder(exchangeOrder);
+
+                            // update product quantities in database and seller's inventory
+                            removeDatabaseProductQuantities(replacementProducts);
+                            removeInventoryQuantities(replacementProducts, seller);
+
+                            // send notification to buyer and seller
+                            sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
+                            sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
+                    }
+                    break;
+                case "points" :
+                    String pointsAction = payPointsDiffOrRefund(pointsDiff);
+                    switch (pointsAction) {
+                        case "refund" :
+                            refundPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
+                            break;
+                        case "pay" :
+                            payPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
+                            break;
+                        default :
+                            System.out.println("No payment due.");
+
+                            // create order
+                            Order exchangeOrder = new Order(user, "points", replacementProducts);
+                            exchangeOrder.setPaymentInfo(order.getPaymentInfo());
+                            exchangeOrder.setShippingAddress(order.getShippingAddress());
+                            exchangeOrder.setPhoneNumber(order.getPhoneNumber());
+                            exchangeOrder.setTotalCost(priceDiff);
+
+                            // add exchange order to issue
+                            order.getIssue().setReplacementOrder(exchangeOrder);
+
+                            // add order to buyer's and seller's order history
+                            user.addOrder(exchangeOrder);
+                            Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
+                            seller.addOrder(exchangeOrder);
+
+                            // add order to database
+                            database.addOrder(exchangeOrder);
+
+                            // update product quantities in database and seller's inventory
+                            removeDatabaseProductQuantities(replacementProducts);
+                            removeInventoryQuantities(replacementProducts, seller);
+
+                            // send notification to buyer and seller
+                            sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
+                            sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
+                    }
+                    break;
+            }
+
+            // update order status
+            order.setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
+
+            // confirm exchange query creation
+            System.out.println("You have successfully requested an exchange!");
+
+            // send notification to seller
+            sendSellerNotification(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller(), "Return requested: " + exchangeQuery.getId(), user.getId() + " requested an exchange.");
+
+            // print reshipment label
+            printReshipmentLabel(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller());
+
+            // show next instructions
+            System.out.println("Please follow the next steps:");
+            System.out.println("1. Prepare the reshipment package with the given label.");
+            System.out.println("2. Give the package to your closest post service.");
+        }
+    }
+    public void reportProblem(Order order) {
+        System.out.println();
+        System.out.println("Reporting a problem...");
+        order.setIssue(new IssueQuery("problem with a product"));
+        database.createTicket(order.getIssue());
+        for (Product product : order.getProducts().keySet()){
+            product.getSeller().addNotification(new Notification("There is a problem with a product", user.getFirstName() +" reported a problem with a " + product.getTitle()));
+        }
+    }
+    public boolean acceptSolution(IssueQuery issue) {
+        System.out.println("The seller has proposed:  " + issue.getSolutionDescription());
+        System.out.println("1. Yes");
+        System.out.println("2. No");
+        int choice = uiUtilities.getUserInputAsInteger();
+        switch (choice){
+            case 1:
+                issue.setReplacementTrackingNum(database.makeReshipmentTrackingNum());
+                return true;
+            case 2:
+                System.out.println("Sorry :( ");
+                return false;
+            default:
+                System.out.println("Invalid selection. Please try again.");
+                break;
+
+        }
+        System.out.println("Thanks for accepting the solution!");
+        return true;
+    }
+    public void confirmSolution(Order order) {
+        if (order.getIssue() == null){
+            System.out.println("You haven't reported a problem yet");
+        }else{
+
+            if (acceptSolution(order.getIssue())) {
+                for (Product product : order.getProducts().keySet()){
+                    product.getSeller().addNotification(new Notification("Response to proposed solution", order.getBuyer().getFirstName() + " has accepted your solution"));
+                }
+                if (Objects.equals(order.getIssue().getSolutionDescription(), "Reshipment of a replacement product")) {
+                    return; //TODO: implement catalog of seller to ask for another product to replace the defect one
+                } else {
+                    System.out.println("We'll repair it for you lol");
+                    return;
+                }
+
+            }
+            return;
+        }
+    }
+    public void confirmOrder(Order order) {
+        // can only confirm when status is 'in delivery' or 'replacement in delivery'
+        if (order.getStatus() != OrderState.IN_DELIVERY || order.getStatus() != OrderState.REPLACEMENT_IN_DELIVERY) {
+            System.out.println("WARNING : Cannot confirm this order!");
+            if (order.getStatus() == OrderState.DELIVERED || order.getStatus() == OrderState.REPLACEMENT_DELIVERED)
+                System.out.println("Your order has already been confirmed.");
+            if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION)
+                System.out.println("Your order has not been shipped yet.");
+            if (order.getStatus() == OrderState.CANCELLED)
+                System.out.println("Your order is cancelled.");
+            if (order.getStatus() == OrderState.RESHIPMENT_CANCELLED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED)
+                System.out.println("You cannot confirm a reshipment.");
+            return;
+        }
+
+        // change status to 'delivered'
+        order.setStatus(OrderState.DELIVERED);
+
+        // send notification to buyer
+        sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+        // add points
+        int buyPointsWon = 0;
+        for (Product product : order.getProducts().keySet()) {
+            buyPointsWon += (int) (product.getPrice() * order.getProducts().get(product));
+        }
+        user.getMetrics().addBuyPoints(buyPointsWon);
+        user.getMetrics().addExpPoints(10);
+        System.out.println("You have won " + buyPointsWon + " buy points and 10 experience points by confirming this order!");
+
+        // confirm order reception
+        System.out.println("Order confirmed");
+
+    }
 
     // Gets Product object with product title from order products
-    private Product getProductFromOrder(HashMap<Product, Integer> products, String title) {
+    private Product getProductFromOrder(Order order, String title) {
+        HashMap<Product, Integer> products = order.getProducts();
         Product productFound = null;
         for (Map.Entry<Product, Integer> product : products.entrySet()) {
             if (Objects.equals(title, product.getKey().getTitle()))
@@ -702,7 +845,7 @@ public class BuyerMenu extends Menu {
             }
 
             // get Product object
-            Product product = getProductFromOrder(order.getProducts(), productTitle);
+            Product product = getProductFromOrder(order, productTitle);
 
             // check if product is already in return product list
             if (selectedProducts.containsKey(product) && selectedProducts.get(product) >= order.getProducts().get(product)) {
@@ -845,138 +988,6 @@ public class BuyerMenu extends Menu {
     }
 
     // Exchanges an order
-    private void exchangeOrder(Order order) {
-        // display order products
-        System.out.println();
-        System.out.println("Products eligible for exchange:");
-        System.out.println(order.productsToString());
-
-        // confirm exchange process
-        System.out.println("Do you want to make an exchange? (y/n)");
-        InputManager im = InputManager.getInstance();
-        String exchangeChoice = "";
-        while (!exchangeChoice.matches("[yn]")) exchangeChoice = im.nextLine();
-
-        // begin exchange process
-        if (Objects.equals(exchangeChoice, "y")) {
-            // ask products to exchange
-            HashMap<Product, Integer> exchangeProducts = askProducts(order, "exchange");
-
-            // ask reason of exchange
-            String reason = askReason("exchange");
-
-            // ask replacement products
-            HashMap<Product, Integer> replacementProducts = askReplacementProducts(order);
-
-            // create exchange query
-            IssueQuery exchangeQuery = new IssueQuery(reason);
-            exchangeQuery.setSolutionDescription("Exchange");
-            exchangeQuery.setReshipmentProducts(exchangeProducts);
-            exchangeQuery.setReplacementProducts(replacementProducts);
-            order.setIssue(exchangeQuery);
-
-            // pay or refund price/points difference
-            float priceDiff = calculatePriceDiff(exchangeProducts, replacementProducts, order, order.getProducts().entrySet().iterator().next().getKey().getSeller());
-            int pointsDiff = calculatePointsDiff(exchangeProducts, replacementProducts, order, order.getProducts().entrySet().iterator().next().getKey().getSeller());
-            switch (order.getPaymentType()) {
-                case "credit card" :
-                    String priceAction = payPriceDiffOrRefund(priceDiff);
-                    switch (priceAction) {
-                        case "refund" :
-                            refundPriceDiff(priceDiff, replacementProducts, order);
-                            break;
-                        case "pay" :
-                            payPriceDiff(priceDiff, replacementProducts, order);
-                            break;
-                        default :
-                            System.out.println("No payment due.");
-
-                            // create order
-                            Order exchangeOrder = new Order(user, "points", replacementProducts);
-                            exchangeOrder.setPaymentInfo(order.getPaymentInfo());
-                            exchangeOrder.setShippingAddress(order.getShippingAddress());
-                            exchangeOrder.setPhoneNumber(order.getPhoneNumber());
-                            exchangeOrder.setTotalCost(priceDiff);
-
-                            // add exchange order to issue
-                            order.getIssue().setReplacementOrder(exchangeOrder);
-
-                            // add order to buyer's and seller's order history
-                            user.addOrder(exchangeOrder);
-                            Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
-                            seller.addOrder(exchangeOrder);
-
-                            // add order to database
-                            database.addOrder(exchangeOrder);
-
-                            // update product quantities in database and seller's inventory
-                            removeDatabaseProductQuantities(replacementProducts);
-                            removeInventoryQuantities(replacementProducts, seller);
-
-                            // send notification to buyer and seller
-                            sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
-                            sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
-                    }
-                    break;
-                case "points" :
-                    String pointsAction = payPointsDiffOrRefund(pointsDiff);
-                    switch (pointsAction) {
-                        case "refund" :
-                            refundPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
-                            break;
-                        case "pay" :
-                            payPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
-                            break;
-                        default :
-                            System.out.println("No payment due.");
-
-                            // create order
-                            Order exchangeOrder = new Order(user, "points", replacementProducts);
-                            exchangeOrder.setPaymentInfo(order.getPaymentInfo());
-                            exchangeOrder.setShippingAddress(order.getShippingAddress());
-                            exchangeOrder.setPhoneNumber(order.getPhoneNumber());
-                            exchangeOrder.setTotalCost(priceDiff);
-
-                            // add exchange order to issue
-                            order.getIssue().setReplacementOrder(exchangeOrder);
-
-                            // add order to buyer's and seller's order history
-                            user.addOrder(exchangeOrder);
-                            Seller seller = replacementProducts.entrySet().iterator().next().getKey().getSeller();
-                            seller.addOrder(exchangeOrder);
-
-                            // add order to database
-                            database.addOrder(exchangeOrder);
-
-                            // update product quantities in database and seller's inventory
-                            removeDatabaseProductQuantities(replacementProducts);
-                            removeInventoryQuantities(replacementProducts, seller);
-
-                            // send notification to buyer and seller
-                            sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
-                            sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
-                    }
-                    break;
-            }
-
-            // update order status
-            order.setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
-
-            // confirm exchange query creation
-            System.out.println("You have successfully requested an exchange!");
-
-            // send notification to seller
-            sendSellerNotification(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller(), "Return requested: " + exchangeQuery.getId(), user.getId() + " requested an exchange.");
-
-            // print reshipment label
-            printReshipmentLabel(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller());
-
-            // show next instructions
-            System.out.println("Please follow the next steps:");
-            System.out.println("1. Prepare the reshipment package with the given label.");
-            System.out.println("2. Give the package to your closest post service.");
-        }
-    }
 
     // Asks replacement products
     private HashMap<Product, Integer> askReplacementProducts(Order order) {

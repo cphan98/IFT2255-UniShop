@@ -152,11 +152,6 @@ public class Order implements java.io.Serializable {
         int day = (int) (Math.random() * 30);
         return "Within " + day + " days";
     }
-    public void reportProblem(){
-        setIssue(new IssueQuery("problem with a product"));
-        issue.createTicket();
-
-    }
 
     // TO STRING
 
