@@ -470,6 +470,8 @@ public class BuyerMenu extends Menu {
 
         return diffInDays <= 30;
     }
+
+    // Cancels an order
     public void cancelOrder(Buyer buyer, Order order) {
         System.out.println();
         System.out.println("Cancelling order...");
@@ -505,6 +507,8 @@ public class BuyerMenu extends Menu {
         System.out.println();
         System.out.println("Order cancelled");
     }
+
+    // Returns an order
     private void returnOrder(Order order) {
         System.out.println();
         System.out.println("Returning order...");
@@ -531,10 +535,9 @@ public class BuyerMenu extends Menu {
 
             return;
         }
-        // display order products
-        order.productsToString();
 
         // confirm return process
+        System.out.println();
         System.out.println("Do you want to make a return? (y/n)");
         InputManager im = InputManager.getInstance();
         String returnChoice = "";
@@ -542,6 +545,11 @@ public class BuyerMenu extends Menu {
 
         // begin return process
         if (Objects.equals(returnChoice, "y")) {
+            // display order products
+            System.out.println();
+            System.out.println("Products eligible for return:");
+            System.out.println(order.productsToString());
+
             // ask products to return
             HashMap<Product, Integer> returnProducts = askProducts(order, "return");
 
@@ -552,6 +560,8 @@ public class BuyerMenu extends Menu {
             IssueQuery returnQuery = new IssueQuery(reason);
             returnQuery.setSolutionDescription("Return");
             returnQuery.setReshipmentProducts(returnProducts);
+
+            // add issue query to buyer's order
             order.setIssue(returnQuery);
 
             // update order status
@@ -572,6 +582,8 @@ public class BuyerMenu extends Menu {
             System.out.println("2. Give the package to your closest post service.");
         }
     }
+
+    // Exchanges an order
     private void exchangeOrder(Order order) {
         System.out.println();
         System.out.println("Exchanging order...");
@@ -596,6 +608,7 @@ public class BuyerMenu extends Menu {
 
             return;
         }
+
         // display order products
         System.out.println();
         System.out.println("Products eligible for exchange:");
@@ -635,9 +648,11 @@ public class BuyerMenu extends Menu {
                         case "refund" :
                             refundPriceDiff(priceDiff, replacementProducts, order);
                             break;
+
                         case "pay" :
                             payPriceDiff(priceDiff, replacementProducts, order);
                             break;
+
                         default :
                             System.out.println("No payment due.");
 
@@ -667,16 +682,20 @@ public class BuyerMenu extends Menu {
                             sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
                             sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
                     }
+
                     break;
+
                 case "points" :
                     String pointsAction = payPointsDiffOrRefund(pointsDiff);
                     switch (pointsAction) {
                         case "refund" :
                             refundPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
                             break;
+
                         case "pay" :
                             payPointsDiff(pointsDiff, priceDiff, replacementProducts, order);
                             break;
+
                         default :
                             System.out.println("No payment due.");
 
@@ -706,6 +725,7 @@ public class BuyerMenu extends Menu {
                             sendBuyerNotification(user, "Order Status Update", "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
                             sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
                     }
+
                     break;
             }
 
@@ -727,6 +747,8 @@ public class BuyerMenu extends Menu {
             System.out.println("2. Give the package to your closest post service.");
         }
     }
+
+    // Reports a problem
     public void reportProblem(Order order) {
         System.out.println();
         System.out.println("Reporting a problem...");
@@ -736,6 +758,8 @@ public class BuyerMenu extends Menu {
             product.getSeller().addNotification(new Notification("There is a problem with a product", user.getFirstName() +" reported a problem with a " + product.getTitle()));
         }
     }
+
+    // Accepts a solution for an issue
     public boolean acceptSolution(IssueQuery issue) {
         System.out.println("The seller has proposed:  " + issue.getSolutionDescription());
         System.out.println("1. Yes");
@@ -756,6 +780,8 @@ public class BuyerMenu extends Menu {
         System.out.println("Thanks for accepting the solution!");
         return true;
     }
+
+    // Confirms the solution for an issue
     public void confirmSolution(Order order) {
         if (order.getIssue() == null){
             System.out.println("You haven't reported a problem yet");
@@ -800,6 +826,8 @@ public class BuyerMenu extends Menu {
             }
         }
     }
+
+    // Confirms an order
     public void confirmOrder(Order order) {
         // can only confirm when status is 'in delivery' or 'replacement in delivery'
         if (order.getStatus() != OrderState.IN_DELIVERY || order.getStatus() != OrderState.REPLACEMENT_IN_DELIVERY) {
@@ -1010,8 +1038,6 @@ public class BuyerMenu extends Menu {
 
         return true;
     }
-
-    // Exchanges an order
 
     // Asks replacement products
     private HashMap<Product, Integer> askReplacementProducts(Order order) {
@@ -1535,6 +1561,7 @@ public class BuyerMenu extends Menu {
     }
 
     // CATALOG
+
     public boolean displayCatalog() {
         line();
         System.out.println("CATALOG");
