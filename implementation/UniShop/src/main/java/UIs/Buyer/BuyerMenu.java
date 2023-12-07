@@ -386,7 +386,7 @@ public class BuyerMenu extends Menu {
         if (order.getIssue() != null) {
             // if the reshipment has not been received within 30 days of the request, cancel reshipment request
             if (check30DaysFromReshipmentRequest(order.getIssue())) {
-                order.setStatus(OrderState.RESHIPMENT_CANCELLED);
+                user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.RESHIPMENT_CANCELLED);
 
                 // update product quantities in inventory
                 // if issue's solution description is 'exchange', put back quantities of replacement products
@@ -474,7 +474,7 @@ public class BuyerMenu extends Menu {
     }
 
     // Cancels an order
-    public void cancelOrder(Buyer buyer, Order order) {
+    public void cancelOrder(Order order) {
         System.out.println();
         System.out.println("Cancelling order...");
 
@@ -493,13 +493,16 @@ public class BuyerMenu extends Menu {
             return;
         }
 
-        order.setStatus(OrderState.CANCELLED);
-        buyer.getMetrics().setOrdersMade((buyer.getMetrics().getOrdersMade() - 1));
+        // update status
+        user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.CANCELLED);
+
+        // update metrics
+        user.getMetrics().setOrdersMade(user.getMetrics().getOrdersMade() - 1);
         int productsCancelled = 0;
         for (Product p : order.getProducts().keySet()) {
             productsCancelled += order.getProducts().get(p);
         }
-        buyer.getMetrics().setProductsBought((buyer.getMetrics().getProductsBought() - productsCancelled));
+        user.getMetrics().setProductsBought((user.getMetrics().getProductsBought() - productsCancelled));
 
         // send notification to buyer and seller
         sendBuyerNotification(user, "Order cancelled", "Your order " + order.getId() + " has been cancelled!");
@@ -564,10 +567,10 @@ public class BuyerMenu extends Menu {
             returnQuery.setReshipmentProducts(returnProducts);
 
             // add issue query to buyer's order
-            order.setIssue(returnQuery);
+            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setIssue(returnQuery);
 
             // update order status
-            order.setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
+            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
 
             // confirm return query creation
             System.out.println("You have successfully requested a return!");
@@ -579,6 +582,7 @@ public class BuyerMenu extends Menu {
             printReshipmentLabel(returnQuery.getReshipmentProducts().keySet().iterator().next().getSeller());
 
             // show next instructions
+            System.out.println();
             System.out.println("Please follow the next steps:");
             System.out.println("1. Prepare the reshipment package with the given label.");
             System.out.println("2. Give the package to your closest post service.");
@@ -607,7 +611,6 @@ public class BuyerMenu extends Menu {
         if (!check30DaysFromOrderReception(order)) {
             System.out.println();
             System.out.println("WARNING : Cannot exchange this order! More than 30 days have passed since you received your order.");
-
             return;
         }
 
@@ -638,7 +641,7 @@ public class BuyerMenu extends Menu {
             exchangeQuery.setSolutionDescription("Exchange");
             exchangeQuery.setReshipmentProducts(exchangeProducts);
             exchangeQuery.setReplacementProducts(replacementProducts);
-            order.setIssue(exchangeQuery);
+            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setIssue(exchangeQuery);
 
             // pay or refund price/points difference
             float priceDiff = calculatePriceDiff(exchangeProducts, replacementProducts, order, order.getProducts().entrySet().iterator().next().getKey().getSeller());
@@ -666,7 +669,7 @@ public class BuyerMenu extends Menu {
                             exchangeOrder.setTotalCost(priceDiff);
 
                             // add exchange order to issue
-                            order.getIssue().setReplacementOrder(exchangeOrder);
+                            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).getIssue().setReplacementOrder(exchangeOrder);
 
                             // add order to buyer's and seller's order history
                             user.addOrder(exchangeOrder);
@@ -708,7 +711,7 @@ public class BuyerMenu extends Menu {
                             exchangeOrder.setTotalCost(priceDiff);
 
                             // add exchange order to issue
-                            order.getIssue().setReplacementOrder(exchangeOrder);
+                            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).getIssue().setReplacementOrder(exchangeOrder);
 
                             // add order to buyer's and seller's order history
                             user.addOrder(exchangeOrder);
@@ -730,9 +733,10 @@ public class BuyerMenu extends Menu {
             }
 
             // update order status
-            order.setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
+            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.RESHIPMENT_IN_DELIVERY);
 
             // confirm exchange query creation
+            System.out.println();
             System.out.println("You have successfully requested an exchange!");
 
             // send notification to seller
@@ -742,6 +746,7 @@ public class BuyerMenu extends Menu {
             printReshipmentLabel(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller());
 
             // show next instructions
+            System.out.println();
             System.out.println("Please follow the next steps:");
             System.out.println("1. Prepare the reshipment package with the given label.");
             System.out.println("2. Give the package to your closest post service.");
@@ -752,7 +757,7 @@ public class BuyerMenu extends Menu {
     public void reportProblem(Order order) {
         System.out.println();
         System.out.println("Reporting a problem...");
-        order.setIssue(new IssueQuery("problem with a product"));
+        user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setIssue(new IssueQuery("problem with a product"));
         database.createTicket(order.getIssue());
         for (Product product : order.getProducts().keySet()){
             product.getSeller().addNotification(new Notification("There is a problem with a product", user.getFirstName() +" reported a problem with a " + product.getTitle()));
@@ -793,7 +798,7 @@ public class BuyerMenu extends Menu {
 
             if (acceptSolution(order.getIssue())) {
                 for (Product product : order.getProducts().keySet()){
-                    product.getSeller().addNotification(new Notification("Response to proposed solution", order.getBuyer().getFirstName() + " has accepted your solution"));
+                    product.getSeller().addNotification(new Notification("Response to proposed solution", user.getFirstName() + " has accepted your solution"));
                 }
                 if (Objects.equals(order.getIssue().getSolutionDescription(), "Reshipment of a replacement product")) {
                     System.out.println("Which product from this seller would you like in exchange? ");
@@ -810,7 +815,7 @@ public class BuyerMenu extends Menu {
                     switch (choiceRepProduct){
                         case 1 :
                             order.getIssue().setReplacementProducts(order.getProducts());
-                            order.setStatus(OrderState.PENDING);
+                            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.PENDING);
 
                             System.out.println("the seller will be notified and send you the product as soon as posible");
                             for (Product product : order.getProducts().keySet()){
@@ -819,7 +824,7 @@ public class BuyerMenu extends Menu {
                             }
                             break;
                         case 2 :
-                            order.setStatus(OrderState.REJECTED);
+                            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.REJECTED);
                             System.out.println("we're sorry you don't like the option, try getting the product fixed");
                             break;
                     }
@@ -835,6 +840,7 @@ public class BuyerMenu extends Menu {
     public void confirmOrderReception(Order order) {
         System.out.println();
         System.out.println("Confirming order reception...");
+
         // can only confirm when status is 'in delivery' or 'replacement in delivery'
         if (order.getStatus() != OrderState.IN_DELIVERY || order.getStatus() != OrderState.REPLACEMENT_IN_DELIVERY) {
             System.out.println();
@@ -854,7 +860,7 @@ public class BuyerMenu extends Menu {
         user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.DELIVERED);
 
         // send notification to buyer
-        sendBuyerNotification(order.getBuyer(), "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+        sendBuyerNotification(user, "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
 
         // add points
         int buyPointsWon = 0;
@@ -1164,7 +1170,7 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setTotalCost(priceDiff);
 
         // add exchange order to issue
-        order.getIssue().setReplacementOrder(exchangeOrder);
+        user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).getIssue().setReplacementOrder(exchangeOrder);
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
@@ -1232,7 +1238,7 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setTotalCost(priceDiff);
 
         // add exchange order to issue
-        order.getIssue().setReplacementOrder(exchangeOrder);
+        user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).getIssue().setReplacementOrder(exchangeOrder);
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
@@ -1263,7 +1269,7 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setTotalCost(priceDiff);
 
         // add exchange order to issue
-        order.getIssue().setReplacementOrder(exchangeOrder);
+        user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).getIssue().setReplacementOrder(exchangeOrder);
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
@@ -1277,7 +1283,7 @@ public class BuyerMenu extends Menu {
         removeInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
 
         // send notification to buyer
-        sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + Math.abs(priceDiff) + " from your exchange request " + order.getIssue().getId() + ".");
+        sendBuyerNotification(user, "You've received a refund", "You've received a refund of " + Math.abs(priceDiff) + " from your exchange request " + order.getIssue().getId() + ".");
         sendSellerNotification(replacementProducts.entrySet().iterator().next().getKey().getSeller(), "New Order", "You have a new order: " + exchangeOrder.getId());
 
         // confirm refund
@@ -1298,7 +1304,7 @@ public class BuyerMenu extends Menu {
         exchangeOrder.setTotalCost(priceDiff);
 
         // add exchange order to issue
-        order.getIssue().setReplacementOrder(exchangeOrder);
+        user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).getIssue().setReplacementOrder(exchangeOrder);
 
         // add order to buyer's and seller's order history
         user.addOrder(exchangeOrder);
@@ -1312,7 +1318,7 @@ public class BuyerMenu extends Menu {
         removeInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
 
         // send notification to buyer
-        sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + Math.abs(pointsDiff) + " from your exchange request " + order.getIssue().getId() + ".");
+        sendBuyerNotification(user, "You've received a refund", "You've received a refund of " + Math.abs(pointsDiff) + " from your exchange request " + order.getIssue().getId() + ".");
         sendSellerNotification(replacementProducts.entrySet().iterator().next().getKey().getSeller(), "New Order", "You have a new order: " + exchangeOrder.getId());
 
         // confirme refund
@@ -1457,7 +1463,7 @@ public class BuyerMenu extends Menu {
             for (Product product : inventory) {
                 if (Objects.equals(product, replacementProduct.getKey())) {
                     int index = inventory.indexOf(product);
-                    seller.getProducts().get(index).setQuantity(product.getQuantity() - replacementProduct.getValue());
+                    database.getSellers().get(database.getSellers().indexOf(seller)).getProducts().get(index).setQuantity(product.getQuantity() - replacementProduct.getValue());
                 }
             }
         }
