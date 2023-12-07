@@ -91,16 +91,21 @@ public class UIUtilities {
     }
 
     public void toggleProductToWishList(Buyer user, Product product) {
+        System.out.println();
+        System.out.println("Removing product(s) from cart...");
+
         ArrayList<Product> wishList = user.getWishList();
         if (wishList.contains(product)) {
             wishList.remove(product);
             product.setLikes(product.getLikes() - 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() - 1);
+            System.out.println();
             System.out.println("Product removed from wish list!");
         } else {
             wishList.add(product);
             product.setLikes(product.getLikes() + 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() + 1);
+            System.out.println();
             System.out.println("Product added to wish list!");
         }
     }

@@ -14,6 +14,8 @@ import productClasses.Usages.Evaluation;
 import productClasses.Usages.IssueQuery;
 import productClasses.Usages.Order;
 import productClasses.Product;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -417,7 +419,7 @@ public class BuyerMenu extends Menu {
         switch (choice) {
             // cancel order
             case 1:
-                cancelOrder(user, order);
+                cancelOrder(order);
                 break;
             // return order
             case 2:
@@ -1963,6 +1965,21 @@ public class BuyerMenu extends Menu {
     // EVALUATIONS
 
     public void addEvaluationToProduct(Product product) {
+        System.out.println();
+        System.out.println("Adding evaluation...");
+
+        // evaluation can only be made if user bought product
+        ArrayList<Product> productsBought = new ArrayList<>(); // list of products bought
+        for (Order order : user.getOrderHistory())
+            productsBought.addAll(order.getProducts().keySet());
+        if (!productsBought.contains(product)) {
+            System.out.println();
+            System.out.println("WARNING : Cannot make evaluation");
+            System.out.println("You did not purchase this product.");
+            return;
+        }
+
+        // ask evaluation details
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter a comment:");
         String comment = inputManager.nextLine();
@@ -2000,14 +2017,28 @@ public class BuyerMenu extends Menu {
     }
 
     public void addProductToCart(Product product) {
+        System.out.println();
+        System.out.println("Adding product to cart...");
+
+        // ask quantity
+        System.out.println();
         System.out.println("How many of it do you want?");
+
+        // validate quantity
         int quantity = uiUtilities.getUserInputAsInteger();
         if (quantity > product.getQuantity()) {
             System.out.println("Not enough products in stock");
             return;
         }
+
+        // add to cart
         user.getCart().addProduct(product, quantity);
-        product.setQuantity(product.getQuantity() - quantity);
+
+        // update product quantity
+        database.getProducts().get(database.getProducts().indexOf(product)).setQuantity(product.getQuantity() - quantity);
+
+        // confirm product add
+        System.out.println();
         System.out.println("Product added to cart");
     }
 
