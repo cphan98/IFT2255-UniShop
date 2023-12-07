@@ -79,7 +79,6 @@ public class SellerMenu extends Menu {
                     return false;  // Add this to handle log out
                 default:
                     System.out.println("Invalid selection. Please try again.");
-                    break;
             }
         }
         return true;
@@ -272,7 +271,6 @@ public class SellerMenu extends Menu {
             default:
                 System.out.println();
                 System.out.println("Invalid selection. Please try again.");
-                break;
         }
     }
 
@@ -481,14 +479,15 @@ public class SellerMenu extends Menu {
             user.getProducts().forEach(product -> System.out.println(product.toString()));
 
             // select option
-            System.out.println();
             System.out.println("Please select an option:");
             System.out.println("1. Add item(s)");
             System.out.println("2. Remove item(s)");
             System.out.println("3. Change item quantity");
-            System.out.println("4. Modify product additional points");
+            System.out.println("4. Add promotion");
             System.out.println("5. Return to menu");
             int choice = uiUtilities.getUserInputAsInteger();
+
+            // process selection
             switch (choice) {
                 // add item(s)
                 case 1:
@@ -511,42 +510,26 @@ public class SellerMenu extends Menu {
                     changeProductQty();
                     break;
 
-                // modify product additional points
+                // add promotion
                 case 4:
                     System.out.println();
-                    System.out.println("Modifying product additional points...");
-                    modifyAdditionalPoints();
+                    System.out.println("Adding promotion...");
+                    continueLoop = addPromotion();
                     break;
 
-                // invalid input
+                // return to menu
                 case 5:
                     continueLoop = false; // Exit the inventory submenu
                     break;
+
+                default:
+                    System.out.println();
+                    System.out.println("Invalid selection. Please try again.");
             }
         }
 
         // continue loop
         return true;
-    }
-
-    public void modifyAdditionalPoints() {
-        // ask product title
-        Product product = null;
-        while (product == null) {
-            System.out.println();
-            System.out.println("Please enter the title of the product:");
-            String title = InputManager.getInstance().nextLine();
-            product = user.findProductByTitle(title);
-        }
-
-        //
-        product.setBasePoints((int) Math.floor(product.getPrice()));
-        System.out.println("Please enter the additional points of the product:");
-        int additionalPoints = uiUtilities.getUserInputAsInteger();
-        if (additionalPoints > Math.floor(product.getPrice())*19) {
-            additionalPoints = (int) Math.floor(product.getPrice())*19;
-        }
-        product.setBasePoints(product.getBasePoints()+additionalPoints);
     }
 
     public void changeProductQty() {
@@ -705,6 +688,194 @@ public class SellerMenu extends Menu {
         if (!followers.isEmpty())
             for (Buyer follower : followers)
                 sendBuyerNotification(follower, "New Product", "New product added by " + user.getId() + ": " + newProduct.getTitle());
+    }
+
+    // Adds product promotion
+    private boolean addPromotion(){
+        // ask promotion type
+        System.out.println();
+        System.out.println("Please select the promotion type:");
+        System.out.println("1. Price reduction");
+        System.out.println("2. Bonus points");
+        System.out.println("3. Return to menu");
+        int promoChoice = uiUtilities.getUserInputAsInteger();
+
+        // process selection
+        switch (promoChoice) {
+            // price reduction
+            case 1:
+                addPriceReduction();
+                break;
+
+            // bonus points
+            case 2:
+                addBonusPoints();
+                break;
+
+            // return to menu
+            case 3:
+                return false;
+
+            // invalid input
+            default:
+                System.out.println();
+                System.out.println("Invalid selection. Please try again.");
+                promoChoice = uiUtilities.getUserInputAsInteger();
+        }
+
+        return true;
+    }
+
+    // Adds price reduction
+    private void addPriceReduction() {
+        // ask product title and get Product object
+        Product product = null;
+        while (product == null) {
+            System.out.println();
+            System.out.println("Please enter the title of the product:");
+            String title = InputManager.getInstance().nextLine();
+            product = user.findProductByTitle(title);
+        }
+
+        // ask reduced price
+        System.out.println();
+        System.out.println("Please enter the price of the product:");
+        InputManager im = InputManager.getInstance();
+        String priceText = "a";
+        while (!priceText.matches("\\d+(\\.\\d+)?")) {
+            priceText = im.nextLine();
+
+            // validate price
+            if (parseFloat(priceText) < 0) {
+                System.out.println();
+                System.out.println("WARNING : The price cannot be less than 0.00$");
+                continue;
+            }
+            if (parseFloat(priceText) >= product.getPrice()) {
+                System.out.println();
+                System.out.println("WARNING : The price has to be less than " + product.getPrice() + "$");
+            }
+        }
+        float reducedPrice = parseFloat(priceText);
+
+        // set reduced price to product
+        product.setPrice(reducedPrice);
+
+        // update info in inventory
+        ArrayList<Product> newInventory = new ArrayList<>();
+        Product oldProduct = null;
+        for (Product sellerProduct : user.getProducts()) {
+            // replace old product with new product with same title
+            if (Objects.equals(sellerProduct.getTitle(), product.getTitle())) {
+                newInventory.add(product);
+                oldProduct = sellerProduct;
+            }
+
+            // add product to list
+            newInventory.add(sellerProduct);
+        }
+        user.setProducts(newInventory);
+
+        // send notifications to buyers
+        sendPromoNotificationToLikes(oldProduct, "price reduction");
+        sendPromoNotificationToFollowers(oldProduct, "price reduction");
+        sendPromoNotificationToBuyer(oldProduct, "price reduction");
+    }
+
+    // Adds bonus points to product
+    private void addBonusPoints() {
+        // ask product title and get Product object
+        Product product = null;
+        while (product == null) {
+            System.out.println();
+            System.out.println("Please enter the title of the product:");
+            String title = InputManager.getInstance().nextLine();
+            product = user.findProductByTitle(title);
+        }
+
+        // reset base points
+        product.setBasePoints((int) Math.floor(product.getPrice()));
+
+        // asks bonus points to add to base points
+        System.out.println();
+        System.out.println("Please enter the number of bonus points:");
+        int bonusPoints = uiUtilities.getUserInputAsInteger();
+        // cannot add bonus points > 20x base points
+        if (bonusPoints > Math.floor(product.getPrice())*19)
+            bonusPoints = (int) Math.floor(product.getPrice())*19;
+
+        // set new points to product
+        product.setBasePoints(product.getBasePoints() + bonusPoints);
+
+        // update info in inventory
+        ArrayList<Product> newInventory = new ArrayList<>();
+        Product oldProduct = null;
+        for (Product sellerProduct : user.getProducts()) {
+            // replace old product with new product with same title
+            if (Objects.equals(sellerProduct.getTitle(), product.getTitle())) {
+                newInventory.add(product);
+                oldProduct = sellerProduct;
+            }
+
+            // add product to list
+            newInventory.add(sellerProduct);
+        }
+        user.setProducts(newInventory);
+
+        // send notification to buyers
+        sendPromoNotificationToLikes(oldProduct, "bonus points");
+        sendPromoNotificationToFollowers(oldProduct, "bonus points");
+        sendPromoNotificationToBuyer(oldProduct, "bonus points");
+    }
+
+    // Sends notification to buyers who liked the product
+    private void sendPromoNotificationToLikes(Product oldProduct, String bonusPointsOrPriceReduction) {
+        for (Buyer buyer : database.getBuyers())
+            if (buyer.getWishList().contains(oldProduct))
+                switch (bonusPointsOrPriceReduction) {
+                    case "bonus points":
+                        sendBuyerNotification(buyer, "New Promotion", user.getId() + " added bonus points to " + oldProduct.getTitle());
+                        break;
+                    case "price reduction":
+                        sendBuyerNotification(buyer, "New Promotion", user.getId() + " reduced the price of " + oldProduct.getTitle());
+                        break;
+                }
+
+    }
+
+    // Sends notification to followers
+    private void sendPromoNotificationToFollowers(Product oldProduct, String bonusPointsOrPriceReduction) {
+        for (Buyer buyer : user.getFollowers())
+            switch (bonusPointsOrPriceReduction) {
+                case "bonus points":
+                    sendBuyerNotification(buyer, "New Promotion", user.getId() + " added bonus points to " + oldProduct.getTitle());
+                    break;
+                case "price reduction":
+                    sendBuyerNotification(buyer, "New Promotion", user.getId() + " reduced the price of " + oldProduct.getTitle());
+                    break;
+            }
+    }
+
+    // Sends notification to buyer whose followers liked the product
+    private void sendPromoNotificationToBuyer(Product oldProduct, String bonusPointsOrPriceReduction) {
+        for (Buyer buyer : database.getBuyers()) {
+            boolean likedByFollowers = false;
+            for (Buyer follower : buyer.getFollowers()) {
+                if (follower.getWishList().contains(oldProduct)) {
+                    likedByFollowers = true;
+                    break;
+                }
+            }
+            if (likedByFollowers)
+                switch (bonusPointsOrPriceReduction) {
+                    case "bonus points":
+                        sendBuyerNotification(buyer, "New Promotion", user.getId() + " added bonus points to a product one of your followers liked: " +oldProduct.getTitle());
+                        break;
+                    case "price reduction":
+                        sendBuyerNotification(buyer, "New Promotion", user.getId() + " reduced the price of " + oldProduct.getTitle());
+                        break;
+                }
+        }
     }
 
     // METRICS

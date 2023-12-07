@@ -22,7 +22,7 @@ public abstract class Product implements java.io.Serializable {
     private final ArrayList<Evaluation> evaluations;
     private float overallRating;
     private int likes;
-    private boolean hasPromotion;
+    private boolean hasPromotion = false;
 
     // GETTERS
 
@@ -131,7 +131,6 @@ public abstract class Product implements java.io.Serializable {
         this.sellDate = sellDate;
         this.evaluations = new ArrayList<>();
         this.overallRating = 0.0F;
-        hasPromotion = Math.random() < 0.5;
     }
 
     // OPERATIONS

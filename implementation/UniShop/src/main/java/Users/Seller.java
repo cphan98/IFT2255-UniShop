@@ -36,7 +36,9 @@ public class Seller extends User implements java.io.Serializable {
     public void setLikes(int likes) {
         this.likes = likes;
     }
-
+    public void setProducts(ArrayList<Product> products) {
+        this.products = products;
+    }
     // CONSTRUCTOR
 
     public Seller(String id, String password, String email, String phoneNumber, Address address, Category category) {
