@@ -28,6 +28,8 @@ public class SellerMenu extends Menu {
         this.user = user;
     }
 
+    // OPERATIONS
+
     // MAIN MENU
 
     public boolean displayMenu() {
@@ -470,53 +472,74 @@ public class SellerMenu extends Menu {
 
     public boolean displayInventory() {
         boolean continueLoop = true;
-
         while (continueLoop) {
+            System.out.println();
             System.out.println("INVENTORY");
+
+            // display products
             System.out.println();
             user.getProducts().forEach(product -> System.out.println(product.toString()));
+
+            // select option
             System.out.println();
             System.out.println("Please select an option:");
             System.out.println("1. Add item(s)");
             System.out.println("2. Remove item(s)");
             System.out.println("3. Change item quantity");
-            System.out.println("4. Modify additional points of product");
+            System.out.println("4. Modify product additional points");
             System.out.println("5. Return to menu");
-
             int choice = uiUtilities.getUserInputAsInteger();
-
             switch (choice) {
+                // add item(s)
                 case 1:
+                    System.out.println();
                     System.out.println("Adding item(s)...");
                     addProduct();
                     break;
+
+                // remove item(s)
                 case 2:
+                    System.out.println();
                     System.out.println("Removing item(s)...");
                     removeProduct();
                     break;
+
+                // change item quantity
                 case 3:
+                    System.out.println();
                     System.out.println("Changing item quantity...");
                     changeProductQty();
                     break;
+
+                // modify product additional points
                 case 4:
-                    System.out.println("Modifying additional points of product...");
+                    System.out.println();
+                    System.out.println("Modifying product additional points...");
                     modifyAdditionalPoints();
                     break;
+
+                // invalid input
                 case 5:
                     continueLoop = false; // Exit the inventory submenu
                     break;
             }
         }
+
+        // continue loop
         return true;
     }
 
     public void modifyAdditionalPoints() {
+        // ask product title
         Product product = null;
         while (product == null) {
+            System.out.println();
             System.out.println("Please enter the title of the product:");
             String title = InputManager.getInstance().nextLine();
             product = user.findProductByTitle(title);
         }
+
+        //
         product.setBasePoints((int) Math.floor(product.getPrice()));
         System.out.println("Please enter the additional points of the product:");
         int additionalPoints = uiUtilities.getUserInputAsInteger();
@@ -555,18 +578,28 @@ public class SellerMenu extends Menu {
         else {System.out.println("Product not removed");}
     }
 
+    // Adds new product to database
     public void addProduct() {
         InputManager inputManager = InputManager.getInstance();
+
+        // ask title
+        System.out.println();
         System.out.println("Please enter the title of the product:");
         String title = inputManager.nextLine();
+
+        // ask description
         System.out.println("Please enter the description of the product:");
         String description = inputManager.nextLine();
+
+        // ask price
         String priceText = "a";
         while (!priceText.matches("\\d+(\\.\\d+)?")) {
             System.out.println("Please enter the price of the product:");
             priceText = inputManager.nextLine();
         }
         float price = parseFloat(priceText);
+
+        // ask bonus points
         System.out.println("Please enter the bonus points of the product:");
         int bonusPoints = uiUtilities.getUserInputAsInteger();
         if (bonusPoints < 0) {
@@ -575,10 +608,16 @@ public class SellerMenu extends Menu {
         if (Math.floor(price)*20 < Math.floor(price) + bonusPoints) {
             bonusPoints = (int) Math.floor(price)*19;
         }
+
+        // ask quantity
         System.out.println("Please enter the quantity of the product:");
         int quantity = uiUtilities.getUserInputAsInteger();
+
+        // ask sell date
         System.out.println("Please enter the sell date of the product:");
         String sellDate = inputManager.nextLine();
+
+        // ask details according to category
         Product product = null;
         String author, releaseDate, brand, model, subCategory;
         int ISBN, edition;
@@ -647,11 +686,25 @@ public class SellerMenu extends Menu {
                 product = new OfficeEquipment(title, description, price, (int) Math.floor(price) + bonusPoints, user, quantity, brand, model, subCategory, sellDate);
                 break;
         }
+
+        // check if product already exists
         if (database.verifyNewProduct(product)) {
+            // add product to database
             database.addProduct(product);
+
+            // send notification to followers
+            sendNewProductNotification(product);
         } else {
             System.out.println("Product already exists");
         }
+    }
+
+    // Sends notification to followers when new product added
+    private void sendNewProductNotification(Product newProduct) {
+        ArrayList<Buyer> followers = user.getFollowers();
+        if (!followers.isEmpty())
+            for (Buyer follower : followers)
+                sendBuyerNotification(follower, "New Product", "New product added by " + user.getId() + ": " + newProduct.getTitle());
     }
 
     // METRICS

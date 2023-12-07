@@ -136,10 +136,6 @@ public abstract class Product implements java.io.Serializable {
 
     // OPERATIONS
 
-    public boolean isPromoted() {
-        return hasPromotion;
-    }
-
     public void updateOverallRating(){
         float total = 0;
         for (Evaluation evaluation : evaluations) {

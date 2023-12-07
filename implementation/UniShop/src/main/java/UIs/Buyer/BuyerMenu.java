@@ -341,6 +341,7 @@ public class BuyerMenu extends Menu {
         System.out.println("Buyer's ID: " + buyer.getId());
         System.out.println(buyer.getMetrics().toString());
     }
+
     public void modifyProfile() {
         System.out.println();
         System.out.println("1. Modify personal info");
