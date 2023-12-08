@@ -1298,7 +1298,6 @@ public class BuyerMenu extends Menu {
             }
 
         }
-
         database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
     }

@@ -102,6 +102,7 @@ public class Buyer extends User implements java.io.Serializable {
         this.card = card;
     }
     public void updateTop5() {
+        top5.clear();
         rankBuyers().limit(5).forEach(entry -> {
             top5.add(entry.getKey());
         });
