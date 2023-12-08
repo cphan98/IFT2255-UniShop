@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class IssueQuery {
+public class IssueQuery implements java.io.Serializable {
     // ATTRIBUTES
 
     private String id;
@@ -53,144 +53,41 @@ public class IssueQuery {
 
     // CONSTRUCTOR
 
-    int idCount = 0;
-    private String makeId() {
+    public String makeId(int idCount) {
         int zeros = 3 - Integer.toString(idCount).length();
-        String id = ("issue" + ("0".repeat(zeros)) + idCount);
-        idCount += 1;
-        return id;
+        return ("issue" + ("0".repeat(zeros)) + idCount);
     }
-
-    int reshipmentCount = 0;
-    private String makeReshipmentTrackingNum() {
-        int zeros = 12 - Integer.toString(reshipmentCount).length();
-        String trackingNum = ("0".repeat(zeros) + reshipmentCount);
-        reshipmentCount += 1;
-        return trackingNum;
-    }
-
 
     public IssueQuery(String issueDescription) {
-        this.id = makeId();
+        this.id = "";
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         this.requestDate = today.format(formatter);
         this.issueDescription = issueDescription;
-        this.reshipmentTrackingNum = makeReshipmentTrackingNum();
+        this.reshipmentTrackingNum = "";
     }
-    public void createTicket(){
-        while (true) {
-            System.out.println("What is the problem with the order?");
-            System.out.println("1. Wrong item received");
-            System.out.println("2. Defective product");
-            System.out.println("3. Missing product ");
-            System.out.println("4. Wrong model of the product ordered ");
-            System.out.println("5. Order arrived too late");
-            System.out.println("6. No longer need the product");
-            System.out.println("7. The product does not match the description");
-            System.out.println("8. The product does not meet expectations");
-            System.out.println("9. Found a better price elsewhere");
-            System.out.println("10. Fraudulent purchase");
-            System.out.println("11. Return");
 
-            int choice = getUserInputAsInteger();
-
-            switch (choice) {
-                case 1:
-                    issueDescription = "Wrong item received";
-                    break;
-                case 2:
-                    issueDescription = "Defective product";
-                    break;
-
-                case 3:
-                    issueDescription = "Missing product";
-                    break;
-
-                case 4:
-                    issueDescription = "Wrong model of the product ordered";
-                    break;
-
-                case 5:
-                    issueDescription = "Order arrived too late";
-                    break;
-
-                case 6:
-                    issueDescription = "No longer need the product";
-                    break;
-
-                case 7:
-                    issueDescription = "The product does not match the description";
-                    break;
-
-                case 8:
-                    issueDescription = "The product does not meet expectations";
-                    break;
-
-                case 9:
-                    issueDescription = "Found a better price elsewhere";
-                    break;
-
-                case 10:
-                    issueDescription = "Fraudulent purchase";
-                    break;
-                case 11:
-                    System.out.println("Returning to menu...");
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please try again.");
-                    break;
-            }
-            if(choice < 11){
-                id =makeId();
-                System.out.println("the seller will be notified shortly");
-            }
-            break;
-        }
-    }
     //change this methods name
-    public boolean acceptSolution(){
-        System.out.println("The seller has proposed:  " + solutionDescription);
-        System.out.println("1. Yes");
-        System.out.println("2. No");
-        int choice = getUserInputAsInteger();
-            switch (choice){
-            case 1:
-                replacementTrackingNum = makeReshipmentTrackingNum();
-                return true;
-            case 2:
-                System.out.println("Sorry :( ");
-                return false;
-            default:
-                System.out.println("Invalid selection. Please try again.");
-                break;
 
-        }
-        System.out.println("Thanks for accepting the solution!");
-         return true;
-    }
 
 
     public void proposeSolution() {
-        while (true){
-            System.out.println("Which solution do you want to propose to the buyer?");
-            System.out.println("1. Repair the defective product");
-            System.out.println("2. Reshipment of a replacement product");
-            System.out.println("3. Return");
-            int choice2 = getUserInputAsInteger();
-            switch (choice2){
-                case 1:
-                    setSolutionDescription("Repair the defective product");
-                    break;
-
-                case 2:
-                    setSolutionDescription("Reshipment of a replacement product");
-                    break;
+        System.out.println("Which solution do you want to propose to the buyer?");
+        System.out.println("1. Repair the defective product");
+        System.out.println("2. Reshipment of a replacement product");
+        System.out.println("3. Return");
+        int choice2 = getUserInputAsInteger();
+        switch (choice2){
+            case 1:
+                setSolutionDescription("Repair the defective product");
+                break;
+            case 2:
+                setSolutionDescription("Reshipment of a replacement product");
+                break;
             }
-            System.out.println("The buyer will be notified shortly to approve this solution ");
+        System.out.println("The buyer will be notified shortly to approve this solution ");
             // method to notify the buyer and accept the solution
-            break;
-        }
+
     }
     public int getUserInputAsInteger() {
         while (true) {

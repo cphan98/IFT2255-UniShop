@@ -30,7 +30,6 @@ public class Order implements java.io.Serializable {
     private String shippingCompany;
     private String shippingNumber;
     private float totalCost;
-    private UIUtilities uiUtilities;
 
     // GETTERS
 
@@ -152,11 +151,6 @@ public class Order implements java.io.Serializable {
     public String makeRandomETA() {
         int day = (int) (Math.random() * 30);
         return "Within " + day + " days";
-    }
-    public void reportProblem(){
-        setIssue(new IssueQuery("problem with a product"));
-        issue.createTicket();
-
     }
 
     // TO STRING

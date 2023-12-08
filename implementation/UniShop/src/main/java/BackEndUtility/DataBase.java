@@ -7,6 +7,7 @@ import UtilityObjects.Notification;
 import Users.Seller;
 import Users.User;
 import productClasses.Usages.Evaluation;
+import productClasses.Usages.IssueQuery;
 import productClasses.Usages.Order;
 import productClasses.Product;
 import java.util.*;
@@ -18,6 +19,9 @@ public class DataBase implements java.io.Serializable {
     private final ArrayList<Product> products = new ArrayList<>();
     private final ArrayList<Order> orders = new ArrayList<>();
     private final ArrayList<Buyer> top5 = new ArrayList<>();
+
+    private int issueID = 0;
+    private int reshipmentCount = 0;
 
     public DataBase(ArrayList<User> users) {
         this.users = users;
@@ -394,6 +398,61 @@ public class DataBase implements java.io.Serializable {
         product.getEvaluations().remove(evaluation);
         product.getSeller().getMetrics().removeAverageNoteReceived(evaluation.getRating());
         product.updateOverallRating();
+    }
+
+    public void createTicket(IssueQuery issue) {
+        System.out.println("What is the problem with the order?");
+        System.out.println("1. Wrong item received");
+        System.out.println("2. Defective product");
+        System.out.println("3. Missing product ");
+        System.out.println("4. Wrong model of the product ordered ");
+        System.out.println("5. Order arrived too late");
+        System.out.println("6. No longer need the product");
+        System.out.println("7. The product does not match the description");
+        System.out.println("8. The product does not meet expectations");
+        System.out.println("9. Found a better price elsewhere");
+        System.out.println("10. Fraudulent purchase");
+        System.out.println("11. Return");
+        int choice = getUserInputAsInteger();
+
+        switch (choice) {
+            case 1 -> issue.setIssueDescription("Wrong item received");
+            case 2 -> issue.setIssueDescription("Defective product");
+            case 3 -> issue.setIssueDescription("Missing product");
+            case 4 -> issue.setIssueDescription("Wrong model of the product ordered");
+            case 5 -> issue.setIssueDescription("Order arrived too late");
+            case 6 -> issue.setIssueDescription("No longer need the product");
+            case 7 -> issue.setIssueDescription("The product does not match the description");
+            case 8 -> issue.setIssueDescription("The product does not meet expectations");
+            case 9 -> issue.setIssueDescription("Found a better price elsewhere");
+            case 10 -> issue.setIssueDescription("Fraudulent purchase");
+            case 11 -> System.out.println("Returning to menu...");
+            default -> System.out.println("Invalid selection. Please try again.");
+        }
+        if(choice < 11) {
+            issue.setId(issue.makeId(++issueID));
+            System.out.println("the seller will be notified shortly");
+        }
+    }
+
+    public String makeReshipmentTrackingNum() {
+        int zeros = 12 - Integer.toString(++reshipmentCount).length();
+        return ("0".repeat(zeros) + reshipmentCount);
+    }
+    public int getUserInputAsInteger() {
+        while (true) {
+            try {
+                int returned = Integer.parseInt(InputManager.getInstance().nextLine());
+                if (returned < 0) {
+                    System.out.println("Invalid input. Please enter a positive number.");
+                } else {
+                    return returned;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number.");
+            }
+
+        }
     }
     @Override
     public String toString() {
