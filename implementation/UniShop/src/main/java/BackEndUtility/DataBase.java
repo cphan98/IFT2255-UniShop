@@ -181,14 +181,14 @@ public class DataBase implements java.io.Serializable {
             case "followers":
                 System.out.println("Buyers ordered by number of followers:");
                 sortBuyersByFollowers(ascending).forEach(entry ->
-                        System.out.println("Followers: " + entry.getValue() + "\n")
+                        System.out.println("Buyer : " + entry.getKey().getId() + " has " + entry.getValue() + " followers\n")
                 );
 
                 break;
             case "xp":
                 System.out.println("Buyers ordered by number of points:");
                 sortBuyersByXp(ascending).forEach(entry ->
-                        System.out.println("Points: " + entry.getValue() + "\n")
+                        System.out.println("Buyer : " + entry.getKey().getId() + " has " + entry.getValue() + " points\n")
                 );
                 break;
         }

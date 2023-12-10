@@ -18,7 +18,6 @@ public class Buyer extends User implements java.io.Serializable {
     private String firstName;
     private String lastName;
     private final Cart cart;
-    private int points;
     private final BuyerMetrics metrics;
     private CreditCard card;
     private final ArrayList<Seller> sellersFollowed;
@@ -37,7 +36,6 @@ public class Buyer extends User implements java.io.Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.cart = new Cart();
-        this.points = 0;
         this.wishList = new ArrayList<>();
         this.sellersFollowed = new ArrayList<>();
         this.buyersFollowed = new ArrayList<>();
@@ -57,9 +55,6 @@ public class Buyer extends User implements java.io.Serializable {
     }
     public ArrayList<Seller> getSellersFollowed() {
         return sellersFollowed;
-    }
-    public int getPoints() {
-        return points;
     }
     public ArrayList<Buyer> getTop5ExpBuyers() {
         updateTop5();
@@ -132,36 +127,15 @@ public class Buyer extends User implements java.io.Serializable {
 
     public Stream<Map.Entry<Buyer, Integer>> rankBuyers() {
         HashMap<Buyer, Integer> buyersXP = new HashMap<>();
+        buyersXP.put(this, this.getMetrics().getExpPoints());
         for (Buyer buyer : getBuyersFollowed()) {
             buyersXP.put(buyer, buyer.getMetrics().getExpPoints());
         }
 
         Stream<Map.Entry<Buyer, Integer>> sortedStream = buyersXP.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue());
-
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
 
         return sortedStream;
-    }
-
-    public void toggleBuyerToFollowing(Buyer buyer) {
-        if (buyer == this) {
-            System.out.println("You cannot follow yourself!");
-            return;
-        }
-        if (!buyersFollowed.contains(buyer)) {
-            buyersFollowed.add(buyer);
-            buyer.addFollower(this);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() + 1);
-            String title = "You have a new follower!";
-            String summary = getId() + " is now following you !";
-            buyer.addNotification(new Notification(title, summary));
-            System.out.println("You are now following " + buyer.getId() + "!");
-        } else {
-            buyersFollowed.remove(buyer);
-            buyer.getFollowers().remove(this);
-            this.metrics.setLikesGiven(this.metrics.getLikesGiven() - 1);
-            System.out.println("You are no longer following " + buyer.getId() + "!");
-        }
     }
 
     public String wishListToString() {
@@ -176,13 +150,5 @@ public class Buyer extends User implements java.io.Serializable {
             i++;
         }
         return sb.toString();
-    }
-
-    public void addPoints(int points) {
-        this.points += points;
-    }
-
-    public void removePoints(int points) {
-        this.points -= points;
     }
 }

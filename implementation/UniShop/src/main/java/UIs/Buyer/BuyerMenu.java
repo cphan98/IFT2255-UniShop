@@ -147,7 +147,7 @@ public class BuyerMenu extends Menu {
         for (Buyer buyer : user.getTop5ExpBuyers())
         {
             i++;
-            System.out.println(i + ")" + "\t\t" + buyer.getId() + ": " + buyer.getPoints());
+            System.out.println(i + ")" + "\t\t" + buyer.getId() + ": " + buyer.getMetrics().getExpPoints());
         }
     }
 
@@ -162,7 +162,7 @@ public class BuyerMenu extends Menu {
             }
             System.out.println("ID: " + buyer.getId());
             System.out.println("Name: " + buyer.getFirstName());
-            System.out.println("Points: " + buyer.getPoints());
+            System.out.println("Points: " + buyer.getMetrics().getExpPoints());
         }
         line();
 
@@ -233,7 +233,6 @@ public class BuyerMenu extends Menu {
                     if (pointedBuyer == null) {
                         System.out.println("Buyer not found.");
                     } else {
-                        System.out.println(pointedBuyer);
                         while (true) {
                             System.out.println("Enter the desired buyer to view their profile:");
                             int i = 0;
@@ -271,7 +270,7 @@ public class BuyerMenu extends Menu {
         System.out.println("3. Return to menu");
         int choice = uiUtilities.getUserInputAsInteger();
         switch (choice) {
-            case 1 -> user.toggleBuyerToFollowing(pointedBuyer);
+            case 1 -> uiUtilities.toggleBuyerToFollowing(user, pointedBuyer);
             case 2 -> displayBuyersProfile(pointedBuyer);
             case 3 -> {
                 System.out.println("Returning to menu...");
@@ -299,7 +298,7 @@ public class BuyerMenu extends Menu {
                     case 3 -> System.out.println("Returning to menu...");
                     default -> System.out.println("Invalid selection. Please try again.");
                 }
-
+                break;
             case 2:
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
@@ -311,6 +310,7 @@ public class BuyerMenu extends Menu {
                     case 3 -> System.out.println("Returning to menu...");
                     default -> System.out.println("Invalid selection. Please try again.");
                 }
+                break;
             case 3:
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
@@ -322,6 +322,7 @@ public class BuyerMenu extends Menu {
                     case 3 -> System.out.println("Returning to menu...");
                     default -> System.out.println("Invalid selection. Please try again.");
                 }
+                break;
             case 4:
                 System.out.println("1. Ascending");
                 System.out.println("2. Descending");
@@ -333,6 +334,7 @@ public class BuyerMenu extends Menu {
                     case 3 -> System.out.println("Returning to menu...");
                     default -> System.out.println("Invalid selection. Please try again.");
                 }
+                break;
         }
         return true;
     }
@@ -774,20 +776,21 @@ public class BuyerMenu extends Menu {
         System.out.println("The seller has proposed:  " + issue.getSolutionDescription());
         System.out.println("1. Yes");
         System.out.println("2. No");
-        int choice = uiUtilities.getUserInputAsInteger();
+        int choice;
+        do {
+            System.out.println("Please enter a valid choice");
+            choice = uiUtilities.getUserInputAsInteger();
+        } while (choice != 1 && choice != 2);
+
         switch (choice){
             case 1:
                 issue.setReplacementTrackingNum(database.makeReshipmentTrackingNum());
+                System.out.println("Thanks for accepting the solution!");
                 return true;
             case 2:
                 System.out.println("Sorry :( ");
                 return false;
-            default:
-                System.out.println("Invalid selection. Please try again.");
-                break;
-
         }
-        System.out.println("Thanks for accepting the solution!");
         return true;
     }
 
@@ -803,17 +806,15 @@ public class BuyerMenu extends Menu {
                     product.getSeller().addNotification(new Notification("Response to proposed solution", user.getFirstName() + " has accepted your solution"));
                 }
                 if (Objects.equals(order.getIssue().getSolutionDescription(), "Reshipment of a replacement product")) {
-                    System.out.println("Which product from this seller would you like in exchange? ");
+                    System.out.println("Do you want to be reshipped the same product ?");
 
-                    for (Product product : order.getProducts().keySet()){
-                        for (Product replacementProducts : product.getSeller().getProducts()){
-                            System.out.println(replacementProducts.getTitle());
-                        }
-                    }
-
-                    System.out.println("1. I want that as a replacement");
-                    System.out.println("2. I don't like any of these products");
-                    int choiceRepProduct = uiUtilities.getUserInputAsInteger();
+                    System.out.println("1. Yes");
+                    System.out.println("2. No");
+                    int choiceRepProduct;
+                    do {
+                        System.out.println("Please enter a valid choice");
+                        choiceRepProduct = uiUtilities.getUserInputAsInteger();
+                    } while (choiceRepProduct != 1 && choiceRepProduct != 2);
                     switch (choiceRepProduct){
                         case 1 :
                             order.getIssue().setReplacementProducts(order.getProducts());
@@ -821,8 +822,7 @@ public class BuyerMenu extends Menu {
 
                             System.out.println("the seller will be notified and send you the product as soon as posible");
                             for (Product product : order.getProducts().keySet()){
-                                product.getSeller().addNotification(new Notification(user + "Selected a reshipment product", "the selected product is" + product));
-
+                                product.getSeller().addNotification(new Notification(user.getId() + "Accepted the reshipment", "The buyer accepted to be reshipped a new " + product.getTitle()));
                             }
                             break;
                         case 2 :
@@ -830,7 +830,7 @@ public class BuyerMenu extends Menu {
                             System.out.println("we're sorry you don't like the option, try getting the product fixed");
                             break;
                     }
-                     //TODO: implement catalog of seller to ask for another product to replace the defect one
+
                 } else {
                     System.out.println("We'll repair it for you lol");
                 }
@@ -842,41 +842,44 @@ public class BuyerMenu extends Menu {
     public void confirmOrderReception(Order order) {
         System.out.println();
         System.out.println("Confirming order reception...");
-
         // can only confirm when status is 'in delivery' or 'replacement in delivery'
-        if (order.getStatus() != OrderState.IN_DELIVERY || order.getStatus() != OrderState.REPLACEMENT_IN_DELIVERY) {
+        if (order.getStatus().equals(OrderState.IN_DELIVERY) || order.getStatus().equals(OrderState.REPLACEMENT_IN_DELIVERY)) {
+
+            // update status
+            user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.DELIVERED);
+
+            // send notification to buyer
+            sendBuyerNotification(user, "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+
+            // add points
+            int buyPointsWon = 0;
+            for (Product product : order.getProducts().keySet()) {
+                buyPointsWon += (int) (product.getPrice() * order.getProducts().get(product));
+            }
+            user.getMetrics().addBuyPoints(buyPointsWon);
+            user.getMetrics().addExpPoints(10);
             System.out.println();
-            System.out.println("WARNING : Cannot confirm this order!");
-            if (order.getStatus() == OrderState.DELIVERED || order.getStatus() == OrderState.REPLACEMENT_DELIVERED)
-                System.out.println("Your order has already been confirmed.");
-            if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION)
-                System.out.println("Your order has not been shipped yet.");
-            if (order.getStatus() == OrderState.CANCELLED)
-                System.out.println("Your order is cancelled.");
-            if (order.getStatus() == OrderState.RESHIPMENT_CANCELLED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED)
-                System.out.println("You cannot confirm a reshipment.");
+            System.out.println("You have won " + buyPointsWon + " buy points and 10 experience points by confirming this order!");
+
+            // confirm order reception
+            System.out.println();
+            System.out.println("Order confirmed");
             return;
         }
 
-        // update status
-        user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.DELIVERED);
-
-        // send notification to buyer
-        sendBuyerNotification(user, "Order status changed", "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
-
-        // add points
-        int buyPointsWon = 0;
-        for (Product product : order.getProducts().keySet()) {
-            buyPointsWon += (int) (product.getPrice() * order.getProducts().get(product));
-        }
-        user.getMetrics().addBuyPoints(buyPointsWon);
-        user.getMetrics().addExpPoints(10);
         System.out.println();
-        System.out.println("You have won " + buyPointsWon + " buy points and 10 experience points by confirming this order!");
+        System.out.println("WARNING : Cannot confirm this order!");
+        if (order.getStatus() == OrderState.DELIVERED || order.getStatus() == OrderState.REPLACEMENT_DELIVERED)
+            System.out.println("Your order has already been confirmed.");
+        if (order.getStatus() == OrderState.IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION)
+            System.out.println("Your order has not been shipped yet.");
+        if (order.getStatus() == OrderState.CANCELLED)
+            System.out.println("Your order is cancelled.");
+        if (order.getStatus() == OrderState.RESHIPMENT_CANCELLED || order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED)
+            System.out.println("You cannot confirm a reshipment.");
 
-        // confirm order reception
-        System.out.println();
-        System.out.println("Order confirmed");
+
+
     }
 
     // Gets Product object with product title from order products
@@ -977,9 +980,11 @@ public class BuyerMenu extends Menu {
                 System.out.println("4. Not satisfied with the product(s)");
                 System.out.println("5. Did not make this order");
                 System.out.println("6. Other");
+                break;
             case "exchange" :
                 System.out.println("3. Not satisfied with the product(s)");
                 System.out.println("4. Other");
+                break;
         }
 
         int choice = uiUtilities.getUserInputAsInteger();
@@ -1193,8 +1198,8 @@ public class BuyerMenu extends Menu {
     // Pays points difference
     private void payPointsDiff(int pointsDiff, float priceDiff, HashMap<Product, Integer> replacementProducts, Order order) {
         // if buyer does not have enough points, pay with credit card
-        if (user.getPoints() < pointsDiff) {
-            System.out.println("Not enough points. You need " + (pointsDiff - user.getPoints()) + " more points to pay this order");
+        if (user.getMetrics().getBuyPoints() < pointsDiff) {
+            System.out.println("Not enough points. You need " + (pointsDiff - user.getMetrics().getBuyPoints()) + " more points to pay this order");
 
             // ask buyer to use registered credit card
             System.out.println("Do you want to use your registered credit card for this order? (y/n)");
@@ -1296,7 +1301,7 @@ public class BuyerMenu extends Menu {
     private void refundPointsDiff(int pointsDiff, float priceDiff, HashMap<Product, Integer> replacementProducts, Order order) {
         // refund points
         System.out.println("Refund in process...");
-        user.addPoints(Math.abs(pointsDiff));
+        user.getMetrics().addBuyPoints(Math.abs(pointsDiff));
 
         // create order
         Order exchangeOrder = new Order(user, "points", replacementProducts);

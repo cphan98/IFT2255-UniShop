@@ -188,7 +188,16 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
         }
     }
 
-
+    public String toString() {
+        return
+                "Orders made: " + ordersMade + "\n" +
+            "Products bought: " + productsBought + "\n" +
+            "Likes received on their evaluations: " + likesReceived + "\n" +
+            "Likes given: " + likesGiven + "\n" +
+            "Evaluations made: " + evaluationsMade + "\n" +
+            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" +
+            "Experience: " + expPoints + " points\n";
+    }
 
 
 }

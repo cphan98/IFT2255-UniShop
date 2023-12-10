@@ -87,6 +87,7 @@ public class UniShop {
         Buyer cynthia = (Buyer) users.get(0);
         Buyer nathan = (Buyer) users.get(1);
         Buyer lucas = (Buyer) users.get(2);
+        Buyer monpote20 = (Buyer) users.get(3);
         BuyerMenu buyerMenu = new BuyerMenu(cynthia, database);
         buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) users.get(1));
         buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) users.get(2));
@@ -102,29 +103,40 @@ public class UniShop {
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(1)), products.get(4));
 
         cynthia.setCard(new CreditCard("123456789012", "Cynthia", "Phan", "2022-01-01"));
-        cynthia.getCart().addProduct(products.get(0), 1);
-        cynthia.getCart().addProduct(products.get(4), 1);
-        cynthia.getCart().addProduct(products.get(5), 1);
+        cynthia.getCart().addProduct(products.get(0), 12);
+        cynthia.getCart().addProduct(products.get(4), 9);
+        cynthia.getCart().addProduct(products.get(5), 7);
         database.generateAndAddOrders(cynthia, "credit card");
         cynthia.getCart().getProducts().clear();
 
 
         nathan.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
-        nathan.getCart().addProduct(products.get(1), 1);
-        nathan.getCart().addProduct(products.get(2), 1);
-        nathan.getCart().addProduct(products.get(6), 1);
+        nathan.getCart().addProduct(products.get(1), 5);
+        nathan.getCart().addProduct(products.get(2), 3);
+        nathan.getCart().addProduct(products.get(6), 8);
         nathan.getCart().addProduct(products.get(8), 2);
         nathan.getCart().addProduct(products.get(12), 1);
         database.generateAndAddOrders(nathan, "credit card");
         nathan.getCart().getProducts().clear();
 
         lucas.setCard(new CreditCard("123456789012", "Lucas", "Ranaivo", "2022-01-01"));
-        lucas.getCart().addProduct(products.get(3), 1);
-        lucas.getCart().addProduct(products.get(7), 1);
-        lucas.getCart().addProduct(products.get(15), 1);
+        lucas.getCart().addProduct(products.get(3), 6);
+        lucas.getCart().addProduct(products.get(7), 8);
+        lucas.getCart().addProduct(products.get(15), 3);
         lucas.getCart().addProduct(products.get(16), 3);
         database.generateAndAddOrders(lucas, "credit card");
         lucas.getCart().getProducts().clear();
+
+        monpote20.setCard(new CreditCard("123456789012", "Nathan", "Rasami", "2022-01-01"));
+        monpote20.getCart().addProduct(products.get(4), 2);
+        monpote20.getCart().addProduct(products.get(5), 3);
+        monpote20.getCart().addProduct(products.get(6), 6);
+        monpote20.getCart().addProduct(products.get(7), 1);
+        monpote20.getCart().addProduct(products.get(8), 3);
+        monpote20.getCart().addProduct(products.get(9), 2);
+        database.generateAndAddOrders(monpote20, "credit card");
+        monpote20.getCart().getProducts().clear();
+
 
     }
 

@@ -180,7 +180,7 @@ public class SellerMenu extends Menu {
 
                 displayIssue(order);
 
-                order.getBuyer().addNotification(new Notification(user + "Has send a solution to the problem", "the seller thinks its pertinent to: " + order.getIssue().getSolutionDescription()));
+                order.getBuyer().addNotification(new Notification(user.getId() + "Has send a solution to the problem", "the seller thinks its pertinent to: " + order.getIssue().getSolutionDescription()));
 
                 break;
 
@@ -261,7 +261,7 @@ public class SellerMenu extends Menu {
         }
 
         // update status
-        order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).setStatus(OrderState.IN_DELIVERY);
+        order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).setStatus(OrderState.RESHIPMENT_DELIVERED);
         order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).getIssue().setReshipmentReceived(true);
 
         // send notification to buyer
@@ -280,6 +280,14 @@ public class SellerMenu extends Menu {
         if (Objects.equals(order.getIssue().getSolutionDescription(), "Exchange")) {
             prepareReplacementOrder(order.getIssue().getReplacementOrder());
         }
+
+        int buyPointsDeducted = 0;
+        HashMap<Product, Integer> productsReturned = order.getIssue().getReshipmentProducts();
+        for (Map.Entry<Product, Integer> product : productsReturned.entrySet()) {
+            buyPointsDeducted += product.getKey().getBasePoints() * product.getValue();
+        }
+        order.getBuyer().getMetrics().removeBuyPoints(buyPointsDeducted);
+        System.out.println("The buyer has been deducted " + buyPointsDeducted + " buy points.");
     }
 
     public void printLabel(Order order) {
@@ -345,7 +353,7 @@ public class SellerMenu extends Menu {
             }
 
             // put back points to buyer's points
-            database.getBuyers().get(database.getBuyers().indexOf(order.getBuyer())).addPoints(sum);
+            database.getBuyers().get(database.getBuyers().indexOf(order.getBuyer())).getMetrics().addBuyPoints(sum);
 
             // send notification to buyer
             sendBuyerNotification(order.getBuyer(), "You've received a refund", "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
@@ -388,8 +396,8 @@ public class SellerMenu extends Menu {
 
         // display replacement products
         System.out.println();
-        System.out.println("Available replacement products:");
-        replacementOrder.productsToString();
+        System.out.println("Replacement products:");
+        System.out.println(replacementOrder.productsToString());
 
         // print label
         printLabel(replacementOrder);
@@ -430,7 +438,7 @@ public class SellerMenu extends Menu {
         if (order.getIssue().getSolutionDescription() == null) {
             System.out.println("Solution: waiting for a solution...");
             order.getIssue().proposeSolution();
-            order.getBuyer().addNotification(new Notification("Seller: " +  user+ " has proposed a solution", user + "thinks it's pertinent to: " + order.getIssue().getSolutionDescription()));
+            order.getBuyer().addNotification(new Notification("Seller: " +  user.getId() + " has proposed a solution", user.getId() + "thinks it's pertinent to: " + order.getIssue().getSolutionDescription()));
             return;
         } else {
             System.out.println("Solution: " + order.getIssue().getSolutionDescription());
