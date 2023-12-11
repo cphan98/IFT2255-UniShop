@@ -4,12 +4,13 @@ import BackEndUtility.*;
 import UIs.Menu;
 import UIs.Buyer.Controllers.*;
 import Users.*;
+import productClasses.Usages.Order;
 
 public class BuyerMenu extends Menu {
 
     // ATTRIBUTES
 
-    private Buyer user = null;
+    private Buyer user;
     private final ProfileController profileController = new ProfileController(user, database);
     private final OrderController orderController = new OrderController(user, database);
     private final CartController cartController = new CartController(user, database);
@@ -70,6 +71,40 @@ public class BuyerMenu extends Menu {
             }
         }
         return true;
+    }
+
+    // profile page ---------------------------------------------------------------------------------------------------
+
+    @Override
+    public boolean displayProfile() {
+        return false;
+    }
+
+    // order history page ---------------------------------------------------------------------------------------------
+
+    @Override
+    public boolean displayOrderHistory() {
+        return false;
+    }
+
+    // order page -----------------------------------------------------------------------------------------------------
+
+    @Override
+    public void interactWithOrder(Order order) {
+
+    }
+
+    // metrics --------------------------------------------------------------------------------------------------------
+
+    @Override
+    public void displayMetrics() {
+
+    }
+
+    // profile modification -------------------------------------------------------------------------------------------
+    @Override
+    public void modifyProfile() {
+
     }
 
     // wish list ------------------------------------------------------------------------------------------------------
