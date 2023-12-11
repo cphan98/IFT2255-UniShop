@@ -2,17 +2,16 @@ package Users;
 
 import Metrics.BuyerMetrics;
 import UtilityObjects.Address;
-import UtilityObjects.Notification;
 import productClasses.Usages.Cart;
 import UtilityObjects.CreditCard;
 import productClasses.Usages.Evaluation;
 import productClasses.Product;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Buyer extends User implements java.io.Serializable {
+
     // ATTRIBUTES
 
     private String firstName;
@@ -102,7 +101,9 @@ public class Buyer extends User implements java.io.Serializable {
         this.card = card;
     }
 
-    // OPERATIONS
+    // UTILITIES
+
+    // followers ------------------------------------------------------------------------------------------------------
     @Override
     public void removeFollower(Buyer follower) {
         followers.remove(follower);
@@ -137,6 +138,9 @@ public class Buyer extends User implements java.io.Serializable {
 
         return sortedStream;
     }
+
+
+    // to string ------------------------------------------------------------------------------------------------------
 
     public String wishListToString() {
         if (wishList.isEmpty()) {

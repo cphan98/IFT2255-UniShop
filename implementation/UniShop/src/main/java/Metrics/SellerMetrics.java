@@ -5,12 +5,18 @@ import BackEndUtility.InputManager;
 import java.util.ArrayList;
 
 public class SellerMetrics implements Metrics, java.io.Serializable {
+
+    // ATTRIBUTES
+
     private float revenue;
     private int productsSold;
     private float averageNoteReceived;
     private int likes;
     protected ArrayList<Float> notesReceived;
     public ArrayList<String> selectedMetrics;//to be shown on the users profile
+
+    // CONSTRUCTOR
+
     public SellerMetrics() {
         revenue = 0;
         productsSold = 0;
@@ -18,12 +24,49 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         notesReceived = new ArrayList<>();
         selectedMetrics = new ArrayList<>();
     }
+
+    // GETTERS
+
+    public ArrayList<String> getSelectedMetrics(){
+        return selectedMetrics;
+    }
+
+    public float getRevenue() {
+        return revenue;
+    }
+
+    public int getProductsSold() {
+        return productsSold;
+    }
+
+    public float getAverageNoteReceived() {
+        return averageNoteReceived;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    // SETTERS
+
+    public void setSelectedMetrics(ArrayList<String> selectedMetrics) {this.selectedMetrics = selectedMetrics; };
+
+    // UTILITIES
+
+    // revenue
+
     public void updateRevenue(float revenue) {
         this.revenue = revenue;
     }
+
+    // products
+
     public void updateProductsSold(int productsSold) {
         this.productsSold = productsSold;
     }
+
+    // evaluations
+
     public void updateAverageNoteReceived(float note) {
         notesReceived.add(note);
         float sum = 0;
@@ -32,6 +75,7 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         }
         averageNoteReceived = Math.round((sum / notesReceived.size()) * 10) / 10f;
     }
+
     public void removeAverageNoteReceived(float note) {
         notesReceived.remove(note);
         float sum = 0;
@@ -40,37 +84,15 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         }
         averageNoteReceived = Math.round((sum / notesReceived.size()) * 10) / 10f;
     }
+
+    // likes
+
     public void updateLikes(int likes) {
         this.likes = likes;
     }
-    public void setSelectedMetrics(ArrayList<String> selectedMetrics) {this.selectedMetrics = selectedMetrics; };
-    public ArrayList<String> getSelectedMetrics(){
-        return selectedMetrics;
-    }
-    public float getRevenue() {
-        return revenue;
-    }
-    public int getProductsSold() {
-        return productsSold;
-    }
-    public float getAverageNoteReceived() {
-        return averageNoteReceived;
-    }
-    public int getLikes() {
-        return likes;
-    }
 
-    public String SomeMetricsToString(){
-        return"Products sold: " + productsSold + "\n" +
-                "Average note received: "  + averageNoteReceived + "\n";
-    }
-    public String AlltoString() {
-        return "Since inception," + "\n" +
-            "Income: " + revenue + "$\n" +
-            "Products sold: " + productsSold + "\n" +
-            "Average note received: " + averageNoteReceived + "\n" +
-            "Total of likes received on products: " + likes + "\n";
-    }
+    // configuration
+
     public void configureMetrics(){
         ArrayList<String> allMetrics = new ArrayList<>();
         ArrayList<Number> allMetricsValues =new ArrayList<>();
@@ -122,6 +144,9 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         }
         return selectedMetrics;
     }
+
+    // inputs
+
     protected int getUserInputAsInteger() {
         while (true) {
             try {
@@ -138,5 +163,18 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         }
     }
 
+    // to string
 
+    public String SomeMetricsToString(){
+        return"Products sold: " + productsSold + "\n" +
+                "Average note received: "  + averageNoteReceived + "\n";
+    }
+
+    public String AlltoString() {
+        return "Since inception," + "\n" +
+            "Income: " + revenue + "$\n" +
+            "Products sold: " + productsSold + "\n" +
+            "Average note received: " + averageNoteReceived + "\n" +
+            "Total of likes received on products: " + likes + "\n";
+    }
 }

@@ -59,6 +59,7 @@ public class CatalogController extends BuyerMenu {
                 case 4 -> filterSellers();
                 case 5 -> displayProductsLikedByFollowing();
                 case 6 -> {
+                    System.out.println();
                     System.out.println("Returning to menu...");
                     continueLoop = false;
                 }
@@ -77,6 +78,17 @@ public class CatalogController extends BuyerMenu {
         } else {
             System.out.println("Product not found. Please try again.");
         }
+    }
+
+    public boolean searchProduct(Catalog catalog) {
+        boolean continueLoop = true;
+        while (continueLoop) {
+            System.out.println("Enter the name of the product you want to search:");
+            String title = InputManager.getInstance().nextLine();
+            pointedProduct = catalog.searchProductByName(title);
+            continueLoop = pointedProduct == null;
+        }
+        return true;  // continue the loop
     }
 
     private void interactWithProduct() {
@@ -205,12 +217,6 @@ public class CatalogController extends BuyerMenu {
 
     // seller page ----------------------------------------------------------------------------------------------------
 
-    // filter products ------------------------------------------------------------------------------------------------
-
-    // filter sellers -------------------------------------------------------------------------------------------------
-
-    // display products liked -----------------------------------------------------------------------------------------
-
     private void searchSeller() {
         line();
         ArrayList<Seller> listOfSellers = null;
@@ -285,40 +291,6 @@ public class CatalogController extends BuyerMenu {
         }
     }
 
-    private void displayProductsLikedByFollowing() {
-        System.out.println("Products liked by the buyers you're following:");
-        HashMap<Product, Integer> productsLikedByFollowing = new HashMap<>();
-        for (Buyer buyer : user.getBuyersFollowed()) {
-            for (Product product : buyer.getWishList()) {
-                if (productsLikedByFollowing.containsKey(product)) {
-                    productsLikedByFollowing.put(product, productsLikedByFollowing.get(product) + 1);
-                } else {
-                    productsLikedByFollowing.put(product, 1);
-                }
-            }
-        }
-        for (Product product : productsLikedByFollowing.keySet()) {
-            System.out.println(product.smallToString());
-        }
-    }
-
-
-
-    public boolean searchProduct(Catalog catalog) {
-        boolean continueLoop = true;
-        while (continueLoop) {
-            System.out.println("Enter the name of the product you want to search:");
-            String title = InputManager.getInstance().nextLine();
-            pointedProduct = catalog.searchProductByName(title);
-            continueLoop = pointedProduct == null;
-        }
-        return true;  // continue the loop
-    }
-
-
-
-
-
     private void displaySellerInfo() {
         System.out.println("Enter the name of the seller you want to check out:");
         String id = InputManager.getInstance().nextLine();
@@ -352,6 +324,8 @@ public class CatalogController extends BuyerMenu {
             default -> System.out.println("Invalid selection. Please try again.");
         }
     }
+
+    // filter products ------------------------------------------------------------------------------------------------
 
     public void filterProducts() {
         System.out.println("1. Filter by category");
@@ -417,6 +391,8 @@ public class CatalogController extends BuyerMenu {
             }
         }
     }
+
+    // filter sellers -------------------------------------------------------------------------------------------------
 
     public void filterSellers() {
         System.out.println("1. Filter by category");
@@ -496,6 +472,25 @@ public class CatalogController extends BuyerMenu {
             case 5:
                 System.out.println("Returning to menu...");
                 break;
+        }
+    }
+
+    // display products liked -----------------------------------------------------------------------------------------
+
+    private void displayProductsLikedByFollowing() {
+        System.out.println("Products liked by the buyers you're following:");
+        HashMap<Product, Integer> productsLikedByFollowing = new HashMap<>();
+        for (Buyer buyer : user.getBuyersFollowed()) {
+            for (Product product : buyer.getWishList()) {
+                if (productsLikedByFollowing.containsKey(product)) {
+                    productsLikedByFollowing.put(product, productsLikedByFollowing.get(product) + 1);
+                } else {
+                    productsLikedByFollowing.put(product, 1);
+                }
+            }
+        }
+        for (Product product : productsLikedByFollowing.keySet()) {
+            System.out.println(product.smallToString());
         }
     }
 }

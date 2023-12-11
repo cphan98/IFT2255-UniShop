@@ -25,6 +25,7 @@ public class ProfileController extends BuyerMenu {
 
     // profile page ---------------------------------------------------------------------------------------------------
 
+    @Override
     public boolean displayProfile() {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -287,6 +288,7 @@ public class ProfileController extends BuyerMenu {
 
     // profile modifications ------------------------------------------------------------------------------------------
 
+    @Override
     public void modifyProfile() {
         System.out.println();
         System.out.println("1. Modify personal info");
@@ -336,6 +338,7 @@ public class ProfileController extends BuyerMenu {
         }
     }
 
+    @Override
     public void displayMetrics(){
         boolean continueLoop = true;
         while (continueLoop){

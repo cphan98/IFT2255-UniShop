@@ -2,13 +2,13 @@ package productClasses.Usages;
 
 import BackEndUtility.InputManager;
 import productClasses.Product;
-import UIs.UIUtilities;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class IssueQuery implements java.io.Serializable {
+
     // ATTRIBUTES
 
     private String id;
@@ -22,6 +22,17 @@ public class IssueQuery implements java.io.Serializable {
     private Order replacementOrder;
     private String replacementTrackingNum;
     private Boolean replacementReceived = false;
+
+    // CONSTRUCTOR
+
+    public IssueQuery(String issueDescription) {
+        this.id = "";
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        this.requestDate = today.format(formatter);
+        this.issueDescription = issueDescription;
+        this.reshipmentTrackingNum = "";
+    }
 
     // GETTERS
 
@@ -51,25 +62,16 @@ public class IssueQuery implements java.io.Serializable {
     public void setRequestDate(String requestDate) { this.requestDate = requestDate; }
     public void setReplacementOrder(Order replacementOrder) { this.replacementOrder = replacementOrder; }
 
-    // CONSTRUCTOR
+    // UTILITIES
+
+    // id -------------------------------------------------------------------------------------------------------------
 
     public String makeId(int idCount) {
         int zeros = 3 - Integer.toString(idCount).length();
         return ("issue" + ("0".repeat(zeros)) + idCount);
     }
 
-    public IssueQuery(String issueDescription) {
-        this.id = "";
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        this.requestDate = today.format(formatter);
-        this.issueDescription = issueDescription;
-        this.reshipmentTrackingNum = "";
-    }
-
-    //change this methods name
-
-
+    // solution -------------------------------------------------------------------------------------------------------
 
     public void proposeSolution() {
         System.out.println("Which solution do you want to propose to the buyer?");
@@ -89,6 +91,9 @@ public class IssueQuery implements java.io.Serializable {
             // method to notify the buyer and accept the solution
 
     }
+
+    // inputs ---------------------------------------------------------------------------------------------------------
+
     public int getUserInputAsInteger() {
         while (true) {
             try {
@@ -104,6 +109,4 @@ public class IssueQuery implements java.io.Serializable {
 
         }
     }
-
-    // OPERATIONS
 }

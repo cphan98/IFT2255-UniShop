@@ -52,7 +52,7 @@ public class CartController extends BuyerMenu {
         return true;  // continue the loop
     }
 
-    // checkout
+    // checkout -------------------------------------------------------------------------------------------------------
 
     public void makeCheckout() {
         InputManager im = InputManager.getInstance();
@@ -139,7 +139,7 @@ public class CartController extends BuyerMenu {
         user.getCart().getProducts().clear();
     }
 
-    // remove product
+    // remove product -------------------------------------------------------------------------------------------------
 
     public void removeProductFromCart() {
         InputManager inputManager = InputManager.getInstance();
@@ -161,7 +161,7 @@ public class CartController extends BuyerMenu {
         System.out.println("Product removed from cart");
     }
 
-    // empty cart
+    // empty cart -----------------------------------------------------------------------------------------------------
 
     public void emptyCart() {
         InputManager im = InputManager.getInstance();

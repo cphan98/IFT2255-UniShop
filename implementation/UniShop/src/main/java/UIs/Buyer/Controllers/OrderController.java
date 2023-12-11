@@ -66,6 +66,7 @@ public class OrderController extends BuyerMenu {
 
     // order page -----------------------------------------------------------------------------------------------------
 
+    @Override
     public void interactWithOrder(Order order) {
         // check if there is an issue
         if (order.getIssue() != null) {
@@ -442,191 +443,6 @@ public class OrderController extends BuyerMenu {
             System.out.println("1. Prepare the reshipment package with the given label.");
             System.out.println("2. Give the package to your closest post service.");
         }
-    }
-
-    // Gets Product object with product title from order products
-    private Product getProductFromOrder(Order order, String title) {
-        HashMap<Product, Integer> products = order.getProducts();
-        Product productFound = null;
-        for (Map.Entry<Product, Integer> product : products.entrySet()) {
-            if (Objects.equals(title, product.getKey().getTitle()))
-                productFound = product.getKey();
-        }
-        return productFound;
-    }
-
-    // Asks products to return/exchange
-    private HashMap<Product, Integer> askProducts(Order order, String returnOrExchange) {
-        HashMap<Product, Integer> selectedProducts = new HashMap<>(); // product list to return/exchange
-        ArrayList<String> orderProducts = new ArrayList<>(); // list of order product titles
-        for (Product product : order.getProducts().keySet()) orderProducts.add(product.getTitle());
-
-        // ask product(s) to return/exchange
-        boolean moreProducts = true;
-        while (moreProducts) {
-            // ask title of product
-            switch (returnOrExchange) {
-                case "return" ->
-                        System.out.println("Enter the name of the product you would like to return. The product must be listed above.");
-                case "exchange" ->
-                        System.out.println("Enter the name of the product you would like to exchange. The product must be listed above.");
-            }
-            String productTitle = InputManager.getInstance().nextLine();
-
-            // validate product title
-            while (Objects.equals(productTitle, "") || !orderProducts.contains(productTitle)) {
-                System.out.println("Please enter a valid product!");
-                productTitle = InputManager.getInstance().nextLine();
-            }
-
-            // get Product object
-            Product product = getProductFromOrder(order, productTitle);
-
-            // check if product is already in return product list
-            if (selectedProducts.containsKey(product) && selectedProducts.get(product) >= order.getProducts().get(product)) {
-                switch (returnOrExchange) {
-                    case "return":
-                        System.out.println("A maximum of " + order.getProducts().get(product) + " " + product.getTitle()
-                                + " can be returned.");
-                        System.out.println("Would you like to return another item? (y/n)");
-                    case "exchange":
-                        System.out.println("A maximum of " + order.getProducts().get(product) + " " + product.getTitle()
-                                + " can be exchanged.");
-                        System.out.println("Would you like to exchange another item? (y/n)");
-                }
-                String choice = "";
-                while (!choice.matches("[yn]")) choice = InputManager.getInstance().nextLine();
-                if (Objects.equals(choice, "n")) break;
-            }
-
-            // if > 1 units available to return, ask quantity to return
-            if (order.getProducts().get(product) > 1) {
-                // ask product quantity
-                switch (returnOrExchange) {
-                    case "return" -> System.out.println("Enter the quantity of " + productTitle + " you would like to return.");
-                    case "exchange" -> System.out.println("Enter the quantity of " + productTitle + " you would like to exchange.");
-                }
-                int productQuantity = uiUtilities.getUserInputAsInteger();
-
-                // validate product quantity
-                while (productQuantity <= 0 || productQuantity > order.getProducts().get(product)) {
-                    switch (returnOrExchange) {
-                        case "return" -> System.out.println("Please enter a valid quantity! You can only return up to "
-                                + order.getProducts().get(product) + " units.");
-                        case "exchange" -> System.out.println("Please enter a valid quantity! You can only exchange up to "
-                                + order.getProducts().get(product) + " units.");
-                    }
-                    productQuantity = uiUtilities.getUserInputAsInteger();
-                }
-
-                // add product to return product list
-                selectedProducts.put(product, productQuantity);
-            } else selectedProducts.put(product, 1);
-
-            // ask more products to return
-            System.out.println("Would you like to return another item? (y/n)");
-            String choice = "";
-            while (!choice.matches("[yn]")) choice = InputManager.getInstance().nextLine();
-            if (Objects.equals(choice, "n")) moreProducts = false;
-        }
-
-        // return list of products to return
-        return selectedProducts;
-    }
-
-    // Asks the reason of the return/exchange
-    private String askReason(String returnOrExchange) {
-        switch (returnOrExchange) {
-            case "return" -> System.out.println("What is the reason of your return?");
-            case "exchange" -> System.out.println("What is the reason of your exchange?");
-        }
-        System.out.println("1. Wrong product(s) ordered");
-        System.out.println("2. Wrong product(s) received");
-        switch (returnOrExchange) {
-            case "return" :
-                System.out.println("3. No longer need the product(s)");
-                System.out.println("4. Not satisfied with the product(s)");
-                System.out.println("5. Did not make this order");
-                System.out.println("6. Other");
-                break;
-            case "exchange" :
-                System.out.println("3. Not satisfied with the product(s)");
-                System.out.println("4. Other");
-                break;
-        }
-
-        int choice = uiUtilities.getUserInputAsInteger();
-        String reason = "";
-        if (returnOrExchange.equals("return")) {
-            switch (choice) {
-                case 1 -> reason = "Wrong product(s) ordered";
-                case 2 -> reason = "Wrong product(s) received";
-                case 3 -> reason = "No longer need the product(s)";
-                case 4 -> reason = "Not satisfied with the product(s)";
-                case 5 -> reason = "Did not make this order";
-                case 6 -> reason = "Other";
-                default -> System.out.println("Invalid selection. Please try again.");
-            }
-        } else if (returnOrExchange.equals("exchange")) {
-            switch (choice) {
-                case 1 -> reason = "Wrong product(s) ordered";
-                case 2 -> reason = "Wrong product(s) received";
-                case 3 -> reason = "Not satisfied with the product(s)";
-                case 4 -> reason = "Other";
-            }
-        }
-
-        return reason;
-    }
-
-    // Prints reshipment label
-    private void printReshipmentLabel(Seller seller) {
-        System.out.println();
-        System.out.println("Printing label...");
-        System.out.println();
-        System.out.println("--------------------------------------------------");
-        System.out.println();
-        System.out.println("FROM: " + user.getFirstName() + " " + user.getLastName());
-        System.out.println("      " + user.getAddress().getAddressLine());
-        System.out.println("      " + user.getAddress().getCity() + ", " + user.getAddress().getProvince() + ", "
-                + user.getAddress().getCountry());
-        System.out.println("      " + user.getAddress().getPostalCode());
-        System.out.println();
-        System.out.println("TO:   " + seller.getId());
-        System.out.println("      " + seller.getAddress().getAddressLine());
-        System.out.println("      " + seller.getAddress().getCity() + ", " + seller.getAddress().getProvince() + ", "
-                + seller.getAddress().getCountry());
-        System.out.println("      " + seller.getAddress().getPostalCode());
-        System.out.println();
-        System.out.println("--------------------------------------------------");
-        System.out.println();
-        System.out.println("Label printed!");
-        System.out.println();
-    }
-
-    // Checks if the reshipment has been received within 30 days of the return request
-    private boolean check30DaysFromReshipmentRequest(IssueQuery query) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-        long diffInDays = 0;
-
-        try {
-            Date request = sdf.parse(query.getRequestDate());
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDate today = LocalDate.now();
-            Date reception = sdf.parse(today.format(formatter));
-
-            long diffInMs = Math.abs(request.getTime() - reception.getTime());
-            diffInDays = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS);
-        } catch (ParseException e) {
-            System.out.println("something went wrong");
-        }
-
-        if (diffInDays > 30) {
-            return false;
-        }
-
-        return true;
     }
 
     // Asks replacement products
@@ -1072,6 +888,193 @@ public class OrderController extends BuyerMenu {
                 }
             }
         }
+    }
+
+    // exchange/return utilities --------------------------------------------------------------------------------------
+
+    // Gets Product object with product title from order products
+    private Product getProductFromOrder(Order order, String title) {
+        HashMap<Product, Integer> products = order.getProducts();
+        Product productFound = null;
+        for (Map.Entry<Product, Integer> product : products.entrySet()) {
+            if (Objects.equals(title, product.getKey().getTitle()))
+                productFound = product.getKey();
+        }
+        return productFound;
+    }
+
+    // Asks products to return/exchange
+    private HashMap<Product, Integer> askProducts(Order order, String returnOrExchange) {
+        HashMap<Product, Integer> selectedProducts = new HashMap<>(); // product list to return/exchange
+        ArrayList<String> orderProducts = new ArrayList<>(); // list of order product titles
+        for (Product product : order.getProducts().keySet()) orderProducts.add(product.getTitle());
+
+        // ask product(s) to return/exchange
+        boolean moreProducts = true;
+        while (moreProducts) {
+            // ask title of product
+            switch (returnOrExchange) {
+                case "return" ->
+                        System.out.println("Enter the name of the product you would like to return. The product must be listed above.");
+                case "exchange" ->
+                        System.out.println("Enter the name of the product you would like to exchange. The product must be listed above.");
+            }
+            String productTitle = InputManager.getInstance().nextLine();
+
+            // validate product title
+            while (Objects.equals(productTitle, "") || !orderProducts.contains(productTitle)) {
+                System.out.println("Please enter a valid product!");
+                productTitle = InputManager.getInstance().nextLine();
+            }
+
+            // get Product object
+            Product product = getProductFromOrder(order, productTitle);
+
+            // check if product is already in return product list
+            if (selectedProducts.containsKey(product) && selectedProducts.get(product) >= order.getProducts().get(product)) {
+                switch (returnOrExchange) {
+                    case "return":
+                        System.out.println("A maximum of " + order.getProducts().get(product) + " " + product.getTitle()
+                                + " can be returned.");
+                        System.out.println("Would you like to return another item? (y/n)");
+                    case "exchange":
+                        System.out.println("A maximum of " + order.getProducts().get(product) + " " + product.getTitle()
+                                + " can be exchanged.");
+                        System.out.println("Would you like to exchange another item? (y/n)");
+                }
+                String choice = "";
+                while (!choice.matches("[yn]")) choice = InputManager.getInstance().nextLine();
+                if (Objects.equals(choice, "n")) break;
+            }
+
+            // if > 1 units available to return, ask quantity to return
+            if (order.getProducts().get(product) > 1) {
+                // ask product quantity
+                switch (returnOrExchange) {
+                    case "return" -> System.out.println("Enter the quantity of " + productTitle + " you would like to return.");
+                    case "exchange" -> System.out.println("Enter the quantity of " + productTitle + " you would like to exchange.");
+                }
+                int productQuantity = uiUtilities.getUserInputAsInteger();
+
+                // validate product quantity
+                while (productQuantity <= 0 || productQuantity > order.getProducts().get(product)) {
+                    switch (returnOrExchange) {
+                        case "return" -> System.out.println("Please enter a valid quantity! You can only return up to "
+                                + order.getProducts().get(product) + " units.");
+                        case "exchange" -> System.out.println("Please enter a valid quantity! You can only exchange up to "
+                                + order.getProducts().get(product) + " units.");
+                    }
+                    productQuantity = uiUtilities.getUserInputAsInteger();
+                }
+
+                // add product to return product list
+                selectedProducts.put(product, productQuantity);
+            } else selectedProducts.put(product, 1);
+
+            // ask more products to return
+            System.out.println("Would you like to return another item? (y/n)");
+            String choice = "";
+            while (!choice.matches("[yn]")) choice = InputManager.getInstance().nextLine();
+            if (Objects.equals(choice, "n")) moreProducts = false;
+        }
+
+        // return list of products to return
+        return selectedProducts;
+    }
+
+    // Asks the reason of the return/exchange
+    private String askReason(String returnOrExchange) {
+        switch (returnOrExchange) {
+            case "return" -> System.out.println("What is the reason of your return?");
+            case "exchange" -> System.out.println("What is the reason of your exchange?");
+        }
+        System.out.println("1. Wrong product(s) ordered");
+        System.out.println("2. Wrong product(s) received");
+        switch (returnOrExchange) {
+            case "return" :
+                System.out.println("3. No longer need the product(s)");
+                System.out.println("4. Not satisfied with the product(s)");
+                System.out.println("5. Did not make this order");
+                System.out.println("6. Other");
+                break;
+            case "exchange" :
+                System.out.println("3. Not satisfied with the product(s)");
+                System.out.println("4. Other");
+                break;
+        }
+
+        int choice = uiUtilities.getUserInputAsInteger();
+        String reason = "";
+        if (returnOrExchange.equals("return")) {
+            switch (choice) {
+                case 1 -> reason = "Wrong product(s) ordered";
+                case 2 -> reason = "Wrong product(s) received";
+                case 3 -> reason = "No longer need the product(s)";
+                case 4 -> reason = "Not satisfied with the product(s)";
+                case 5 -> reason = "Did not make this order";
+                case 6 -> reason = "Other";
+                default -> System.out.println("Invalid selection. Please try again.");
+            }
+        } else if (returnOrExchange.equals("exchange")) {
+            switch (choice) {
+                case 1 -> reason = "Wrong product(s) ordered";
+                case 2 -> reason = "Wrong product(s) received";
+                case 3 -> reason = "Not satisfied with the product(s)";
+                case 4 -> reason = "Other";
+            }
+        }
+
+        return reason;
+    }
+
+    // Prints reshipment label
+    private void printReshipmentLabel(Seller seller) {
+        System.out.println();
+        System.out.println("Printing label...");
+        System.out.println();
+        System.out.println("--------------------------------------------------");
+        System.out.println();
+        System.out.println("FROM: " + user.getFirstName() + " " + user.getLastName());
+        System.out.println("      " + user.getAddress().getAddressLine());
+        System.out.println("      " + user.getAddress().getCity() + ", " + user.getAddress().getProvince() + ", "
+                + user.getAddress().getCountry());
+        System.out.println("      " + user.getAddress().getPostalCode());
+        System.out.println();
+        System.out.println("TO:   " + seller.getId());
+        System.out.println("      " + seller.getAddress().getAddressLine());
+        System.out.println("      " + seller.getAddress().getCity() + ", " + seller.getAddress().getProvince() + ", "
+                + seller.getAddress().getCountry());
+        System.out.println("      " + seller.getAddress().getPostalCode());
+        System.out.println();
+        System.out.println("--------------------------------------------------");
+        System.out.println();
+        System.out.println("Label printed!");
+        System.out.println();
+    }
+
+    // Checks if the reshipment has been received within 30 days of the return request
+    private boolean check30DaysFromReshipmentRequest(IssueQuery query) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+        long diffInDays = 0;
+
+        try {
+            Date request = sdf.parse(query.getRequestDate());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate today = LocalDate.now();
+            Date reception = sdf.parse(today.format(formatter));
+
+            long diffInMs = Math.abs(request.getTime() - reception.getTime());
+            diffInDays = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS);
+        } catch (ParseException e) {
+            System.out.println("something went wrong");
+        }
+
+        if (diffInDays > 30) {
+            return false;
+        }
+
+        return true;
     }
 
     // issues ---------------------------------------------------------------------------------------------------------

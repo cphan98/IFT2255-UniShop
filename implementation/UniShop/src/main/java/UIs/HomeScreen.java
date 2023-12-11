@@ -12,12 +12,19 @@ import Users.User;
 
 public class HomeScreen {
 
+    // ATTRIBUTE
+
     private DataBase database;
 
+    // CONSTRUCTOR
 
     public HomeScreen(DataBase database) {
         this.database = database;
     }
+
+    // UTILITIES
+
+    // initialization -------------------------------------------------------------------------------------------------
 
     public void initialize() {
         boolean continueLoop = true;
@@ -68,6 +75,8 @@ public class HomeScreen {
         return inputManager.nextLine();
     }
 
+    // redirection ----------------------------------------------------------------------------------------------------
+
     public boolean redirectToLoginScreen() {
         LoginScreen loginScreen = new LoginScreen();
         String[] credentials = loginScreen.askCredentials();
@@ -80,6 +89,7 @@ public class HomeScreen {
         boolean continueLoop = menu.displayMenu();
         return !continueLoop; // indicates successful login
     }
+
     public boolean redirectToSignupScreen(boolean isSeller) {
         SignUpScreen signUpScreen = isSeller ? new SellerSignUp(database) : new BuyerSignUp(database);
         signUpScreen.getCredentialsAndSignUp();
@@ -87,8 +97,9 @@ public class HomeScreen {
         return false; // Continue loop anyway
     }
 
+    // other ----------------------------------------------------------------------------------------------------------
+
     private static void line() {
         System.out.println("--------------------------------------------------");
     }
-
 }

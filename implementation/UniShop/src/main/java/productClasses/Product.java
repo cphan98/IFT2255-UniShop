@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public abstract class Product implements java.io.Serializable {
+
     // ATTRIBUTES
 
     private final String id;
@@ -23,6 +24,29 @@ public abstract class Product implements java.io.Serializable {
     private float overallRating;
     private int likes;
     private boolean hasPromotion = false;
+
+    // CONSTRUCTOR
+
+    public Product(String title,
+                   String description,
+                   Category category,
+                   float price,
+                   int basePoints,
+                   Seller seller,
+                   int quantity,
+                   String sellDate) {
+        this.id = UUID.randomUUID().toString();
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.price = price;
+        this.basePoints = basePoints;
+        this.seller = seller;
+        this.quantity = quantity;
+        this.sellDate = sellDate;
+        this.evaluations = new ArrayList<>();
+        this.overallRating = 0.0F;
+    }
 
     // GETTERS
 
@@ -117,23 +141,9 @@ public abstract class Product implements java.io.Serializable {
         this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() + this.likes);
     }
 
-    // CONSTRUCTOR
+    // UTILITIES
 
-    public Product(String title, String description, Category category, float price, int basePoints, Seller seller, int quantity, String sellDate) {
-        this.id = UUID.randomUUID().toString();
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.price = price;
-        this.basePoints = basePoints;
-        this.seller = seller;
-        this.quantity = quantity;
-        this.sellDate = sellDate;
-        this.evaluations = new ArrayList<>();
-        this.overallRating = 0.0F;
-    }
-
-    // OPERATIONS
+    // rating ---------------------------------------------------------------------------------------------------------
 
     public void updateOverallRating(){
         float total = 0;
@@ -142,6 +152,8 @@ public abstract class Product implements java.io.Serializable {
         }
         this.overallRating = Math.round((total / evaluations.size()) * 10.0) / 10.0F;
     }
+
+    // to string ------------------------------------------------------------------------------------------------------
 
     public String toString() {
         return "Title: " + title + "\n" +
@@ -159,7 +171,9 @@ public abstract class Product implements java.io.Serializable {
     }
 
     public String smallToString() {
-        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t" + "Likes: " + likes + "\t\t" + "Average rating: " + overallRating + "\t\t" + (hasPromotion? "(promoted)" : "") + "\n";
+        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t"
+                + "Likes: " + likes + "\t\t" + "Average rating: " + overallRating + "\t\t"
+                + (hasPromotion? "(promoted)" : "") + "\n";
     }
 
     public String evaluationsToString() {

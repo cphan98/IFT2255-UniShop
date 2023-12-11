@@ -1,9 +1,13 @@
 package serializationUtil;
+
 import BackEndUtility.DataBase;
 
 import java.io.*;
 
 public class SerializationUtil {
+    // UTILITIES
+
+    // database -------------------------------------------------------------------------------------------------------
 
     public static void saveDataBase(DataBase dataBase, String filename) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {

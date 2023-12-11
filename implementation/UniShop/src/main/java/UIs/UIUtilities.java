@@ -2,9 +2,7 @@ package UIs;
 
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
-import Users.Buyer;
-import Users.Seller;
-import Users.User;
+import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.Notification;
 import productClasses.Product;
@@ -14,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class UIUtilities {
+
     // ATTRIBUTES
 
     private final DataBase database;
@@ -26,9 +25,9 @@ public class UIUtilities {
         this.user = user;
     }
 
-    // OPERATIONS
+    // UTILITIES
 
-    // TOGGLES
+    // toggles --------------------------------------------------------------------------------------------------------
 
     public void toggleEvaluationLike(Buyer user, Evaluation evaluation) {
         if (evaluation.getAuthor() == user) {
@@ -42,7 +41,8 @@ public class UIUtilities {
             evaluation.getAuthor().getMetrics().setLikesReceived(evaluation.getAuthor().getMetrics().getLikesReceived() + 1);
             System.out.println("You liked " + evaluation.getAuthor().getId() + "'s evaluation!");
             if (evaluation.getLikes() == 1) {
-                evaluation.getAuthor().addNotification(new Notification("New like on evaluation!", "You have gotten the first like on one of your evaluations!"));
+                evaluation.getAuthor().addNotification(new Notification("New like on evaluation!",
+                        "You have gotten the first like on one of your evaluations!"));
                 evaluation.getAuthor().getMetrics().addExpPoints(10);
             }
         } else {
@@ -75,8 +75,6 @@ public class UIUtilities {
                 user.getMetrics().addExpPoints(10);
                 buyer.getMetrics().addExpPoints(10);
             }
-
-
         } else {
             user.getBuyersFollowed().remove(buyer);
             buyer.getFollowers().remove(user);
@@ -128,7 +126,7 @@ public class UIUtilities {
         }
     }
 
-    // PROFILE
+    // profile --------------------------------------------------------------------------------------------------------
 
     public void deleteAccount() {
         System.out.println("Are you sure you want to delete your account? (y/n)");
@@ -236,7 +234,7 @@ public class UIUtilities {
         }
     }
 
-    // INPUTS
+    // inputs ---------------------------------------------------------------------------------------------------------
 
     public int getUserInputAsInteger() {
         while (true) {
