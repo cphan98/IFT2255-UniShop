@@ -13,8 +13,7 @@ public class Evaluation implements java.io.Serializable {
 
     // CONSTRUCTOR
 
-    public Evaluation(String comment, Float rating, Buyer author)
-    {
+    public Evaluation(String comment, Float rating, Buyer author) {
         this.comment = comment;
         this.rating = rating;
         this.author = author;

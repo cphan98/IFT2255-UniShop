@@ -153,7 +153,7 @@ public class OrderController extends SellerMenu {
     }
 
     // prints label for order
-    public void printLabel(Order order) {
+    private void printLabel(Order order) {
         System.out.println();
         System.out.println("Printing label...");
         System.out.println();
@@ -178,7 +178,7 @@ public class OrderController extends SellerMenu {
 
     // handle problem -------------------------------------------------------------------------------------------------
 
-    public void displayIssue(Order order) {
+    private void displayIssue(Order order) {
         System.out.println("Issue ID: " + order.getIssue().getId());
         System.out.println("Description: " + order.getIssue().getIssueDescription());
 

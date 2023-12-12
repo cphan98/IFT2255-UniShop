@@ -110,14 +110,14 @@ public class Buyer extends User implements java.io.Serializable {
         follower.getBuyersFollowed().remove(this);
     }
 
-    public void updateTop5() {
+    private void updateTop5() {
         top5.clear();
         rankBuyers().limit(5).forEach(entry -> {
             top5.add(entry.getKey());
         });
     }
 
-    public void updateYourRank() {
+    private void updateYourRank() {
         ArrayList<Buyer> listOfBuyers = new ArrayList<>();
         rankBuyers().forEach(entry ->
                 listOfBuyers.add(entry.getKey()));
@@ -126,7 +126,7 @@ public class Buyer extends User implements java.io.Serializable {
         }
     }
 
-    public Stream<Map.Entry<Buyer, Integer>> rankBuyers() {
+    private Stream<Map.Entry<Buyer, Integer>> rankBuyers() {
         HashMap<Buyer, Integer> buyersXP = new HashMap<>();
         buyersXP.put(this, this.getMetrics().getExpPoints());
         for (Buyer buyer : getBuyersFollowed()) {

@@ -29,6 +29,7 @@ public class SellerMenu extends Menu {
 
     // main menu ------------------------------------------------------------------------------------------------------
 
+    @Override
     public boolean displayMenu() {
         boolean continueLoop = true;
 

@@ -64,7 +64,7 @@ public class Catalog implements Serializable {
 
     // products -------------------------------------------------------------------------------------------------------
 
-    public void addProduct(Category category, Product product) {
+    private void addProduct(Category category, Product product) {
         getCatalogType(category).add(product);
     }
 
@@ -100,7 +100,7 @@ public class Catalog implements Serializable {
         return null;
     }
 
-    public void orderProductsByPrice(boolean ascending) {
+    private void orderProductsByPrice(boolean ascending) {
         HashMap<Product, Float> productPrices = new HashMap<>();
         for (Product product : books_catalog) {
             productPrices.put(product, product.getPrice());
@@ -131,7 +131,7 @@ public class Catalog implements Serializable {
         );
     }
 
-    public void orderProductsByLikes(boolean ascending) {
+    private void orderProductsByLikes(boolean ascending) {
         HashMap<Product, Integer> productLikes = new HashMap<>();
         for (Product product : books_catalog) {
             productLikes.put(product, product.getLikes());
@@ -162,7 +162,7 @@ public class Catalog implements Serializable {
         );
     }
 
-    public void orderProductsByAverageNote(boolean ascending) {
+    private void orderProductsByAverageNote(boolean ascending) {
         HashMap<Product, Float> productNotes = new HashMap<>();
         for (Product product : books_catalog) {
             productNotes.put(product, product.getOverallRating());
@@ -209,7 +209,7 @@ public class Catalog implements Serializable {
 
     // sellers --------------------------------------------------------------------------------------------------------
 
-    public void displaySellers() {
+    private void displaySellers() {
         //create a method to add sellers in list when sign up
         System.out.println("List of Sellers: \n" + sellersToString() + "\n");
     }
@@ -224,7 +224,7 @@ public class Catalog implements Serializable {
 
     // to string ------------------------------------------------------------------------------------------------------
 
-    public String categoryCatalogToString(HashSet<Product> catalog) {
+    private String categoryCatalogToString(HashSet<Product> catalog) {
         StringBuilder result = new StringBuilder();
         for (Product product : catalog) {
             result.append("\t").append(product.smallToString());
@@ -232,7 +232,7 @@ public class Catalog implements Serializable {
         return result.toString();
     }
 
-    public String sellersToString() {
+    private String sellersToString() {
         StringBuilder result = new StringBuilder();
         for (Seller seller : sellers_list) {
             result.append("\t")
@@ -256,7 +256,7 @@ public class Catalog implements Serializable {
         }
     }
 
-    public void orderSellersByLikes(boolean ascending) {
+    private void orderSellersByLikes(boolean ascending) {
         HashMap<Seller, Integer> sellerLikes = new HashMap<>();
         for (Seller seller : sellers_list) {
             sellerLikes.put(seller, seller.getMetrics().getLikes());
@@ -276,7 +276,7 @@ public class Catalog implements Serializable {
         );
     }
 
-    public void orderSellersByAverageNote(boolean ascending) {
+    private void orderSellersByAverageNote(boolean ascending) {
         HashMap<Seller, Float> sellerNotes = new HashMap<>();
         for (Seller seller : sellers_list) {
             sellerNotes.put(seller, seller.getMetrics().getAverageNoteReceived());

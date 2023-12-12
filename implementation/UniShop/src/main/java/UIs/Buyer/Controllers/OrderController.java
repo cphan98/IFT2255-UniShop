@@ -146,7 +146,7 @@ public class OrderController extends BuyerMenu {
     // cancel order ---------------------------------------------------------------------------------------------------
 
     // Cancels an order
-    public void cancelOrder(Order order) {
+    private void cancelOrder(Order order) {
         System.out.println();
         System.out.println("Cancelling order...");
 
@@ -1080,7 +1080,7 @@ public class OrderController extends BuyerMenu {
     // issues ---------------------------------------------------------------------------------------------------------
 
     // Reports a problem
-    public void reportProblem(Order order) {
+    private void reportProblem(Order order) {
         System.out.println();
         System.out.println("Reporting a problem...");
         user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setIssue(new IssueQuery("problem with a product"));
@@ -1092,7 +1092,7 @@ public class OrderController extends BuyerMenu {
     }
 
     // Accepts a solution for an issue
-    public boolean acceptSolution(IssueQuery issue) {
+    private boolean acceptSolution(IssueQuery issue) {
         System.out.println();
         System.out.println("Accepting solution...");
         System.out.println();
@@ -1118,7 +1118,7 @@ public class OrderController extends BuyerMenu {
     }
 
     // Confirms the solution for an issue
-    public void confirmSolution(Order order) {
+    private void confirmSolution(Order order) {
         System.out.println();
         if (order.getIssue() == null){
             System.out.println("You haven't reported a problem yet");
@@ -1166,7 +1166,7 @@ public class OrderController extends BuyerMenu {
     // order reception ------------------------------------------------------------------------------------------------
 
     // Confirms order reception
-    public void confirmOrderReception(Order order) {
+    private void confirmOrderReception(Order order) {
         System.out.println();
         System.out.println("Confirming order reception...");
         // can only confirm when status is 'in delivery' or 'replacement in delivery'

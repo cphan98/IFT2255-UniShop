@@ -54,7 +54,7 @@ public class Seller extends User implements java.io.Serializable {
 
     }
 
-    // UTILITES
+    // UTILITIES
 
     // products -------------------------------------------------------------------------------------------------------
 
@@ -93,6 +93,7 @@ public class Seller extends User implements java.io.Serializable {
 
     // to string ------------------------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Seller: ").append(getId()).append("\n");

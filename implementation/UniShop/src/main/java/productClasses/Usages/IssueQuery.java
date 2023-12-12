@@ -94,7 +94,7 @@ public class IssueQuery implements java.io.Serializable {
 
     // inputs ---------------------------------------------------------------------------------------------------------
 
-    public int getUserInputAsInteger() {
+    private int getUserInputAsInteger() {
         while (true) {
             try {
                 int returned = Integer.parseInt(InputManager.getInstance().nextLine());

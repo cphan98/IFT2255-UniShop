@@ -161,7 +161,7 @@ public class Order implements java.io.Serializable {
 
     // eta ------------------------------------------------------------------------------------------------------------
 
-    public String makeRandomETA() {
+    private String makeRandomETA() {
         int day = (int) (Math.random() * 30);
         return "Within " + day + " days";
     }

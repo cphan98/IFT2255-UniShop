@@ -27,6 +27,7 @@ public class BuyerMenu extends Menu {
 
     // main menu ------------------------------------------------------------------------------------------------------
 
+    @Override
     public boolean displayMenu() {
 
         boolean continueLoop = true;
@@ -109,7 +110,7 @@ public class BuyerMenu extends Menu {
 
     // wish list ------------------------------------------------------------------------------------------------------
 
-    public boolean displayWishList() {
+    private boolean displayWishList() {
         System.out.println("WISHLIST");
         boolean continueLoop = true;
         while (continueLoop) {

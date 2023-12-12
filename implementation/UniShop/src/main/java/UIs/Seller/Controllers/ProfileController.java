@@ -83,7 +83,7 @@ public class ProfileController extends SellerMenu {
 
     // metrics --------------------------------------------------------------------------------------------------------
 
-    public void displayProfileMetrics() {
+    private void displayProfileMetrics() {
         if(! user.getMetrics().getSelectedMetrics().isEmpty()){
             System.out.println(user.getMetrics().getSelectedMetrics().get(0));
             System.out.println(user.getMetrics().getSelectedMetrics().get(1));

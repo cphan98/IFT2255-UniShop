@@ -71,7 +71,7 @@ public class CatalogController extends BuyerMenu {
 
     // product page ---------------------------------------------------------------------------------------------------
 
-    private void searchAndDisplayProduct() {
+    public void searchAndDisplayProduct() {
         if (searchProduct(catalog)) {
             System.out.println(pointedProduct);
             interactWithProduct();
@@ -91,7 +91,7 @@ public class CatalogController extends BuyerMenu {
         return true;  // continue the loop
     }
 
-    private void interactWithProduct() {
+    public void interactWithProduct() {
         boolean continueInteraction = true;
         while (continueInteraction) {
             System.out.println("\n1. Add product to cart");
@@ -146,7 +146,7 @@ public class CatalogController extends BuyerMenu {
         System.out.println("Product added to cart");
     }
 
-    public void addEvaluationToProduct(Product product) {
+    private void addEvaluationToProduct(Product product) {
         System.out.println();
         System.out.println("Adding evaluation...");
 
@@ -217,7 +217,7 @@ public class CatalogController extends BuyerMenu {
 
     // seller page ----------------------------------------------------------------------------------------------------
 
-    private void searchSeller() {
+    public void searchSeller() {
         line();
         ArrayList<Seller> listOfSellers = null;
         boolean continueLoop = true;
@@ -252,10 +252,8 @@ public class CatalogController extends BuyerMenu {
                                 System.out.println("Invalid selection. Please try again.");
                             }
                         }
-
                     }
                 }
-
                 case 2 -> {
                     System.out.println("Enter the address of the seller you want to view:");
                     String address = InputManager.getInstance().nextLine();
@@ -291,7 +289,7 @@ public class CatalogController extends BuyerMenu {
         }
     }
 
-    private void displaySellerInfo() {
+    public void displaySellerInfo() {
         System.out.println("Enter the name of the seller you want to check out:");
         String id = InputManager.getInstance().nextLine();
         pointedSeller = catalog.searchSellerByName(id);
@@ -303,7 +301,7 @@ public class CatalogController extends BuyerMenu {
         }
     }
 
-    private void interactWithSeller() {
+    public void interactWithSeller() {
         line();
         System.out.println(pointedSeller.toString());
         line();
@@ -477,7 +475,7 @@ public class CatalogController extends BuyerMenu {
 
     // display products liked -----------------------------------------------------------------------------------------
 
-    private void displayProductsLikedByFollowing() {
+    public void displayProductsLikedByFollowing() {
         System.out.println("Products liked by the buyers you're following:");
         HashMap<Product, Integer> productsLikedByFollowing = new HashMap<>();
         for (Buyer buyer : user.getBuyersFollowed()) {

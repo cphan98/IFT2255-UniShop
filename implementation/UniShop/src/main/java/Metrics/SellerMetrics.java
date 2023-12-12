@@ -53,19 +53,19 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
 
     // UTILITIES
 
-    // revenue
+    // revenue --------------------------------------------------------------------------------------------------------
 
     public void updateRevenue(float revenue) {
         this.revenue = revenue;
     }
 
-    // products
+    // products -------------------------------------------------------------------------------------------------------
 
     public void updateProductsSold(int productsSold) {
         this.productsSold = productsSold;
     }
 
-    // evaluations
+    // evaluations ----------------------------------------------------------------------------------------------------
 
     public void updateAverageNoteReceived(float note) {
         notesReceived.add(note);
@@ -85,13 +85,13 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         averageNoteReceived = Math.round((sum / notesReceived.size()) * 10) / 10f;
     }
 
-    // likes
+    // likes ----------------------------------------------------------------------------------------------------------
 
     public void updateLikes(int likes) {
         this.likes = likes;
     }
 
-    // configuration
+    // configuration --------------------------------------------------------------------------------------------------
 
     public void configureMetrics(){
         ArrayList<String> allMetrics = new ArrayList<>();
@@ -145,9 +145,9 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         return selectedMetrics;
     }
 
-    // inputs
+    // inputs ---------------------------------------------------------------------------------------------------------
 
-    protected int getUserInputAsInteger() {
+    private int getUserInputAsInteger() {
         while (true) {
             try {
                 int returned = Integer.parseInt(InputManager.getInstance().nextLine());
@@ -163,7 +163,7 @@ public class SellerMetrics implements Metrics, java.io.Serializable {
         }
     }
 
-    // to string
+    // to string ------------------------------------------------------------------------------------------------------
 
     public String SomeMetricsToString(){
         return"Products sold: " + productsSold + "\n" +

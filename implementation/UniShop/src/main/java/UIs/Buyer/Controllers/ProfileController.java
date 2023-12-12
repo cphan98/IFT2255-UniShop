@@ -128,7 +128,7 @@ public class ProfileController extends BuyerMenu {
         return true;
     }
 
-    private boolean searchBuyer() {
+    public boolean searchBuyer() {
         line();
         ArrayList<Buyer> pointedBuyer = null;
         boolean continueLoop = true;
@@ -200,7 +200,7 @@ public class ProfileController extends BuyerMenu {
         return true;
     }
 
-    public void interactWithBuyer(Buyer pointedBuyer) {
+    private void interactWithBuyer(Buyer pointedBuyer) {
         if (user.getBuyersFollowed().contains(pointedBuyer)) {
             System.out.println("1. Unfollow this buyer");
         } else {
@@ -313,7 +313,7 @@ public class ProfileController extends BuyerMenu {
         }
     }
 
-    public void modifyPaymentInfo() {
+    private void modifyPaymentInfo() {
         System.out.println("Enter your credit card number:");
         String cardNumber = InputManager.getInstance().nextLine();
         System.out.println("Enter your credit card expiration date:");
@@ -328,7 +328,7 @@ public class ProfileController extends BuyerMenu {
 
     // metrics --------------------------------------------------------------------------------------------------------
 
-    public void displayMetricsProfil() {
+    private void displayMetricsProfil() {
         if (user.getMetrics().getSelectedMetrics().isEmpty()) {
             System.out.println("No metrics selected");
             return;

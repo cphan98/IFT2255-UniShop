@@ -22,6 +22,7 @@ public class BuyerSignUp implements SignUpScreen {
 
     // credentials ----------------------------------------------------------------------------------------------------
 
+    @Override
     public void getCredentialsAndSignUp() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter your first name:");

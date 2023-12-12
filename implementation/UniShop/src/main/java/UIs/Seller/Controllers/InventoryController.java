@@ -97,7 +97,7 @@ public class InventoryController extends SellerMenu {
     // add products ---------------------------------------------------------------------------------------------------
 
     // Adds new product to database
-    public void addProduct() {
+    private void addProduct() {
         InputManager inputManager = InputManager.getInstance();
 
         // ask title
@@ -233,7 +233,7 @@ public class InventoryController extends SellerMenu {
 
     // remove products ------------------------------------------------------------------------------------------------
 
-    public void removeProduct() {
+    private void removeProduct() {
         Product product = null;
         while (product == null) {
             System.out.println("Please enter the title of the product:");
@@ -248,7 +248,7 @@ public class InventoryController extends SellerMenu {
 
     // change product quantities --------------------------------------------------------------------------------------
 
-    public void changeProductQty() {
+    private void changeProductQty() {
         Product product = null;
         while (product == null) {
             System.out.println("Please enter the title of the product:");

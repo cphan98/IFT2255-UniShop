@@ -122,7 +122,7 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
 
     // inputs ---------------------------------------------------------------------------------------------------------
 
-    protected int getUserInputAsInteger() {
+    private int getUserInputAsInteger() {
         while (true) {
             try {
                 int returned = Integer.parseInt(InputManager.getInstance().nextLine());

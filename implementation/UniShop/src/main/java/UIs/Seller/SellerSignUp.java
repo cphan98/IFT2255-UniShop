@@ -27,6 +27,7 @@ public class SellerSignUp implements SignUpScreen {
 
     // credentials ----------------------------------------------------------------------------------------------------
 
+    @Override
     public void getCredentialsAndSignUp() {
         System.out.println("Welcome, new seller!");
         InputManager inputManager = InputManager.getInstance();
@@ -194,7 +195,7 @@ public class SellerSignUp implements SignUpScreen {
 
     // inputs ---------------------------------------------------------------------------------------------------------
 
-    protected int getUserInputAsInteger() {
+    private int getUserInputAsInteger() {
         while (true) {
             try {
                 int returned = Integer.parseInt(InputManager.getInstance().nextLine());

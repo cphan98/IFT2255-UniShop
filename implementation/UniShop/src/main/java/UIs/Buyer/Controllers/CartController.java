@@ -54,7 +54,7 @@ public class CartController extends BuyerMenu {
 
     // checkout -------------------------------------------------------------------------------------------------------
 
-    public void makeCheckout() {
+    private void makeCheckout() {
         InputManager im = InputManager.getInstance();
         System.out.println("You currently have " + user.getMetrics().getBuyPoints() + " points\n");
         System.out.println("Do you want to use your registered info for this order? (y/n)");
@@ -141,7 +141,7 @@ public class CartController extends BuyerMenu {
 
     // remove product -------------------------------------------------------------------------------------------------
 
-    public void removeProductFromCart() {
+    private void removeProductFromCart() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter the name of the product you want to remove:");
         String title = inputManager.nextLine();
@@ -163,7 +163,7 @@ public class CartController extends BuyerMenu {
 
     // empty cart -----------------------------------------------------------------------------------------------------
 
-    public void emptyCart() {
+    private void emptyCart() {
         InputManager im = InputManager.getInstance();
         System.out.println("Are you sure you want to empty the cart? (y/n)");
         String input = im.nextLine();

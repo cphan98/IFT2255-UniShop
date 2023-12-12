@@ -70,14 +70,14 @@ public class HomeScreen {
         }
     }
 
-    public String readInput() {
+    private String readInput() {
         InputManager inputManager = InputManager.getInstance();
         return inputManager.nextLine();
     }
 
     // redirection ----------------------------------------------------------------------------------------------------
 
-    public boolean redirectToLoginScreen() {
+    private boolean redirectToLoginScreen() {
         LoginScreen loginScreen = new LoginScreen();
         String[] credentials = loginScreen.askCredentials();
         User user = loginScreen.loginUser(credentials[0], credentials[1], database);
@@ -90,7 +90,7 @@ public class HomeScreen {
         return !continueLoop; // indicates successful login
     }
 
-    public boolean redirectToSignupScreen(boolean isSeller) {
+    private boolean redirectToSignupScreen(boolean isSeller) {
         SignUpScreen signUpScreen = isSeller ? new SellerSignUp(database) : new BuyerSignUp(database);
         signUpScreen.getCredentialsAndSignUp();
 

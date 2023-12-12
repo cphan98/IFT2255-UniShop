@@ -176,7 +176,7 @@ public abstract class Product implements java.io.Serializable {
                 + (hasPromotion? "(promoted)" : "") + "\n";
     }
 
-    public String evaluationsToString() {
+    private String evaluationsToString() {
         if (evaluations.isEmpty()) {
             return "No evaluations yet";
         }

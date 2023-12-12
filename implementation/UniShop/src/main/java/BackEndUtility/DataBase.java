@@ -159,7 +159,7 @@ public class DataBase implements java.io.Serializable {
         }
     }
 
-    public void assignOrders() {
+    private void assignOrders() {
         getUsers().forEach(user -> user.setOrderHistory(new ArrayList<>()));
         for (Order order : orders) {
             order.getBuyer().addOrder(order);
@@ -298,7 +298,7 @@ public class DataBase implements java.io.Serializable {
         }
     }
 
-    public Stream<Map.Entry<Buyer, String>> sortBuyersByName(boolean ascending) {
+    private Stream<Map.Entry<Buyer, String>> sortBuyersByName(boolean ascending) {
         HashMap<Buyer, String> buyerName = new HashMap<>();
         for (Buyer buyer : getBuyers()) {
             buyerName.put(buyer, buyer.getFirstName());
@@ -314,7 +314,7 @@ public class DataBase implements java.io.Serializable {
         return sortedStream;
     }
 
-    public Stream<Map.Entry<Buyer, String>> sortBuyersById(boolean ascending) {
+    private Stream<Map.Entry<Buyer, String>> sortBuyersById(boolean ascending) {
         HashMap<Buyer, String> buyerId = new HashMap<>();
         for (Buyer buyer : getBuyers()) {
             buyerId.put(buyer, buyer.getId());
@@ -330,7 +330,7 @@ public class DataBase implements java.io.Serializable {
         return sortedStream;
     }
 
-    public Stream<Map.Entry<Buyer, Integer>> sortBuyersByFollowers(boolean ascending) {
+    private Stream<Map.Entry<Buyer, Integer>> sortBuyersByFollowers(boolean ascending) {
         HashMap<Buyer, Integer> buyerFollowers = new HashMap<>();
         for (Buyer buyer : getBuyers()) {
             buyerFollowers.put(buyer, buyer.getFollowers().size());
@@ -346,7 +346,7 @@ public class DataBase implements java.io.Serializable {
         return sortedStream;
     }
 
-    public Stream<Map.Entry<Buyer, Integer>> sortBuyersByXp(boolean ascending) {
+    private Stream<Map.Entry<Buyer, Integer>> sortBuyersByXp(boolean ascending) {
         HashMap<Buyer, Integer> buyersXP = new HashMap<>();
         for (Buyer buyer : getBuyers()) {
             buyersXP.put(buyer, buyer.getMetrics().getExpPoints());
@@ -362,7 +362,7 @@ public class DataBase implements java.io.Serializable {
         return sortedStream;
     }
 
-    public void top5Buyers(boolean ascending) {
+    private void top5Buyers(boolean ascending) {
         sortBuyersByXp(ascending).limit(5).forEach(entry -> {
             top5.add(entry.getKey());
         });
@@ -493,7 +493,7 @@ public class DataBase implements java.io.Serializable {
 
     // inputs ---------------------------------------------------------------------------------------------------------
 
-    public int getUserInputAsInteger() {
+    private int getUserInputAsInteger() {
         while (true) {
             try {
                 int returned = Integer.parseInt(InputManager.getInstance().nextLine());
