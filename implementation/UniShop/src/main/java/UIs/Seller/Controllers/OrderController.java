@@ -4,30 +4,35 @@ import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import BackEndUtility.OrderState;
 import UIs.Seller.SellerMenu;
+import UIs.UIUtilities;
 import Users.Seller;
 import UtilityObjects.Notification;
+import UtilityObjects.NotificationSender;
 import productClasses.Product;
 import productClasses.Usages.Order;
 
 import java.util.*;
 
-public class OrderController extends SellerMenu {
+public class OrderController  {
 
     // ATTRIBUTES
-    private Seller user;
-    private DataBase database;
+    private final Seller user;
+    private final DataBase database;
+    private final UIUtilities uiUtilities;
+    private final NotificationSender notificationSender = new NotificationSender();
 
     // CONSTRUCTOR
 
     public OrderController(Seller user, DataBase database) {
-        super(user, database);
+        this.database = database;
+        this.user = user;
+        this.uiUtilities = new UIUtilities(database, user);
     }
 
     // UTILITIES
 
     // order history page ---------------------------------------------------------------------------------------------
 
-    @Override
     public boolean displayOrderHistory() {
         System.out.println();
         System.out.println("ORDER HISTORY");
@@ -57,7 +62,6 @@ public class OrderController extends SellerMenu {
 
     // order page -----------------------------------------------------------------------------------------------------
 
-    @Override
     public void interactWithOrder(Order order) {
         System.out.println(order);
         System.out.println();
@@ -140,7 +144,7 @@ public class OrderController extends SellerMenu {
             order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).setStatus(OrderState.IN_DELIVERY);
 
             // send notification to buyer
-            sendBuyerNotification(order.getBuyer(), "Order status changed",
+            notificationSender.sendBuyerNotification(order.getBuyer(), "Order status changed",
                     "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
 
             // confirm order preparation
@@ -246,7 +250,7 @@ public class OrderController extends SellerMenu {
         order.getBuyer().getOrderHistory().get(order.getBuyer().getOrderHistory().indexOf(order)).getIssue().setReshipmentReceived(true);
 
         // send notification to buyer
-        sendBuyerNotification(order.getBuyer(), "Order status changed",
+        notificationSender.sendBuyerNotification(order.getBuyer(), "Order status changed",
                 "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
 
         // if issue's solution description is 'return', refund buyer
@@ -284,7 +288,7 @@ public class OrderController extends SellerMenu {
                 .setStatus(OrderState.REPLACEMENT_IN_PRODUCTION);
 
         // send notification to buyer
-        sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed",
+        notificationSender.sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed",
                 "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
 
         // display replacement products
@@ -317,7 +321,7 @@ public class OrderController extends SellerMenu {
                 .setStatus(OrderState.REPLACEMENT_IN_DELIVERY);
 
         // send notification to buyer
-        sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed",
+        notificationSender.sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed",
                 "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
 
         // confirm replacement order prepared
@@ -348,7 +352,7 @@ public class OrderController extends SellerMenu {
             }
 
             // send notification to buyer
-            sendBuyerNotification(order.getBuyer(), "You've received a refund",
+            notificationSender.sendBuyerNotification(order.getBuyer(), "You've received a refund",
                     "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
         } else {
             int sum = 0; // sum to refund
@@ -371,7 +375,7 @@ public class OrderController extends SellerMenu {
             database.getBuyers().get(database.getBuyers().indexOf(order.getBuyer())).getMetrics().addBuyPoints(sum);
 
             // send notification to buyer
-            sendBuyerNotification(order.getBuyer(), "You've received a refund",
+            notificationSender.sendBuyerNotification(order.getBuyer(), "You've received a refund",
                     "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
         }
 

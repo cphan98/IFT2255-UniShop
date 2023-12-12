@@ -14,15 +14,18 @@ public class SellerMenu extends Menu {
     // ATTRIBUTES
 
     private Seller user;
-    private final ProfileController profileController = new ProfileController(user, database);
-    private final OrderController orderController = new OrderController(user, database);
-    private final InventoryController inventoryController = new InventoryController(user, database);
+    private final ProfileController profileController;
+    private final OrderController orderController;
+    private final InventoryController inventoryController;
 
     // CONSTRUCTOR
 
     public SellerMenu(Seller user, DataBase database) {
         super(user, database);
         this.user = user;
+        this.profileController = new ProfileController(user, database);
+        this.orderController = new OrderController(user, database);
+        this.inventoryController = new InventoryController(user, database);
     }
 
     // UTILITIES

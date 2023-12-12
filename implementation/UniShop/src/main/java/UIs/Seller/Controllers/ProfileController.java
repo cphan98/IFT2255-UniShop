@@ -2,26 +2,29 @@ package UIs.Seller.Controllers;
 
 import BackEndUtility.DataBase;
 import UIs.Seller.SellerMenu;
+import UIs.UIUtilities;
 import Users.Seller;
 
-public class ProfileController extends SellerMenu {
+public class ProfileController {
 
     // ATTRIBUTES
 
-    private Seller user;
-    private DataBase database;
+    private final Seller user;
+    private final DataBase database;
+    private final UIUtilities uiUtilities;
 
     // CONSTRUCTOR
 
     public ProfileController(Seller user, DataBase database) {
-        super(user, database);
+        this.database = database;
+        this.user = user;
+        this.uiUtilities = new UIUtilities(database, user);
     }
 
     // UTILITIES
 
     // profile page ---------------------------------------------------------------------------------------------------
 
-    @Override
     public boolean displayProfile() {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -64,7 +67,6 @@ public class ProfileController extends SellerMenu {
 
     // profile modifications ------------------------------------------------------------------------------------------
 
-    @Override
     public void modifyProfile() {
         System.out.println("1. Modify personal info");
         System.out.println("2. Modify address");
@@ -91,7 +93,6 @@ public class ProfileController extends SellerMenu {
         }
     }
 
-    @Override
     public void  displayMetrics() {
         boolean continueLoop = true;
         while (continueLoop){

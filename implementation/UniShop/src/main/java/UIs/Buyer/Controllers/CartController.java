@@ -3,6 +3,7 @@ package UIs.Buyer.Controllers;
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import UIs.Buyer.BuyerMenu;
+import UIs.UIUtilities;
 import Users.Buyer;
 import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
@@ -10,17 +11,20 @@ import productClasses.Product;
 
 import java.util.Objects;
 
-public class CartController extends BuyerMenu {
+public class CartController {
 
     // ATTRIBUTES
 
-    private Buyer user;
-    private DataBase dataBase;
+    private final Buyer user;
+    private final DataBase database;
+    private final UIUtilities uiUtilities;
 
     // CONSTRUCTOR
 
     public CartController(Buyer user, DataBase database) {
-        super(user, database);
+        this.user = user;
+        this.database = database;
+        this.uiUtilities = new UIUtilities(database, user);
     }
 
     // UTILITIES

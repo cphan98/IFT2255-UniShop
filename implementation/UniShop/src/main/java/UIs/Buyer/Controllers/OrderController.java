@@ -4,10 +4,12 @@ import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import BackEndUtility.OrderState;
 import UIs.Buyer.BuyerMenu;
+import UIs.UIUtilities;
 import Users.Buyer;
 import Users.Seller;
 import UtilityObjects.CreditCard;
 import UtilityObjects.Notification;
+import UtilityObjects.NotificationSender;
 import productClasses.Product;
 import productClasses.Usages.IssueQuery;
 import productClasses.Usages.Order;
@@ -19,24 +21,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class OrderController extends BuyerMenu {
+public class OrderController {
 
     // ATTRIBUTES
 
-    private Buyer user;
-    private DataBase dataBase;
+    private final Buyer user;
+    private final DataBase database;
+    private final UIUtilities uiUtilities;
+    private final NotificationSender notificationSender = new NotificationSender();
 
     // CONSTRUCTOR
 
     public OrderController(Buyer user, DataBase database) {
-        super(user, database);
+        this.user = user;
+        this.database = database;
+        this.uiUtilities = new UIUtilities(database, user);
     }
 
     // UTILITIES
 
     // order history page ---------------------------------------------------------------------------------------------
 
-    @Override
     public boolean displayOrderHistory() {
         System.out.println();
         System.out.println("ORDER HISTORY");
@@ -66,7 +71,6 @@ public class OrderController extends BuyerMenu {
 
     // order page -----------------------------------------------------------------------------------------------------
 
-    @Override
     public void interactWithOrder(Order order) {
         // check if there is an issue
         if (order.getIssue() != null) {
@@ -82,10 +86,10 @@ public class OrderController extends BuyerMenu {
                 }
 
                 // send notification to buyer and seller
-                sendBuyerNotification(user,
+                notificationSender.sendBuyerNotification(user,
                         "Reshipment for order " + order.getId() + " is cancelled",
                         "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
-                sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(),
+                notificationSender.sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(),
                         "Issue " + order.getIssue().getId() + " cancelled",
                         "The reshipment package has not been received within 30 days of the reshipment request.");
             }
@@ -177,8 +181,8 @@ public class OrderController extends BuyerMenu {
         user.getMetrics().setProductsBought((user.getMetrics().getProductsBought() - productsCancelled));
 
         // send notification to buyer and seller
-        sendBuyerNotification(user, "Order cancelled", "Your order " + order.getId() + " has been cancelled!");
-        sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Order cancelled",
+        notificationSender.sendBuyerNotification(user, "Order cancelled", "Your order " + order.getId() + " has been cancelled!");
+        notificationSender.sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Order cancelled",
                 "your order " + order.getId() + " has been cancelled!");
 
         // confirm cancellation
@@ -252,7 +256,7 @@ public class OrderController extends BuyerMenu {
             System.out.println("You have successfully requested a return!");
 
             // send notification to seller
-            sendSellerNotification(returnQuery.getReshipmentProducts().keySet().iterator().next().getSeller(),
+            notificationSender.sendSellerNotification(returnQuery.getReshipmentProducts().keySet().iterator().next().getSeller(),
                     "Return requested: " + returnQuery.getId(), user.getId() + " requested a return.");
 
             // print reshipment label
@@ -368,10 +372,10 @@ public class OrderController extends BuyerMenu {
                             removeInventoryQuantities(replacementProducts, seller);
 
                             // send notification to buyer and seller
-                            sendBuyerNotification(user, "Order Status Update",
+                            notificationSender.sendBuyerNotification(user, "Order Status Update",
                                     "Your order " + exchangeOrder.getId() + " is now "
                                             + exchangeOrder.getStatus().toString().toLowerCase() + "!");
-                            sendSellerNotification(seller, "New Order",
+                            notificationSender.sendSellerNotification(seller, "New Order",
                                     "You have a new order: " + exchangeOrder.getId());
                     }
 
@@ -413,10 +417,10 @@ public class OrderController extends BuyerMenu {
                             removeInventoryQuantities(replacementProducts, seller);
 
                             // send notification to buyer and seller
-                            sendBuyerNotification(user, "Order Status Update",
+                            notificationSender.sendBuyerNotification(user, "Order Status Update",
                                     "Your order " + exchangeOrder.getId() + " is now "
                                             + exchangeOrder.getStatus().toString().toLowerCase() + "!");
-                            sendSellerNotification(seller, "New Order",
+                            notificationSender.sendSellerNotification(seller, "New Order",
                                     "You have a new order: " + exchangeOrder.getId());
                     }
 
@@ -431,7 +435,7 @@ public class OrderController extends BuyerMenu {
             System.out.println("You have successfully requested an exchange!");
 
             // send notification to seller
-            sendSellerNotification(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller(),
+            notificationSender.sendSellerNotification(exchangeQuery.getReshipmentProducts().keySet().iterator().next().getSeller(),
                     "Return requested: " + exchangeQuery.getId(), user.getId() + " requested an exchange.");
 
             // print reshipment label
@@ -577,9 +581,9 @@ public class OrderController extends BuyerMenu {
         removeInventoryQuantities(replacementProducts, seller);
 
         // send notification to buyer and seller
-        sendBuyerNotification(user, "Order Status Update",
+        notificationSender.sendBuyerNotification(user, "Order Status Update",
                 "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
-        sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
+        notificationSender.sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
     }
 
     // Pays points difference
@@ -647,9 +651,9 @@ public class OrderController extends BuyerMenu {
         removeInventoryQuantities(replacementProducts, seller);
 
         // send notification to buyer and seller
-        sendBuyerNotification(user, "Order Status Update",
+        notificationSender.sendBuyerNotification(user, "Order Status Update",
                 "Your order " + exchangeOrder.getId() + " is now " + exchangeOrder.getStatus().toString().toLowerCase() + "!");
-        sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
+        notificationSender.sendSellerNotification(seller, "New Order", "You have a new order: " + exchangeOrder.getId());
     }
 
     // Refunds price difference
@@ -679,9 +683,9 @@ public class OrderController extends BuyerMenu {
         removeInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
 
         // send notification to buyer
-        sendBuyerNotification(user, "You've received a refund",
+        notificationSender.sendBuyerNotification(user, "You've received a refund",
                 "You've received a refund of " + Math.abs(priceDiff) + " from your exchange request " + order.getIssue().getId() + ".");
-        sendSellerNotification(replacementProducts.entrySet().iterator().next().getKey().getSeller(), "New Order",
+        notificationSender.sendSellerNotification(replacementProducts.entrySet().iterator().next().getKey().getSeller(), "New Order",
                 "You have a new order: " + exchangeOrder.getId());
 
         // confirm refund
@@ -716,9 +720,9 @@ public class OrderController extends BuyerMenu {
         removeInventoryQuantities(replacementProducts, replacementProducts.entrySet().iterator().next().getKey().getSeller());
 
         // send notification to buyer
-        sendBuyerNotification(user, "You've received a refund",
+        notificationSender.sendBuyerNotification(user, "You've received a refund",
                 "You've received a refund of " + Math.abs(pointsDiff) + " from your exchange request " + order.getIssue().getId() + ".");
-        sendSellerNotification(replacementProducts.entrySet().iterator().next().getKey().getSeller(),
+        notificationSender.sendSellerNotification(replacementProducts.entrySet().iterator().next().getKey().getSeller(),
                 "New Order", "You have a new order: " + exchangeOrder.getId());
 
         // confirme refund
@@ -1176,7 +1180,7 @@ public class OrderController extends BuyerMenu {
             user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.DELIVERED);
 
             // send notification to buyer
-            sendBuyerNotification(user, "Order status changed",
+            notificationSender.sendBuyerNotification(user, "Order status changed",
                     "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
 
             // add points

@@ -5,6 +5,7 @@ import BackEndUtility.Category;
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import UIs.Buyer.BuyerMenu;
+import UIs.UIUtilities;
 import Users.Buyer;
 import Users.Seller;
 import UtilityObjects.Notification;
@@ -15,19 +16,24 @@ import productClasses.Usages.Order;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CatalogController extends BuyerMenu {
+import static UIs.Menu.line;
+
+public class CatalogController {
 
     // ATTRIBUTES
-    private Buyer user;
-    private DataBase dataBase;
+    private final Buyer user;
+    private final DataBase database;
     private Product pointedProduct = null;
     private Seller pointedSeller = null;
     private Catalog catalog;
+    private final UIUtilities uiUtilities;
 
     // CONSTRUCTOR
 
     public CatalogController(Buyer user, DataBase database) {
-        super(user, database);
+        this.user = user;
+        this.database = database;
+        this.uiUtilities = new UIUtilities(database, user);
     }
 
     // UTILITIES
@@ -286,18 +292,6 @@ public class CatalogController extends BuyerMenu {
                 }
                 default -> System.out.println("Invalid selection. Please try again.");
             }
-        }
-    }
-
-    public void displaySellerInfo() {
-        System.out.println("Enter the name of the seller you want to check out:");
-        String id = InputManager.getInstance().nextLine();
-        pointedSeller = catalog.searchSellerByName(id);
-        if (pointedSeller == null) {
-            System.out.println("Seller not found.");
-        } else {
-            System.out.println(pointedSeller);
-            interactWithSeller();
         }
     }
 

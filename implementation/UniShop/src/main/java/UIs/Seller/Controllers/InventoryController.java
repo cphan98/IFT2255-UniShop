@@ -3,8 +3,10 @@ package UIs.Seller.Controllers;
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
 import UIs.Seller.SellerMenu;
+import UIs.UIUtilities;
 import Users.Buyer;
 import Users.Seller;
+import UtilityObjects.NotificationSender;
 import productClasses.Inheritances.*;
 import productClasses.Product;
 
@@ -13,17 +15,22 @@ import java.util.Objects;
 
 import static java.lang.Float.parseFloat;
 
-public class InventoryController extends SellerMenu {
+public class InventoryController {
 
     // ATTRIBUTES
 
-    private Seller user;
-    private DataBase database;
+    private final Seller user;
+    private final DataBase database;
+    private final UIUtilities uiUtilities;
+    
+    private final NotificationSender notificationSender = new NotificationSender();
 
     // CONTROLLER
 
     public InventoryController(Seller user, DataBase database) {
-        super(user, database);
+        this.user = user;
+        this.database = database;
+        uiUtilities = new UIUtilities(database,user);
     }
 
     // UTILITIES
@@ -227,7 +234,7 @@ public class InventoryController extends SellerMenu {
         ArrayList<Buyer> followers = user.getFollowers();
         if (!followers.isEmpty())
             for (Buyer follower : followers)
-                sendBuyerNotification(follower, "New Product",
+                notificationSender.sendBuyerNotification(follower, "New Product",
                         "New product added by " + user.getId() + ": " + newProduct.getTitle());
     }
 
@@ -410,11 +417,11 @@ public class InventoryController extends SellerMenu {
             if (buyer.getWishList().contains(oldProduct))
                 switch (bonusPointsOrPriceReduction) {
                     case "bonus points":
-                        sendBuyerNotification(buyer, "New Promotion",
+                        notificationSender.sendBuyerNotification(buyer, "New Promotion",
                                 user.getId() + " added bonus points to " + oldProduct.getTitle());
                         break;
                     case "price reduction":
-                        sendBuyerNotification(buyer, "New Promotion",
+                        notificationSender.sendBuyerNotification(buyer, "New Promotion",
                                 user.getId() + " reduced the price of " + oldProduct.getTitle());
                         break;
                 }
@@ -426,11 +433,11 @@ public class InventoryController extends SellerMenu {
         for (Buyer buyer : user.getFollowers())
             switch (bonusPointsOrPriceReduction) {
                 case "bonus points":
-                    sendBuyerNotification(buyer, "New Promotion",
+                    notificationSender.sendBuyerNotification(buyer, "New Promotion",
                             user.getId() + " added bonus points to " + oldProduct.getTitle());
                     break;
                 case "price reduction":
-                    sendBuyerNotification(buyer, "New Promotion",
+                    notificationSender.sendBuyerNotification(buyer, "New Promotion",
                             user.getId() + " reduced the price of " + oldProduct.getTitle());
                     break;
             }
@@ -449,11 +456,11 @@ public class InventoryController extends SellerMenu {
             if (likedByFollowers)
                 switch (bonusPointsOrPriceReduction) {
                     case "bonus points":
-                        sendBuyerNotification(buyer, "New Promotion",
+                        notificationSender.sendBuyerNotification(buyer, "New Promotion",
                                 user.getId() + " added bonus points to a product one of your followers liked: " +oldProduct.getTitle());
                         break;
                     case "price reduction":
-                        sendBuyerNotification(buyer, "New Promotion",
+                        notificationSender.sendBuyerNotification(buyer, "New Promotion",
                                 user.getId() + " reduced the price of " + oldProduct.getTitle());
                         break;
                 }

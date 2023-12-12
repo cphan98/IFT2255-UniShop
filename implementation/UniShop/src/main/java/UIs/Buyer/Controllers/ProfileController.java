@@ -2,30 +2,34 @@ package UIs.Buyer.Controllers;
 
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
-import UIs.Buyer.BuyerMenu;
+import UIs.UIUtilities;
 import Users.Buyer;
 import UtilityObjects.CreditCard;
 
 import java.util.ArrayList;
 
-public class ProfileController extends BuyerMenu {
+import static UIs.Menu.line;
+
+public class ProfileController {
 
     // ATTRIBUTES
 
-    private Buyer user;
-    private DataBase dataBase;
+    private final Buyer user;
+    private final DataBase database;
+    private final UIUtilities uiUtilities;
 
     // CONSTRUCTOR
 
     public ProfileController(Buyer user, DataBase database) {
-        super(user, database);
+        this.user = user;
+        this.database = database;
+        this.uiUtilities = new UIUtilities(database, user);
     }
 
     // UTILITIES
 
     // profile page ---------------------------------------------------------------------------------------------------
 
-    @Override
     public boolean displayProfile() {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -36,7 +40,7 @@ public class ProfileController extends BuyerMenu {
             System.out.println("Buying points: " + user.getMetrics().getBuyPoints());
             System.out.println();
             System.out.println("METRICS");
-            displayMetricsProfil();
+            displayMetricsProfile();
 
             line();
             System.out.println();
@@ -130,7 +134,7 @@ public class ProfileController extends BuyerMenu {
 
     public boolean searchBuyer() {
         line();
-        ArrayList<Buyer> pointedBuyer = null;
+        ArrayList<Buyer> pointedBuyer;
         boolean continueLoop = true;
         while (continueLoop) {
             System.out.println("1. Search by ID");
@@ -212,9 +216,7 @@ public class ProfileController extends BuyerMenu {
         switch (choice) {
             case 1 -> uiUtilities.toggleBuyerToFollowing(user, pointedBuyer);
             case 2 -> displayBuyersProfile(pointedBuyer);
-            case 3 -> {
-                System.out.println("Returning to menu...");
-            }
+            case 3 -> System.out.println("Returning to menu...");
             default -> System.out.println("Invalid selection. Please try again.");
         }
     }
@@ -281,14 +283,13 @@ public class ProfileController extends BuyerMenu {
 
     private void displayBuyersProfile(Buyer buyer) {
         line();
-        System.out.println("Buyer's name: " + buyer.getFirstName() + "\t" + buyer.getLastName());
+        System.out.println("Buyer's name: " + buyer.getFirstName() + " " + buyer.getLastName());
         System.out.println("Buyer's ID: " + buyer.getId());
         System.out.println(buyer.getMetrics().toString());
     }
 
     // profile modifications ------------------------------------------------------------------------------------------
 
-    @Override
     public void modifyProfile() {
         System.out.println();
         System.out.println("1. Modify personal info");
@@ -328,7 +329,7 @@ public class ProfileController extends BuyerMenu {
 
     // metrics --------------------------------------------------------------------------------------------------------
 
-    private void displayMetricsProfil() {
+    private void displayMetricsProfile() {
         if (user.getMetrics().getSelectedMetrics().isEmpty()) {
             System.out.println("No metrics selected");
             return;
@@ -338,7 +339,6 @@ public class ProfileController extends BuyerMenu {
         }
     }
 
-    @Override
     public void displayMetrics(){
         boolean continueLoop = true;
         while (continueLoop){
@@ -356,6 +356,51 @@ public class ProfileController extends BuyerMenu {
                     break;
                 case 2: continueLoop = false;
             }
+        }
+    }
+
+
+    // followers page -------------------------------------------------------------------------------------------------
+
+    public boolean displayFollowers() {
+        int i = 0;
+        for (Buyer buyer : user.getFollowers()) {
+            i++;
+            System.out.println(i + " " + buyer.getId());
+        }
+        System.out.println("You have " + user.getFollowers().size() + " followers: ");
+        System.out.println("1. Get the follower");
+        System.out.println("2. Return to menu");
+        int choice = uiUtilities.getUserInputAsInteger();
+        switch (choice) {
+            case 1 -> searchFollower();
+            case 2 -> System.out.println("Returning to menu...");
+        }
+        return true;
+    }
+
+    // follower page --------------------------------------------------------------------------------------------------
+
+    public void searchFollower() {
+        System.out.println("Enter the id of the follower you want to view:");
+        String id = InputManager.getInstance().nextLine();
+        Buyer pointedFollower = (Buyer) user.getFollower(id);
+        if (pointedFollower == null) {
+            System.out.println("Follower not found.");
+        } else {
+            System.out.println(pointedFollower);
+            interactWithFollower(pointedFollower);
+        }
+    }
+
+    public void interactWithFollower(Buyer pointedFollower) {
+        System.out.println("1. Remove this follower");
+        System.out.println("2. Return to menu");
+        int choice = uiUtilities.getUserInputAsInteger();
+        switch (choice) {
+            case 1 -> user.removeFollower(pointedFollower);
+            case 2 -> System.out.println("Returning to menu...");
+            default -> System.out.println("Invalid selection. Please try again.");
         }
     }
 }

@@ -10,17 +10,21 @@ public class BuyerMenu extends Menu {
 
     // ATTRIBUTES
 
-    private Buyer user;
-    private final ProfileController profileController = new ProfileController(user, database);
-    private final OrderController orderController = new OrderController(user, database);
-    private final CartController cartController = new CartController(user, database);
-    private final CatalogController catalogController = new CatalogController(user, database);
+    private final Buyer user;
+    private final ProfileController profileController;
+    private final OrderController orderController;
+    private final CartController cartController;
+    private final CatalogController catalogController;
 
     // CONSTRUCTOR
 
     public BuyerMenu(Buyer user, DataBase database) {
         super(user, database);
         this.user = user;
+        this.profileController = new ProfileController(user, database);
+        this.orderController = new OrderController(user, database);
+        this.cartController = new CartController(user, database);
+        this.catalogController = new CatalogController(user, database);
     }
 
     // UTILITIES
@@ -48,7 +52,8 @@ public class BuyerMenu extends Menu {
             System.out.println("4. Display Wishlist");
             System.out.println("5. Display Catalog");
             System.out.println("6. Display Buyers");
-            System.out.println("7. Display Notifications");
+            int unreadNotifications = user.getNotifications().stream().filter(notification -> !notification.isRead()).toArray().length;
+            System.out.println("7. Display Notifications" + (unreadNotifications == 0 ? "" : " (" + unreadNotifications  + " new)"));
             System.out.println("8. Display Metrics");
             System.out.println("9. Log out");
             int choice = uiUtilities.getUserInputAsInteger();
