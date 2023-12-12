@@ -7,8 +7,11 @@ import Users.User;
 
 public class LoginScreen {
 
-    public String[] askCredentials() {
+    // UTILITIES
 
+    // credentials ----------------------------------------------------------------------------------------------------
+
+    protected String[] askCredentials() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Enter your id:");
         String id = inputManager.nextLine();
@@ -16,7 +19,10 @@ public class LoginScreen {
         String password = inputManager.nextLine();
         return new String[]{id, password};
     }
-    public User loginUser(String id, String password, DataBase database) {
+
+    // login page -----------------------------------------------------------------------------------------------------
+
+    protected User loginUser(String id, String password, DataBase database) {
         User user = database.getUser(id, password);
         if (user != null) {
             if (database.check24H(user)) {

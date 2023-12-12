@@ -2,17 +2,16 @@ package Users;
 
 import Metrics.BuyerMetrics;
 import UtilityObjects.Address;
-import UtilityObjects.Notification;
 import productClasses.Usages.Cart;
 import UtilityObjects.CreditCard;
 import productClasses.Usages.Evaluation;
 import productClasses.Product;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Buyer extends User implements java.io.Serializable {
+
     // ATTRIBUTES
 
     private String firstName;
@@ -102,21 +101,23 @@ public class Buyer extends User implements java.io.Serializable {
         this.card = card;
     }
 
-    // OPERATIONS
+    // UTILITIES
+
+    // followers ------------------------------------------------------------------------------------------------------
     @Override
     public void removeFollower(Buyer follower) {
         followers.remove(follower);
         follower.getBuyersFollowed().remove(this);
     }
 
-    public void updateTop5() {
+    private void updateTop5() {
         top5.clear();
         rankBuyers().limit(5).forEach(entry -> {
             top5.add(entry.getKey());
         });
     }
 
-    public void updateYourRank() {
+    private void updateYourRank() {
         ArrayList<Buyer> listOfBuyers = new ArrayList<>();
         rankBuyers().forEach(entry ->
                 listOfBuyers.add(entry.getKey()));
@@ -125,7 +126,7 @@ public class Buyer extends User implements java.io.Serializable {
         }
     }
 
-    public Stream<Map.Entry<Buyer, Integer>> rankBuyers() {
+    private Stream<Map.Entry<Buyer, Integer>> rankBuyers() {
         HashMap<Buyer, Integer> buyersXP = new HashMap<>();
         buyersXP.put(this, this.getMetrics().getExpPoints());
         for (Buyer buyer : getBuyersFollowed()) {
@@ -137,6 +138,9 @@ public class Buyer extends User implements java.io.Serializable {
 
         return sortedStream;
     }
+
+
+    // to string ------------------------------------------------------------------------------------------------------
 
     public String wishListToString() {
         if (wishList.isEmpty()) {

@@ -12,11 +12,22 @@ import productClasses.Inheritances.*;
 import static java.lang.Float.parseFloat;
 
 public class SellerSignUp implements SignUpScreen {
+
+    // ATTRIBUTE
+
     private final DataBase database;
+
+    // CONSTRUCTOR
 
     public SellerSignUp(DataBase database) {
         this.database = database;
     }
+
+    // UTILITIES
+
+    // credentials ----------------------------------------------------------------------------------------------------
+
+    @Override
     public void getCredentialsAndSignUp() {
         System.out.println("Welcome, new seller!");
         InputManager inputManager = InputManager.getInstance();
@@ -73,17 +84,21 @@ public class SellerSignUp implements SignUpScreen {
                     System.out.println("Invalid choice, try again");
             }
         }
-        Seller seller = new Seller(username, password, email, phoneNumber, new Address(address, country, province, city, postalCode), category);
+        Seller seller = new Seller(username, password, email, phoneNumber,
+                new Address(address, country, province, city, postalCode), category);
         database.addUser(seller);
         addProductToSeller(seller);
         System.out.println("WARNING: You must connect within the next 24 hours or else the signup will be cancelled");
     }
 
+    // products -------------------------------------------------------------------------------------------------------
+
     private void addProductToSeller(Seller seller) {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter the title of the product:");
         String title = inputManager.nextLine();
-        while (!database.verifyNewProduct(new Book(title, "", 0, 0, seller, 1, 55, "a", "a", "a", "a", "a", 1, 1))) {
+        while (!database.verifyNewProduct(new Book(title, "", 0, 0, seller, 1,
+                55, "a", "a", "a", "a", "a", 1, 1))) {
             System.out.println("Invalid input. Please enter a unique title.");
             title = inputManager.nextLine();
         }
@@ -121,7 +136,8 @@ public class SellerSignUp implements SignUpScreen {
                 int edition = getUserInputAsInteger();
                 System.out.println("Please enter the volume of the book:");
                 int volume = getUserInputAsInteger();
-                product = new Book(title, description, price, basePoints, seller, quantity, ISBN, author, publisher, genre, releaseDate, sellDate, edition, volume);
+                product = new Book(title, description, price, basePoints, seller, quantity, ISBN, author,
+                        publisher, genre, releaseDate, sellDate, edition, volume);
                 break;
             case LEARNING_RESOURCES:
                 System.out.println("Please enter the author of the learning resource:");
@@ -136,7 +152,8 @@ public class SellerSignUp implements SignUpScreen {
                 String type = inputManager.nextLine();
                 System.out.println("Please enter the edition of the learning resource:");
                 edition = getUserInputAsInteger();
-                product = new LearningResource(title, description, price, basePoints, seller, quantity, ISBN, author, organization, releaseDate, sellDate, type, edition);
+                product = new LearningResource(title, description, price, basePoints, seller, quantity, ISBN, author,
+                        organization, releaseDate, sellDate, type, edition);
                 break;
             case STATIONERY:
                 System.out.println("Please enter the brand of the stationery:");
@@ -147,7 +164,8 @@ public class SellerSignUp implements SignUpScreen {
                 String subCategory = inputManager.nextLine();
                 System.out.println("Please enter the release date of the stationery:");
                 releaseDate = inputManager.nextLine();
-                product = new Stationery(title, description, price, basePoints, seller, quantity, brand, model, subCategory, releaseDate, sellDate);
+                product = new Stationery(title, description, price, basePoints, seller, quantity, brand, model,
+                        subCategory, releaseDate, sellDate);
                 break;
             case ELECTRONICS:
                 System.out.println("Please enter the brand of the electronics:");
@@ -158,7 +176,8 @@ public class SellerSignUp implements SignUpScreen {
                 subCategory = inputManager.nextLine();
                 System.out.println("Please enter the release date of the electronics:");
                 releaseDate = inputManager.nextLine();
-                product = new Hardware(title, description, price, basePoints, seller, quantity, brand, model, releaseDate, subCategory, sellDate);
+                product = new Hardware(title, description, price, basePoints, seller, quantity, brand, model,
+                        releaseDate, subCategory, sellDate);
                 break;
             case DESKTOP_ACCESSORIES:
                 System.out.println("Please enter the brand of the desktop accessory:");
@@ -167,13 +186,16 @@ public class SellerSignUp implements SignUpScreen {
                 model = inputManager.nextLine();
                 System.out.println("Please enter the subcategory of the desktop accessory:");
                 subCategory = inputManager.nextLine();
-                product = new OfficeEquipment(title, description, price, basePoints, seller, quantity, brand, model, subCategory, sellDate);
+                product = new OfficeEquipment(title, description, price, basePoints, seller, quantity, brand, model,
+                        subCategory, sellDate);
                 break;
         }
         database.addProduct(product);
     }
 
-    protected int getUserInputAsInteger() {
+    // inputs ---------------------------------------------------------------------------------------------------------
+
+    private int getUserInputAsInteger() {
         while (true) {
             try {
                 int returned = Integer.parseInt(InputManager.getInstance().nextLine());
