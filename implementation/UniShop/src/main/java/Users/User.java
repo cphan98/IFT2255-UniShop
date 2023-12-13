@@ -6,7 +6,10 @@ import productClasses.Usages.Order;
 
 import java.util.*;
 
-public abstract class User {
+public abstract class User implements java.io.Serializable {
+
+    // ATTRIBUTES
+
     protected String id;
     protected String password;
     protected String email;
@@ -18,7 +21,7 @@ public abstract class User {
     protected Date startTime;
     protected boolean checked24H;
 
-    //getters and setters
+    // CONSTRUCTOR
 
     public User(String id, String password, String email, String phoneNumber, Address address) {
         this.id = id;
@@ -32,83 +35,120 @@ public abstract class User {
         this.followers = new ArrayList<>();
         this.notifications = new LinkedList<>();
     }
-    public String ordersMadeToString() {
-        StringBuilder sb = new StringBuilder();
-        int i = 1;
-        for (Order order : orderHistory) {
-            sb.append(i).append(". ").append(order.smallToString());
-            sb.append("\n");
-            i++;
-        }
-        return sb.toString();
-    }
+
+    // GETTERS
+
     public String getId() {
         return id;
     }
-    public void setId(String id) {
-        this.id = id;
-    }
+
     public String getPassword() {
         return password;
     }
-    public void setPassword(String password) {
-        this.password = password;
-    }
+
     public ArrayList<Buyer> getFollowers() {
         return followers;
     }
-    public void setFollowers(ArrayList<Buyer> followers) {
-        this.followers = followers;
+
+    public User getFollower(String id) {
+        for (User follower : getFollowers()) {
+            if (follower.getId().equals(id)) {
+                return follower;
+            }
+        }
+        return null;
     }
-    public void addFollower(Buyer buyer) {
-        followers.add(buyer);
-    }
-    public void removeFollower(Buyer buyer) {
-        followers.remove(buyer);
-    }
+
     public String getEmail() {
         return email;
     }
-    public void setEmail(String email) {
-        this.email = email;
-    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+
     public Address getAddress() {
         return address;
     }
-    public void setAddress(Address address) { this.address = address; }
+
     public Queue<Notification> getNotifications() {
         return notifications;
     }
-    public void setNotifications(Queue<Notification> notifications) {
-        this.notifications = notifications;
-    }
-    public void addNotification(Notification notification) {
-        notifications.add(notification);
-    }
+
     public ArrayList<Order> getOrderHistory() {
         return orderHistory;
     }
-    public void setOrderHistory(ArrayList<Order> orderHistory) {
-        this.orderHistory = orderHistory;
-    }
-    public void addOrder(Order order) {
-        orderHistory.add(order);
-    }
+
     public Date getStartTime(){
         return startTime;
     }
+
     public boolean getChecked24H(){
         return checked24H;
     }
+
+    // SETTERS
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setFollowers(ArrayList<Buyer> followers) {
+        this.followers = followers;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setAddress(Address address) { this.address = address; }
+
+    public void setNotifications(Queue<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public void setOrderHistory(ArrayList<Order> orderHistory) {
+        this.orderHistory = orderHistory;
+    }
+
     public void setChecked24H(boolean check24H){
         this.checked24H = check24H;
     }
+
+    // UTILITIES
+
+    // orders ---------------------------------------------------------------------------------------------------------
+
+    public void addOrder(Order order) {
+        orderHistory.add(order);
+    }
+
+    // notifications --------------------------------------------------------------------------------------------------
+
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+
+    // follower -------------------------------------------------------------------------------------------------------
+
+    public void addFollower(Buyer buyer) {
+        followers.add(buyer);
+    }
+
+    public void removeFollower(Buyer buyer) {
+        followers.remove(buyer);
+    }
+
+    // to string ------------------------------------------------------------------------------------------------------
+
     public String notificationsToString() {
         if (notifications.isEmpty()) {
             return "You have no notifications!";
@@ -117,6 +157,17 @@ public abstract class User {
         int i = 1;
         for (Notification notification : notifications) {
             sb.append(i).append(". ").append(notification.toString());
+            sb.append("\n");
+            i++;
+        }
+        return sb.toString();
+    }
+
+    public String ordersMadeToString() {
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+        for (Order order : orderHistory) {
+            sb.append(i).append(". ").append(order.smallToString());
             sb.append("\n");
             i++;
         }

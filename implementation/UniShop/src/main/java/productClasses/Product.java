@@ -1,4 +1,5 @@
 package productClasses;
+
 import Users.Seller;
 import BackEndUtility.Category;
 import productClasses.Usages.Evaluation;
@@ -6,7 +7,10 @@ import productClasses.Usages.Evaluation;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public abstract class Product {
+public abstract class Product implements java.io.Serializable {
+
+    // ATTRIBUTES
+
     private final String id;
     private String title;
     private String description;
@@ -19,9 +23,18 @@ public abstract class Product {
     private final ArrayList<Evaluation> evaluations;
     private float overallRating;
     private int likes;
-    private boolean hasPromotion;
-    //getters and setters
-    public Product(String title, String description, Category category, float price, int basePoints, Seller seller, int quantity, String sellDate) {
+    private boolean hasPromotion = false;
+
+    // CONSTRUCTOR
+
+    public Product(String title,
+                   String description,
+                   Category category,
+                   float price,
+                   int basePoints,
+                   Seller seller,
+                   int quantity,
+                   String sellDate) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;
@@ -33,69 +46,105 @@ public abstract class Product {
         this.sellDate = sellDate;
         this.evaluations = new ArrayList<>();
         this.overallRating = 0.0F;
-        hasPromotion = Math.random() < 0.5;
     }
 
+    // GETTERS
 
     public String getId() {
         return id;
     }
+
     public String getTitle() {
         return title;
     }
-    public void setTitle(String title) {
-        this.title = title;
-    }
+
     public int getQuantity() {
         return quantity;
     }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public int getBasePoints() {
+        return basePoints;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Float getOverallRating() {
+        return overallRating;
+    }
+
+    public ArrayList<Evaluation> getEvaluations() {
+        return this.evaluations;
+    }
+
+    public int getLikes()
+    {
+       return this.likes;
+    }
+
+    // SETTERS
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setQuantity(int quantity) {
         if (quantity >= 0) {
             this.quantity = quantity;
         }
     }
-    public Seller getSeller() {
-        return seller;
-    }
+
     public void setSeller(Seller seller) {
         this.seller = seller;
     }
-    public int getBasePoints() {
-        return basePoints;
-    }
+
     public void setBasePoints(int basePoints) {
         this.basePoints = basePoints;
     }
-    public float getPrice() {
-        return price;
-    }
+
     public void setPrice(float price) {
         this.price = price;
     }
-    public Category getCategory() {
-        return category;
-    }
+
     public void setCategory(Category category) {
         this.category = category;
     }
+
     public void setCategory(String category) {
         this.category = Category.valueOf(category);
     }
-    public String getDescription() {
-        return description;
-    }
+
     public void setDescription(String description) {
         this.description = description;
     }
-    public boolean isPromoted() {
-        return hasPromotion;
-    }
+
     public void setPromotion(boolean promotion) {
         hasPromotion = promotion;
     }
-    public Float getOverallRating() {
-        return overallRating;
+
+    public void setLikes(int likes) {
+        this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() - this.likes);
+        this.likes = likes;
+        this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() + this.likes);
     }
+
+    // UTILITIES
+
+    // rating ---------------------------------------------------------------------------------------------------------
+
     public void updateOverallRating(){
         float total = 0;
         for (Evaluation evaluation : evaluations) {
@@ -103,25 +152,8 @@ public abstract class Product {
         }
         this.overallRating = Math.round((total / evaluations.size()) * 10.0) / 10.0F;
     }
-    public ArrayList<Evaluation> getEvaluations() {
-        return this.evaluations;
-    }
-    public void addEvaluation(Evaluation evaluation) {
-        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() + 1);
-        evaluation.getAuthor().getMetrics().updateAverageNoteGiven(evaluation.getRating());
-        this.evaluations.add(evaluation);
-        this.seller.getMetrics().updateAverageNoteReceived(evaluation.getRating());
-        updateOverallRating();
-    }
-    public int getLikes()
-    {
-       return this.likes;
-    }
-    public void setLikes(int likes) {
-        this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() - this.likes);
-        this.likes = likes;
-        this.seller.getMetrics().updateLikes(this.seller.getMetrics().getLikes() + this.likes);
-    }
+
+    // to string ------------------------------------------------------------------------------------------------------
 
     public String toString() {
         return "Title: " + title + "\n" +
@@ -139,10 +171,12 @@ public abstract class Product {
     }
 
     public String smallToString() {
-        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t" + "Likes: " + likes + "\t\t" + "Average rating: " + overallRating + "\t\t" + (hasPromotion? "(promoted)" : "") + "\n";
+        return "Title: " + title + "\t\t" + "Price: " + price + "$\t\t" + "Quantity: " + quantity + "\t\t"
+                + "Likes: " + likes + "\t\t" + "Average rating: " + overallRating + "\t\t"
+                + (hasPromotion? "(promoted)" : "") + "\n";
     }
 
-    public String evaluationsToString() {
+    private String evaluationsToString() {
         if (evaluations.isEmpty()) {
             return "No evaluations yet";
         }
@@ -154,5 +188,4 @@ public abstract class Product {
         }
         return sb.toString();
     }
-
 }

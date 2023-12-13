@@ -1,6 +1,8 @@
 package BackEndUtility;
 
-public enum Category {
+import java.io.Serializable;
+
+public enum Category implements Serializable {
     BOOKS,
     LEARNING_RESOURCES,
     STATIONERY,

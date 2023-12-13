@@ -2,9 +2,7 @@ package UIs;
 
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
-import Users.Buyer;
-import Users.Seller;
-import Users.User;
+import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.Notification;
 import productClasses.Product;
@@ -14,12 +12,23 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class UIUtilities {
+
+    // ATTRIBUTES
+
     private final DataBase database;
     private final User user;
+
+    // CONSTRUCTOR
+
     public UIUtilities(DataBase database, User user) {
         this.database = database;
         this.user = user;
     }
+
+    // UTILITIES
+
+    // toggles --------------------------------------------------------------------------------------------------------
+
     public void toggleEvaluationLike(Buyer user, Evaluation evaluation) {
         if (evaluation.getAuthor() == user) {
             System.out.println("You cannot like your own evaluation!");
@@ -29,14 +38,25 @@ public class UIUtilities {
             user.getEvaluationsLiked().add(evaluation);
             evaluation.setLikes(evaluation.getLikes() + 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() + 1);
+            evaluation.getAuthor().getMetrics().setLikesReceived(evaluation.getAuthor().getMetrics().getLikesReceived() + 1);
             System.out.println("You liked " + evaluation.getAuthor().getId() + "'s evaluation!");
+            if (evaluation.getLikes() == 1) {
+                evaluation.getAuthor().addNotification(new Notification("New like on evaluation!",
+                        "You have gotten the first like on one of your evaluations!"));
+                evaluation.getAuthor().getMetrics().addExpPoints(10);
+            }
         } else {
-            user.getEvaluationsLiked() .remove(evaluation);
+            user.getEvaluationsLiked().remove(evaluation);
             evaluation.setLikes(evaluation.getLikes() - 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() - 1);
+            evaluation.getAuthor().getMetrics().setLikesReceived(evaluation.getAuthor().getMetrics().getLikesReceived() + 1);
             System.out.println("You unliked " + evaluation.getAuthor().getId() + "'s evaluation!");
+            if (evaluation.getLikes() == 0) {
+                evaluation.getAuthor().getMetrics().removeExpPoints(10);
+            }
         }
     }
+
     public void toggleBuyerToFollowing(Buyer user, Buyer buyer) {
         if (buyer == user) {
             System.out.println("You cannot follow yourself!");
@@ -50,28 +70,44 @@ public class UIUtilities {
             String summary = user.getId() + " is now following you !";
             buyer.addNotification(new Notification(title, summary));
             System.out.println("You are now following " + buyer.getId() + "!");
+            if (buyer.getBuyersFollowed().contains(user)) {
+                System.out.println("You are now following each other! You both earned 10 experience points!");
+                user.getMetrics().addExpPoints(10);
+                buyer.getMetrics().addExpPoints(10);
+            }
         } else {
             user.getBuyersFollowed().remove(buyer);
             buyer.getFollowers().remove(user);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() - 1);
             System.out.println("You are no longer following " + buyer.getId() + "!");
+            if (buyer.getBuyersFollowed().contains(user)) {
+                System.out.println("You are no longer following each other! You both lost 10 experience points!");
+                user.getMetrics().removeExpPoints(10);
+                buyer.getMetrics().removeExpPoints(10);
+            }
         }
     }
 
     public void toggleProductToWishList(Buyer user, Product product) {
+        System.out.println();
+        System.out.println("Removing product(s) from cart...");
+
         ArrayList<Product> wishList = user.getWishList();
         if (wishList.contains(product)) {
             wishList.remove(product);
             product.setLikes(product.getLikes() - 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() - 1);
+            System.out.println();
             System.out.println("Product removed from wish list!");
         } else {
             wishList.add(product);
             product.setLikes(product.getLikes() + 1);
             user.getMetrics().setLikesGiven(user.getMetrics().getLikesGiven() + 1);
+            System.out.println();
             System.out.println("Product added to wish list!");
         }
     }
+
     public void toggleSellerToFollowing(Buyer user, Seller seller) {
         ArrayList<Seller> sellersFollowed = user.getSellersFollowed();
         if (!sellersFollowed.contains(seller)) {
@@ -89,6 +125,9 @@ public class UIUtilities {
             System.out.println("You are no longer following " + seller.getId() + "!");
         }
     }
+
+    // profile --------------------------------------------------------------------------------------------------------
+
     public void deleteAccount() {
         System.out.println("Are you sure you want to delete your account? (y/n)");
         String input = InputManager.getInstance().nextLine();
@@ -106,6 +145,7 @@ public class UIUtilities {
             }
         }
     }
+
     public void modifyAddress() {
         System.out.println("Enter your street name:");
         String street = InputManager.getInstance().nextLine();
@@ -129,6 +169,7 @@ public class UIUtilities {
         }
         return email;
     }
+
     private String modifyPhoneNumber() {
         String phoneNumber = "a";
         while (!phoneNumber.matches("[0-9]+")) {
@@ -137,6 +178,7 @@ public class UIUtilities {
         }
         return phoneNumber;
     }
+
     public void modifyPersonalInfo(Buyer user) {
         System.out.println("Enter your first name:");
         String firstName = InputManager.getInstance().nextLine();
@@ -158,6 +200,7 @@ public class UIUtilities {
         user.setPhoneNumber(phoneNumber);
         System.out.println("Personal info modified");
     }
+
     public void modifyPersonalInfo(Seller user) {
         System.out.println("Enter your new id:");
         String id = InputManager.getInstance().nextLine();
@@ -173,6 +216,7 @@ public class UIUtilities {
         user.setPhoneNumber(phoneNumber);
         System.out.println("Personal info modified");
     }
+
     public void modifyPassword() {
         while (true) {
             System.out.println("Enter your current password:");
@@ -189,6 +233,9 @@ public class UIUtilities {
             }
         }
     }
+
+    // inputs ---------------------------------------------------------------------------------------------------------
+
     public int getUserInputAsInteger() {
         while (true) {
             try {

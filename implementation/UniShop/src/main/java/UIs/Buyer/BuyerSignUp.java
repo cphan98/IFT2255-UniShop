@@ -6,13 +6,23 @@ import UIs.SignUpScreen;
 import UtilityObjects.Address;
 import Users.Buyer;
 
-import static java.lang.Integer.parseInt;
-
 public class BuyerSignUp implements SignUpScreen {
+
+    // ATTRIBUTES
+
     private final DataBase database;
+
+    // CONSTRUCTOR
+
     public BuyerSignUp(DataBase database) {
         this.database = database;
     }
+
+    // UTILITIES
+
+    // credentials ----------------------------------------------------------------------------------------------------
+
+    @Override
     public void getCredentialsAndSignUp() {
         InputManager inputManager = InputManager.getInstance();
         System.out.println("Please enter your first name:");
@@ -44,7 +54,8 @@ public class BuyerSignUp implements SignUpScreen {
             phoneNumber = InputManager.getInstance().nextLine();
         }
         System.out.println("WARNING: You must connect within the next 24 hours or else the signup will be cancelled");
-        database.addUser(new Buyer(firstName, lastName, username, password, email, phoneNumber, new Address(address, country, province, city, postalCode)));
+        database.addUser(new Buyer(firstName, lastName, username, password, email, phoneNumber,
+                new Address(address, country, province, city, postalCode)));
 
     }
 }
