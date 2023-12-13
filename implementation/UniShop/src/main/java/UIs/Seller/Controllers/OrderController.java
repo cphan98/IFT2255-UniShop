@@ -368,7 +368,7 @@ public class OrderController  {
                 }
 
                 // add cost of returning products to sum
-                sum += quantity * points;
+                sum += (int) (quantity * points);
             }
 
             // put back points to buyer's points

@@ -1148,15 +1148,15 @@ public class OrderController {
                             order.getIssue().setReplacementProducts(order.getProducts());
                             user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.PENDING);
 
-                            System.out.println("the seller will be notified and send you the product as soon as posible");
+                            System.out.println("The seller will be notified and send you the product as soon as possible");
                             for (Product product : order.getProducts().keySet()){
-                                product.getSeller().addNotification(new Notification(user.getId() + "Accepted the reshipment",
+                                product.getSeller().addNotification(new Notification(user.getId() + " accepted the reshipment",
                                         "The buyer accepted to be reshipped a new " + product.getTitle()));
                             }
                             break;
                         case 2 :
                             user.getOrderHistory().get(user.getOrderHistory().indexOf(order)).setStatus(OrderState.REJECTED);
-                            System.out.println("we're sorry you don't like the option, try getting the product fixed");
+                            System.out.println("We're sorry you don't like the option, try getting the product fixed");
                             break;
                     }
 

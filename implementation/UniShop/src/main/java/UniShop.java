@@ -6,20 +6,24 @@ import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
 import BackEndUtility.Category;
 import BackEndUtility.OrderState;
+import UtilityObjects.Notification;
+import UtilityObjects.NotificationSender;
 import productClasses.*;
 import productClasses.Inheritances.*;
 import productClasses.Usages.Evaluation;
+import productClasses.Usages.IssueQuery;
+import productClasses.Usages.Order;
 import serializationUtil.SerializationUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class UniShop {
     // ATTRIBUTES
 
     private static final String DATA_FILE = "dataBase.ser";
     private static DataBase database;
+    private static NotificationSender notificationSender = new NotificationSender();
 
     // MAIN
 
@@ -251,10 +255,158 @@ public class UniShop {
 
         int i = 0;
         for (OrderState status : OrderState.values()) {
-            users.get(i).getOrderHistory().get(0).setStatus(status);
+            Order order = users.get(i).getOrderHistory().get(0);
+            order.setStatus(status);
+            if (order.getStatus() == OrderState.IN_DELIVERY || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY) {
+                order.setShippingCompany("Canada Post");
+                order.setShippingNumber("123456789012");
+                notificationSender.sendBuyerNotification(order.getBuyer(), "Order status changed",
+                            "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+            }
+            if (order.getStatus() == OrderState.PENDING || order.getStatus() == OrderState.REJECTED) {
+                order.setIssue(new IssueQuery("problem with a product"));
+                order.getIssue().setReplacementTrackingNum(database.makeReshipmentTrackingNum());
+                for (Product product : order.getProducts().keySet()) {
+                    product.getSeller().addNotification(new Notification("Response to proposed solution",
+                            users.get(i).getId() + " has accepted your solution"));
+                }
+                if (order.getStatus() == OrderState.PENDING) {
+                    order.getIssue().setReplacementProducts(order.getProducts());
+                    for (Product product : order.getProducts().keySet()){
+                        product.getSeller().addNotification(new Notification(users.get(i).getId() + " accepted the reshipment",
+                                "The buyer accepted to be reshipped a new " + product.getTitle()));
+                    }
+                }
+            }
+            if (order.getStatus() == OrderState.DELIVERED) {
+                notificationSender.sendBuyerNotification((Buyer) users.get(i), "Order status changed",
+                        "your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+                int buyPointsWon = 0;
+                for (Product product : order.getProducts().keySet()) {
+                    buyPointsWon += (int) (product.getPrice() * order.getProducts().get(product));
+                }
+                Buyer user = (Buyer) users.get(i);
+                user.getMetrics().addBuyPoints(buyPointsWon);
+                user.getMetrics().addExpPoints(10);
+            }
+            if (order.getStatus() == OrderState.CANCELLED) {
+                Buyer user = (Buyer) users.get(i);
+                user.getMetrics().setOrdersMade(user.getMetrics().getOrdersMade() - 1);
+                int productsCancelled = 0;
+                for (Product p : order.getProducts().keySet()) {
+                    productsCancelled += order.getProducts().get(p);
+                }
+                user.getMetrics().setProductsBought((user.getMetrics().getProductsBought() - productsCancelled));
+
+                // send notification to buyer and seller
+                notificationSender.sendBuyerNotification(user, "Order cancelled", "Your order " + order.getId() + " has been cancelled!");
+                notificationSender.sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(), "Order cancelled",
+                        "your order " + order.getId() + " has been cancelled!");
+            }
+            if (order.getStatus() == OrderState.RESHIPMENT_IN_DELIVERY || order.getStatus() == OrderState.RESHIPMENT_DELIVERED) {
+                IssueQuery returnQuery = new IssueQuery("Not satisfied with the product(s)");
+                returnQuery.setSolutionDescription("Return");
+                HashMap<Product, Integer> returnProducts = new HashMap<>();
+                returnProducts.put(order.getProducts().keySet().iterator().next(), order.getProducts().values().iterator().next());
+                returnQuery.setReshipmentProducts(returnProducts);
+                order.setIssue(returnQuery);
+                notificationSender.sendSellerNotification(returnQuery.getReshipmentProducts().keySet().iterator().next().getSeller(),
+                        "Return requested: " + returnQuery.getId(), users.get(i).getId() + " requested a return.");
+                if (order.getStatus() == OrderState.RESHIPMENT_DELIVERED) {
+                    order.getIssue().setReshipmentReceived(true);
+                    notificationSender.sendBuyerNotification(order.getBuyer(), "Order status changed",
+                            "Your order " + order.getId() + " is now " + order.getStatus().toString().toLowerCase() + "!");
+                    Set<Product> orderProducts = order.getProducts().keySet(); // list of products from the order
+
+                    // refund according to original payment type: credit card or points
+                    if (Objects.equals(order.getPaymentType(), "credit card")) {
+                        float sum = 0; // sum to refund
+
+                        // calculate sum to refund
+                        for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
+                            int quantity = returnProduct.getValue();
+                            float price = 0;
+
+                            // find the corresponding product in the order
+                            for (Product orderProduct : orderProducts)
+                                if (Objects.equals(orderProduct, returnProduct.getKey())) price = orderProduct.getPrice();
+
+                            // add cost of returning products to sum
+                            sum += quantity * price;
+                        }
+
+                        // send notification to buyer
+                        notificationSender.sendBuyerNotification(order.getBuyer(), "You've received a refund",
+                                "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
+                    } else {
+                        int sum = 0; // sum to refund
+
+                        // calculate points to refund
+                        for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
+                            int quantity = returnProduct.getValue();
+                            float points = 0;
+
+                            // find the corresponding product in the order
+                            for (Product orderProduct : orderProducts) {
+                                if (Objects.equals(orderProduct, returnProduct.getKey())) points = orderProduct.getBasePoints();
+                            }
+
+                            // add cost of returning products to sum
+                            sum += (int) (quantity * points);
+                        }
+
+                        // put back points to buyer's points
+                        database.getBuyers().get(database.getBuyers().indexOf(order.getBuyer())).getMetrics().addBuyPoints(sum);
+
+                        // send notification to buyer
+                        notificationSender.sendBuyerNotification(order.getBuyer(), "You've received a refund",
+                                "You've received a refund of " + sum + " from your return request " + order.getIssue().getId() + ".");
+                    }
+                    ArrayList<Product> inventory = order.getProducts().keySet().iterator().next().getSeller().getProducts();
+                    for (Map.Entry<Product, Integer> returnProduct : returnProducts.entrySet()) {
+                        // find product in seller inventory
+                        for (Product product : inventory) {
+                            if (Objects.equals(product, returnProduct.getKey())) {
+                                int index = inventory.indexOf(product);
+                                order.getProducts().keySet().iterator().next().getSeller().getProducts().get(index).setQuantity(product.getQuantity() + returnProduct.getValue());
+                            }
+                        }
+                    }
+                    int buyPointsDeducted = 0;
+                    HashMap<Product, Integer> productsReturned = order.getIssue().getReshipmentProducts();
+                    for (Map.Entry<Product, Integer> product : productsReturned.entrySet()) {
+                        buyPointsDeducted += product.getKey().getBasePoints() * product.getValue();
+                    }
+                    order.getBuyer().getMetrics().removeBuyPoints(buyPointsDeducted);
+                }
+            }
+            if (order.getStatus() == OrderState.RESHIPMENT_CANCELLED) {
+                order.setIssue(new IssueQuery("Not satisfied with the product(s)"));
+                order.getIssue().setSolutionDescription("Return");
+                notificationSender.sendBuyerNotification((Buyer) users.get(i),
+                        "Reshipment for order " + order.getId() + " is cancelled",
+                        "The reshipment package has not been received by the seller within 30 days of the reshipment request.");
+                notificationSender.sendSellerNotification(order.getProducts().keySet().iterator().next().getSeller(),
+                        "Issue " + order.getIssue().getId() + " cancelled",
+                        "The reshipment package has not been received within 30 days of the reshipment request.");
+            }
+            if (order.getStatus() == OrderState.REPLACEMENT_IN_PRODUCTION || order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY) {
+                IssueQuery replacementQuery = new IssueQuery("Not satisfied with the product(s)");
+                replacementQuery.setSolutionDescription("Exchange");
+                HashMap<Product, Integer> replacementProducts = new HashMap<>();
+                replacementProducts.put(order.getProducts().keySet().iterator().next(), 1);
+                Order replacementOrder = new Order(order.getBuyer(), "credit card", replacementProducts);
+                notificationSender.sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed",
+                        "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
+                if (order.getStatus() == OrderState.REPLACEMENT_IN_DELIVERY) {
+                    replacementOrder.setShippingCompany("Canada Post");
+                    replacementOrder.setShippingNumber("123456789012");
+                    notificationSender.sendBuyerNotification(replacementOrder.getBuyer(), "Order status changed",
+                            "your order " + replacementOrder.getId() + " is now " + replacementOrder.getStatus().toString().toLowerCase() + "!");
+                }
+            }
             i++;
         }
-
     }
 
 

@@ -303,7 +303,6 @@ public class InventoryController {
             default:
                 System.out.println();
                 System.out.println("Invalid selection. Please try again.");
-                promoChoice = uiUtilities.getUserInputAsInteger();
         }
 
         return true;
@@ -363,6 +362,8 @@ public class InventoryController {
         sendPromoNotificationToLikes(oldProduct, "price reduction");
         sendPromoNotificationToFollowers(oldProduct, "price reduction");
         sendPromoNotificationToBuyer(oldProduct, "price reduction");
+
+        product.setPromotion(true);
     }
 
     // Adds bonus points to product
@@ -409,6 +410,8 @@ public class InventoryController {
         sendPromoNotificationToLikes(oldProduct, "bonus points");
         sendPromoNotificationToFollowers(oldProduct, "bonus points");
         sendPromoNotificationToBuyer(oldProduct, "bonus points");
+
+        product.setPromotion(true);
     }
 
     // Sends notification to buyers who liked the product
