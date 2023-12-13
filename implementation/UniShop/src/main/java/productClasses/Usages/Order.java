@@ -3,16 +3,15 @@ package productClasses.Usages;
 import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
-import UtilityObjects.Notification;
 import BackEndUtility.OrderState;
 import productClasses.Product;
-import UIs.Menu;
-import UIs.UIUtilities;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Order implements java.io.Serializable {
+
     // ATTRIBUTES
 
     private String id;
@@ -30,6 +29,99 @@ public class Order implements java.io.Serializable {
     private String shippingCompany;
     private String shippingNumber;
     private float totalCost;
+
+    // CONSTRUCTORS
+
+    public String makeId(int idCount) {
+        int zeros = 3 - Integer.toString(idCount).length();
+        return("order" + ("0".repeat(zeros)) + idCount);
+    }
+
+    public float getTotalPrice() {
+        float total = products.entrySet().stream()
+                .map(entry -> entry.getKey().getPrice() * entry.getValue())
+                .reduce(0f, Float::sum);
+        return Math.round(total * 100.0) / 100.0f;
+    }
+
+    // constructor with new personal and credit card
+    public Order(Buyer buyer,
+                 String paymentType,
+                 CreditCard paymentInfo,
+                 Address shippingAddress,
+                 String phoneNumber,
+                 HashMap<Product, Integer> products) {
+        this.buyer = buyer;
+        this.paymentType = paymentType;
+        this.paymentInfo = new CreditCard(
+                paymentInfo.getCardNumber(),
+                paymentInfo.getFirstName(),
+                paymentInfo.getLastName(),
+                paymentInfo.getExpiryDate()
+        );
+        this.shippingAddress = shippingAddress;
+        this.phoneNumber = phoneNumber;
+        this.products = new HashMap<>();
+        this.products.putAll(products);
+        this.ETA = makeRandomETA();
+        this.totalCost = getTotalPrice();
+    }
+
+    // constructor with new credit card only
+    public Order(Buyer buyer,
+                 String paymentType,
+                 CreditCard paymentInfo,
+                 HashMap<Product, Integer> products) {
+        this.buyer = buyer;
+        this.paymentType = paymentType;
+        this.paymentInfo = new CreditCard(
+                paymentInfo.getCardNumber(),
+                paymentInfo.getFirstName(),
+                paymentInfo.getLastName(),
+                paymentInfo.getExpiryDate()
+        );
+        this.shippingAddress = buyer.getAddress();
+        this.phoneNumber = buyer.getPhoneNumber();
+        this.products = new HashMap<>();
+        this.products.putAll(products);
+        this.ETA = makeRandomETA();
+        this.totalCost = getTotalPrice();
+    }
+
+    // constructor with new personal info and points as payment type
+    public Order(Buyer buyer,
+                 String paymentType,
+                 Address shippingAddress,
+                 String phoneNumber,
+                 HashMap<Product, Integer> products) {
+        this.buyer = buyer;
+        this.paymentType = paymentType;
+        this.shippingAddress = shippingAddress;
+        this.phoneNumber = phoneNumber;
+        this.products = new HashMap<>();
+        this.products.putAll(products);
+        this.ETA = makeRandomETA();
+        this.totalCost = getTotalPrice();
+    }
+
+    // constructor with info from profile
+    public Order(Buyer buyer,
+                 String paymentType,
+                 HashMap<Product, Integer> products) {
+        this.buyer = buyer;
+        this.paymentType = paymentType;
+        if (Objects.equals(paymentType, "credit card")) {
+            this.paymentInfo = buyer.getCard();
+        } else {
+            this.paymentInfo = new CreditCard("00000000", "Used", "Points", "0000-00-00");
+        }
+        this.shippingAddress = buyer.getAddress();
+        this.phoneNumber = buyer.getPhoneNumber();
+        this.products = new HashMap<>();
+        this.products.putAll(products);
+        this.ETA = makeRandomETA();
+        this.totalCost = getTotalPrice();
+    }
 
     // GETTERS
 
@@ -65,95 +157,16 @@ public class Order implements java.io.Serializable {
     public void setShippingNumber(String number) { this.shippingNumber = number; }
     public void setTotalCost(float cost) { this.totalCost = cost; }
 
-    // CONSTRUCTORS
+    // UTILITIES
 
-    public String makeId(int idCount) {
-        int zeros = 3 - Integer.toString(idCount).length();
-        return("order" + ("0".repeat(zeros)) + idCount);
-    }
+    // eta ------------------------------------------------------------------------------------------------------------
 
-    public float getTotalPrice() {
-        float total = products.entrySet().stream()
-                .map(entry -> entry.getKey().getPrice() * entry.getValue())
-                .reduce(0f, Float::sum);
-        return Math.round(total * 100.0) / 100.0f;
-    }
-
-    // constructor with new personal and credit card
-    public Order(Buyer buyer, String paymentType, CreditCard paymentInfo, Address shippingAddress, String phoneNumber, HashMap<Product, Integer> products) {
-        this.buyer = buyer;
-        this.paymentType = paymentType;
-        this.paymentInfo = new CreditCard(
-                paymentInfo.getCardNumber(),
-                paymentInfo.getFirstName(),
-                paymentInfo.getLastName(),
-                paymentInfo.getExpiryDate()
-        );
-        this.shippingAddress = shippingAddress;
-        this.phoneNumber = phoneNumber;
-        this.products = new HashMap<>();
-        this.products.putAll(products);
-        this.ETA = makeRandomETA();
-        this.totalCost = getTotalPrice();
-    }
-
-    // constructor with new credit card only
-    public Order(Buyer buyer, String paymentType, CreditCard paymentInfo, HashMap<Product, Integer> products) {
-        this.buyer = buyer;
-        this.paymentType = paymentType;
-        this.paymentInfo = new CreditCard(
-                paymentInfo.getCardNumber(),
-                paymentInfo.getFirstName(),
-                paymentInfo.getLastName(),
-                paymentInfo.getExpiryDate()
-        );
-        this.shippingAddress = buyer.getAddress();
-        this.phoneNumber = buyer.getPhoneNumber();
-        this.products = new HashMap<>();
-        this.products.putAll(products);
-        this.ETA = makeRandomETA();
-        this.totalCost = getTotalPrice();
-    }
-
-    // constructor with new personal info and points as payment type
-    public Order(Buyer buyer, String paymentType, Address shippingAddress, String phoneNumber, HashMap<Product, Integer> products) {
-        this.buyer = buyer;
-        this.paymentType = paymentType;
-        this.shippingAddress = shippingAddress;
-        this.phoneNumber = phoneNumber;
-        this.products = new HashMap<>();
-        this.products.putAll(products);
-        this.ETA = makeRandomETA();
-        this.totalCost = getTotalPrice();
-    }
-
-    // constructor with info from profile
-    public Order(Buyer buyer, String paymentType, HashMap<Product, Integer> products) {
-        this.buyer = buyer;
-        this.paymentType = paymentType;
-        if (Objects.equals(paymentType, "credit card")) {
-            this.paymentInfo = buyer.getCard();
-        } else {
-            this.paymentInfo = new CreditCard("00000000", "Used", "Points", "0000-00-00");
-        }
-        this.shippingAddress = buyer.getAddress();
-        this.phoneNumber = buyer.getPhoneNumber();
-        this.products = new HashMap<>();
-        this.products.putAll(products);
-        this.ETA = makeRandomETA();
-        this.totalCost = getTotalPrice();
-    }
-
-    // OPERATIONS
-
-    // ETA
-
-    public String makeRandomETA() {
+    private String makeRandomETA() {
         int day = (int) (Math.random() * 30);
         return "Within " + day + " days";
     }
 
-    // TO STRING
+    // to string ------------------------------------------------------------------------------------------------------
 
     public String productsToString() {
         StringBuilder sb = new StringBuilder();

@@ -1,4 +1,5 @@
 package BackEndUtility;
+
 import Users.Buyer;
 import Users.Seller;
 import productClasses.Product;
@@ -7,14 +8,18 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class Catalog implements Serializable
-{
+public class Catalog implements Serializable {
+
+    // ATTRIBUTES
+
     private final HashSet<Product> books_catalog;
     private final HashSet<Product> learningRes_catalog;
     private final HashSet<Product> stationery_catalog;
     private final HashSet<Product> electronics_catalog;
     private final HashSet<Product> desktopAcc_catalog;
     private final HashSet<Seller> sellers_list;
+
+    // CONSTRUCTOR
 
     public Catalog(ArrayList<Seller> sellers) {
         this.books_catalog = new HashSet<>();
@@ -31,8 +36,10 @@ public class Catalog implements Serializable
             }
         }
     }
-    public HashSet<Product> getCatalogType(Category category)
-    {
+
+    // GETTER
+
+    public HashSet<Product> getCatalogType(Category category) {
         return switch (category) {
             case BOOKS -> books_catalog;
             case LEARNING_RESOURCES -> learningRes_catalog;
@@ -41,12 +48,12 @@ public class Catalog implements Serializable
             case DESKTOP_ACCESSORIES -> desktopAcc_catalog;
         };
     }
-    public void addProduct(Category category, Product product)
-    {
-        getCatalogType(category).add(product);
-    }
-    public void displayCatalog()
-    {
+
+    // UTILITIES
+
+    // catalog --------------------------------------------------------------------------------------------------------
+
+    public void displayCatalog() {
         System.out.println("Books: \n" + categoryCatalogToString(books_catalog) + "\n");
         System.out.println("Learning Resources: \n" + categoryCatalogToString(learningRes_catalog) + "\n");
         System.out.println("Stationery: \n" + categoryCatalogToString(stationery_catalog) + "\n");
@@ -55,12 +62,19 @@ public class Catalog implements Serializable
         displaySellers();
     }
 
-    public void displaySellers()
-    {
-        //create a method to add sellers in list when sign up
-        System.out.println("List of Sellers: \n" + sellersToString() + "\n");
+    // products -------------------------------------------------------------------------------------------------------
+
+    private void addProduct(Category category, Product product) {
+        getCatalogType(category).add(product);
     }
 
+    public void filterProductsByCategory(Category category) {
+        HashSet<Product> catalog = getCatalogType(category);
+        System.out.println("Products in category " + category + ":");
+        for (Product product : catalog) {
+            System.out.println("\t" + product.smallToString());
+        }
+    }
 
     public Product searchProductByName(String title) {
         for (Product product : books_catalog) {
@@ -86,35 +100,7 @@ public class Catalog implements Serializable
         return null;
     }
 
-    public Seller searchSellerByName(String id) {
-        for (Seller seller : sellers_list) {
-            if (seller.getId().equals(id))
-                return seller;
-        }
-        return null;
-    }
-    public String categoryCatalogToString(HashSet<Product> catalog) {
-        StringBuilder result = new StringBuilder();
-        for (Product product : catalog) {
-            result.append("\t").append(product.smallToString());
-        }
-        return result.toString();
-    }
-    public String sellersToString() {
-        StringBuilder result = new StringBuilder();
-        for (Seller seller : sellers_list) {
-            result.append("\t").append(seller.getId()).append(": ").append(seller.getCategory()).append("\t\t").append("Likes: ").append(seller.getMetrics().getLikes()).append("\n");
-        }
-        return result.toString();
-    }
-    public void filterProductsByCategory(Category category) {
-        HashSet<Product> catalog = getCatalogType(category);
-        System.out.println("Products in category " + category + ":");
-        for (Product product : catalog) {
-            System.out.println("\t" + product.smallToString());
-        }
-    }
-    public void orderProductsByPrice(boolean ascending) {
+    private void orderProductsByPrice(boolean ascending) {
         HashMap<Product, Float> productPrices = new HashMap<>();
         for (Product product : books_catalog) {
             productPrices.put(product, product.getPrice());
@@ -144,7 +130,8 @@ public class Catalog implements Serializable
                 System.out.println(entry.getKey().smallToString() + "\n")
         );
     }
-    public void orderProductsByLikes(boolean ascending) {
+
+    private void orderProductsByLikes(boolean ascending) {
         HashMap<Product, Integer> productLikes = new HashMap<>();
         for (Product product : books_catalog) {
             productLikes.put(product, product.getLikes());
@@ -174,7 +161,8 @@ public class Catalog implements Serializable
                 System.out.println(entry.getKey().smallToString() + "\n")
         );
     }
-    public void orderProductsByAverageNote(boolean ascending) {
+
+    private void orderProductsByAverageNote(boolean ascending) {
         HashMap<Product, Float> productNotes = new HashMap<>();
         for (Product product : books_catalog) {
             productNotes.put(product, product.getOverallRating());
@@ -204,15 +192,71 @@ public class Catalog implements Serializable
                 System.out.println(entry.getKey().smallToString() + "\n")
         );
     }
+
+    public void orderProducts(boolean ascending, String filter) {
+        switch (filter) {
+            case "price":
+                orderProductsByPrice(ascending);
+                break;
+            case "likes":
+                orderProductsByLikes(ascending);
+                break;
+            case "averageNote":
+                orderProductsByAverageNote(ascending);
+                break;
+        }
+    }
+
+    // sellers --------------------------------------------------------------------------------------------------------
+
+    private void displaySellers() {
+        //create a method to add sellers in list when sign up
+        System.out.println("List of Sellers: \n" + sellersToString() + "\n");
+    }
+
+    public Seller searchSellerByName(String id) {
+        for (Seller seller : sellers_list) {
+            if (seller.getId().equals(id))
+                return seller;
+        }
+        return null;
+    }
+
+    // to string ------------------------------------------------------------------------------------------------------
+
+    private String categoryCatalogToString(HashSet<Product> catalog) {
+        StringBuilder result = new StringBuilder();
+        for (Product product : catalog) {
+            result.append("\t").append(product.smallToString());
+        }
+        return result.toString();
+    }
+
+    private String sellersToString() {
+        StringBuilder result = new StringBuilder();
+        for (Seller seller : sellers_list) {
+            result.append("\t")
+                    .append(seller.getId())
+                    .append(": ")
+                    .append(seller.getCategory())
+                    .append("\t\t").append("Likes: ")
+                    .append(seller.getMetrics().getLikes())
+                    .append("\n");
+        }
+        return result.toString();
+    }
+
     public void filterSellersByCategory(Category category) {
         System.out.println("Sellers in category " + category + ":");
         for (Seller seller : sellers_list) {
             if (seller.getCategory().equals(category)) {
-                System.out.println("\t" + seller.getId() + ": " + seller.getCategory() + "\t\tLikes: " + seller.getMetrics().getLikes() + "\n");
+                System.out.println("\t" + seller.getId() + ": " + seller.getCategory() + "\t\tLikes: " +
+                        seller.getMetrics().getLikes() + "\n");
             }
         }
     }
-    public void orderSellersByLikes(boolean ascending) {
+
+    private void orderSellersByLikes(boolean ascending) {
         HashMap<Seller, Integer> sellerLikes = new HashMap<>();
         for (Seller seller : sellers_list) {
             sellerLikes.put(seller, seller.getMetrics().getLikes());
@@ -227,10 +271,12 @@ public class Catalog implements Serializable
 
         System.out.println("Sellers ordered by likes:");
         sortedStream.forEach(entry ->
-                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory() + "\t\tLikes: " + entry.getKey().getMetrics().getLikes() + "\n")
+                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory()
+                        + "\t\tLikes: " + entry.getKey().getMetrics().getLikes() + "\n")
         );
     }
-    public void orderSellersByAverageNote(boolean ascending) {
+
+    private void orderSellersByAverageNote(boolean ascending) {
         HashMap<Seller, Float> sellerNotes = new HashMap<>();
         for (Seller seller : sellers_list) {
             sellerNotes.put(seller, seller.getMetrics().getAverageNoteReceived());
@@ -245,28 +291,19 @@ public class Catalog implements Serializable
 
         System.out.println("Sellers ordered by average note:");
         sortedStream.forEach(entry ->
-                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory() + "\t\tAverage note: " + entry.getKey().getMetrics().getAverageNoteReceived() + "\n")
+                System.out.println(entry.getKey().getId() + ": " + entry.getKey().getCategory()
+                        + "\t\tAverage note: " + entry.getKey().getMetrics().getAverageNoteReceived() + "\n")
         );
     }
-    public void orderProducts(boolean ascending, String filter) {
-        switch (filter) {
-            case "price":
-                orderProductsByPrice(ascending);
-                break;
-            case "likes":
-                orderProductsByLikes(ascending);
-                break;
-            case "averageNote":
-                orderProductsByAverageNote(ascending);
-                break;
-        }
-    }
+
     public void filterSellersByFollowing(Buyer user) {
         System.out.println("Sellers you are following:");
         for (Seller seller : user.getSellersFollowed()) {
-            System.out.println("\t" + seller.getId() + ": " + seller.getCategory() + "\t\tLikes: " + seller.getMetrics().getLikes() + "\n");
+            System.out.println("\t" + seller.getId() + ": " + seller.getCategory() + "\t\tLikes: "
+                    + seller.getMetrics().getLikes() + "\n");
         }
     }
+
     public void orderSellers(boolean ascending, String filter) {
         switch (filter) {
             case "likes":

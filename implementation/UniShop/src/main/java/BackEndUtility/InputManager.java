@@ -3,8 +3,13 @@ package BackEndUtility;
 import java.util.Scanner;
 
 public class InputManager implements java.io.Serializable {
+
+    // ATTRIBUTES
+
     private static InputManager instance = null;
     private Scanner scanner;
+
+    // CONSTRUCTOR
 
     private InputManager() {
         scanner = new Scanner(System.in);
@@ -17,6 +22,8 @@ public class InputManager implements java.io.Serializable {
         return instance;
     }
 
+    // UTILITIES
+
     public String nextLine() {
         String nextLine = scanner.nextLine();
         while (nextLine.isEmpty()) {
@@ -25,6 +32,7 @@ public class InputManager implements java.io.Serializable {
         }
         return nextLine;
     }
+
     // Add other input methods as needed
 }
 

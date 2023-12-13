@@ -5,6 +5,9 @@ import BackEndUtility.InputManager;
 import java.util.ArrayList;
 
 public class BuyerMetrics implements Metrics, java.io.Serializable {
+
+    // ATTRIBUTES
+
     private int ordersMade;
     private int productsBought;
     private int likesReceived;
@@ -12,11 +15,11 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
     private int evaluationsMade;
     private final ArrayList<Float> notesGiven;
     private float averageNoteGiven;
-
     private int buyPoints;
     private int expPoints;
-
     public ArrayList<String> selectedMetrics; //to be shown on the users profile
+
+    // CONSTRUCTOR
 
     public BuyerMetrics() {
         ordersMade = 0;
@@ -30,40 +33,11 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
         notesGiven = new ArrayList<>();
         selectedMetrics = new ArrayList<>();
     }
-    public void setOrdersMade(int ordersMade) {
-        this.ordersMade = ordersMade;
-    }
-    public void setProductsBought(int productsBought) {
-        this.productsBought = productsBought;
-    }
-    public void setLikesReceived(int likesReceived) {
-        this.likesReceived = likesReceived;
-    }
-    public void setLikesGiven(int likesGiven) {
-        this.likesGiven = likesGiven;
-    }
-    public void setEvaluationsMade(int evaluationsMade) {
-        this.evaluationsMade = evaluationsMade;
-    }
-    public void setAverageNoteGiven(float averageNoteGiven) {
-        this.averageNoteGiven = averageNoteGiven;
-    }
-    public void setSelectedMetrics(ArrayList<String> selectedMetrics) {this.selectedMetrics = selectedMetrics; };
 
+    // GETTERS
 
-    public void addExpPoints(int points) {
-        this.expPoints += points;
-    }
-    public void removeExpPoints(int points) {
-        this.expPoints -= points;
-    }
     public int getExpPoints(){ return expPoints;}
-    public void addBuyPoints(int points) {
-        this.buyPoints += points;
-    }
-    public void removeBuyPoints(int points) {
-        this.buyPoints -= points;
-    }
+
     public int getBuyPoints() {
         return buyPoints;
     }
@@ -71,25 +45,84 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
     public int getOrdersMade() {
         return ordersMade;
     }
+
     public int getProductsBought() {
         return productsBought;
     }
+
     public int getLikesReceived() {
         return likesReceived;
     }
+
     public int getLikesGiven() {
         return likesGiven;
     }
+
     public int getEvaluationsMade() {
         return evaluationsMade;
     }
+
     public float getAverageNoteGiven() {
         return averageNoteGiven;
     }
+
     public ArrayList<String> getSelectedMetrics(){
         return selectedMetrics;
     }
-    protected int getUserInputAsInteger() {
+
+    // SETTERS
+
+    public void setOrdersMade(int ordersMade) {
+        this.ordersMade = ordersMade;
+    }
+
+    public void setProductsBought(int productsBought) {
+        this.productsBought = productsBought;
+    }
+
+    public void setLikesReceived(int likesReceived) {
+        this.likesReceived = likesReceived;
+    }
+
+    public void setLikesGiven(int likesGiven) {
+        this.likesGiven = likesGiven;
+    }
+
+    public void setEvaluationsMade(int evaluationsMade) {
+        this.evaluationsMade = evaluationsMade;
+    }
+
+    public void setAverageNoteGiven(float averageNoteGiven) {
+        this.averageNoteGiven = averageNoteGiven;
+    }
+
+    public void setSelectedMetrics(ArrayList<String> selectedMetrics) {this.selectedMetrics = selectedMetrics; };
+
+    // UTILITIES
+
+    // experience points ----------------------------------------------------------------------------------------------
+
+    public void addExpPoints(int points) {
+        this.expPoints += points;
+    }
+
+    public void removeExpPoints(int points) {
+        this.expPoints -= points;
+    }
+
+    // buying points --------------------------------------------------------------------------------------------------
+
+    public void addBuyPoints(int points) {
+        this.buyPoints += points;
+    }
+
+    public void removeBuyPoints(int points) {
+        this.buyPoints -= points;
+    }
+
+    // inputs ---------------------------------------------------------------------------------------------------------
+
+    private int getUserInputAsInteger() {
         while (true) {
             try {
                 int returned = Integer.parseInt(InputManager.getInstance().nextLine());
@@ -104,6 +137,9 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
 
         }
     }
+
+    // evaluations ----------------------------------------------------------------------------------------------------
+
     public void updateAverageNoteGiven(float note) {
         notesGiven.add(note);
         float sum = 0;
@@ -122,19 +158,8 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
         averageNoteGiven = sum / notesGiven.size();
     }
 
-    public String AlltoString() {
-        return
-                "Since inception," + "\n" +
-            "Orders made: " + ordersMade + "\n" +
-            "Products bought: " + productsBought + "\n" +
-            "Likes received on their evaluations: " + likesReceived + "\n" +
-            "Likes given: " + likesGiven + "\n" +
-            "Evaluations made: " + evaluationsMade + "\n" +
+    // configuration --------------------------------------------------------------------------------------------------
 
-            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" +
-            "Experience: " + expPoints + " points\n";
-
-    }
     public void configureMetrics(){
         ArrayList<String> allMetrics = new ArrayList<>();
         ArrayList<Number> allMetricsValues =new ArrayList<>();
@@ -188,7 +213,30 @@ public class BuyerMetrics implements Metrics, java.io.Serializable {
         }
     }
 
+    // to string ------------------------------------------------------------------------------------------------------
 
+    public String AlltoString() {
+        return
+                "Since inception," + "\n" +
+            "Orders made: " + ordersMade + "\n" +
+            "Products bought: " + productsBought + "\n" +
+            "Likes received on their evaluations: " + likesReceived + "\n" +
+            "Likes given: " + likesGiven + "\n" +
+            "Evaluations made: " + evaluationsMade + "\n" +
 
+            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" +
+            "Experience: " + expPoints + " points\n";
 
+    }
+
+    public String toString() {
+        return
+                "Orders made: " + ordersMade + "\n" +
+            "Products bought: " + productsBought + "\n" +
+            "Likes received on their evaluations: " + likesReceived + "\n" +
+            "Likes given: " + likesGiven + "\n" +
+            "Evaluations made: " + evaluationsMade + "\n" +
+            "Average note given: " + Math.round(averageNoteGiven*10)/10 + "\n" +
+            "Experience: " + expPoints + " points\n";
+    }
 }

@@ -8,6 +8,7 @@ import productClasses.Product;
 import java.util.ArrayList;
 
 public class Seller extends User implements java.io.Serializable {
+
     // ATTRIBUTES
 
     private Category category;
@@ -33,12 +34,14 @@ public class Seller extends User implements java.io.Serializable {
     }
 
     // SETTERS
+
     public void setLikes(int likes) {
         this.likes = likes;
     }
     public void setProducts(ArrayList<Product> products) {
         this.products = products;
     }
+
     // CONSTRUCTOR
 
     public Seller(String id, String password, String email, String phoneNumber, Address address, Category category) {
@@ -51,7 +54,9 @@ public class Seller extends User implements java.io.Serializable {
 
     }
 
-    // OPERATIONS
+    // UTILITIES
+
+    // products -------------------------------------------------------------------------------------------------------
 
     public void changeProductQuantity(Product product, int quantity) {
         product.setQuantity(quantity);
@@ -77,6 +82,8 @@ public class Seller extends User implements java.io.Serializable {
         metrics.updateProductsSold(metrics.getProductsSold() + quantity);
     }
 
+    // customer -------------------------------------------------------------------------------------------------------
+
     public ArrayList<Buyer> getCustomers() {
         return customers;
     }
@@ -84,6 +91,9 @@ public class Seller extends User implements java.io.Serializable {
         getCustomers().add(buyer);
     }
 
+    // to string ------------------------------------------------------------------------------------------------------
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Seller: ").append(getId()).append("\n");

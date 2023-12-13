@@ -7,6 +7,7 @@ import productClasses.Usages.Order;
 import java.util.*;
 
 public abstract class User implements java.io.Serializable {
+
     // ATTRIBUTES
 
     protected String id;
@@ -122,8 +123,31 @@ public abstract class User implements java.io.Serializable {
         this.checked24H = check24H;
     }
 
+    // UTILITIES
 
-    // OPERATIONS
+    // orders ---------------------------------------------------------------------------------------------------------
+
+    public void addOrder(Order order) {
+        orderHistory.add(order);
+    }
+
+    // notifications --------------------------------------------------------------------------------------------------
+
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+    }
+
+    // follower -------------------------------------------------------------------------------------------------------
+
+    public void addFollower(Buyer buyer) {
+        followers.add(buyer);
+    }
+
+    public void removeFollower(Buyer buyer) {
+        followers.remove(buyer);
+    }
+
+    // to string ------------------------------------------------------------------------------------------------------
 
     public String notificationsToString() {
         if (notifications.isEmpty()) {
@@ -137,22 +161,6 @@ public abstract class User implements java.io.Serializable {
             i++;
         }
         return sb.toString();
-    }
-
-    public void addOrder(Order order) {
-        orderHistory.add(order);
-    }
-
-    public void addNotification(Notification notification) {
-        notifications.add(notification);
-    }
-
-    public void addFollower(Buyer buyer) {
-        followers.add(buyer);
-    }
-
-    public void removeFollower(Buyer buyer) {
-        followers.remove(buyer);
     }
 
     public String ordersMadeToString() {
