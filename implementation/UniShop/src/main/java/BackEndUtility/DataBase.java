@@ -362,6 +362,7 @@ public class DataBase implements java.io.Serializable {
         return sortedStream;
     }
 
+
     private void top5Buyers(boolean ascending) {
         sortBuyersByXp(ascending).limit(5).forEach(entry -> {
             top5.add(entry.getKey());

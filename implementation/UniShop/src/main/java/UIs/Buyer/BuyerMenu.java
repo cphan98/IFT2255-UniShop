@@ -97,7 +97,7 @@ public class BuyerMenu extends Menu {
 
     @Override
     public void interactWithOrder(Order order) {
-
+      
     }
 
     // metrics --------------------------------------------------------------------------------------------------------

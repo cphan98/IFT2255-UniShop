@@ -88,6 +88,17 @@ public class UniShop {
         Buyer nathan = (Buyer) users.get(1);
         Buyer lucas = (Buyer) users.get(2);
         Buyer monpote20 = (Buyer) users.get(3);
+        Buyer aaron = (Buyer) users.get(4);
+        Buyer kevin = (Buyer) users.get(5);
+        Buyer lenny = (Buyer) users.get(6);
+        Buyer levy = (Buyer) users.get(7);
+        Buyer patrick = (Buyer) users.get(8);
+        Buyer luc = (Buyer) users.get(9);
+        Buyer laura = (Buyer) users.get(10);
+        Buyer mimi = (Buyer) users.get(11);
+        Buyer eren = (Buyer) users.get(12);
+
+
         BuyerMenu buyerMenu = new BuyerMenu(cynthia, database);
         buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) users.get(1));
         buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) users.get(2));
@@ -95,12 +106,46 @@ public class UniShop {
         buyerMenu.getUiUtilities().toggleBuyerToFollowing(cynthia, (Buyer) users.get(4));
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(4)), products.get(0));
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(4)), products.get(1));
+
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(3)), products.get(1));
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(3)), products.get(2));
+
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(2)), products.get(2));
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(2)), products.get(3));
+
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(1)), products.get(3));
         buyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(1)), products.get(4));
+
+        BuyerMenu anotherBuyerMenu = new BuyerMenu(kevin, database);
+        anotherBuyerMenu.getUiUtilities().toggleBuyerToFollowing(kevin, (Buyer) users.get(5));
+        anotherBuyerMenu.getUiUtilities().toggleBuyerToFollowing(kevin, (Buyer) users.get(6));
+        anotherBuyerMenu.getUiUtilities().toggleBuyerToFollowing(kevin, (Buyer) users.get(7));
+        anotherBuyerMenu.getUiUtilities().toggleBuyerToFollowing(kevin, (Buyer) users.get(8));
+        anotherBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(9)), products.get(4));
+        anotherBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(9)), products.get(5));
+
+        anotherBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(6)), products.get(5));
+        anotherBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(6)), products.get(6));
+
+        anotherBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(7)), products.get(6));
+        anotherBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(7)), products.get(7));
+
+        anotherBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(8)), products.get(7));
+        anotherBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(8)), products.get(8));
+
+        BuyerMenu thirdBuyerMenu = new BuyerMenu(luc, database);
+        thirdBuyerMenu.getUiUtilities().toggleBuyerToFollowing(luc, (Buyer) users.get(10));
+        thirdBuyerMenu.getUiUtilities().toggleBuyerToFollowing(luc, (Buyer) users.get(11));
+        thirdBuyerMenu.getUiUtilities().toggleBuyerToFollowing(luc, (Buyer) users.get(12));
+        thirdBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(10)), products.get(4));
+        thirdBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(10)), products.get(5));
+
+        thirdBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(11)), products.get(5));
+        thirdBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(11)), products.get(6));
+
+        thirdBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(12)), products.get(6));
+        thirdBuyerMenu.getUiUtilities().toggleProductToWishList(((Buyer) users.get(12)), products.get(7));
+
 
         cynthia.setCard(new CreditCard("123456789012", "Cynthia", "Phan", "2022-01-01"));
         cynthia.getCart().addProduct(products.get(0), 12);
@@ -108,7 +153,6 @@ public class UniShop {
         cynthia.getCart().addProduct(products.get(5), 7);
         database.generateAndAddOrders(cynthia, "credit card");
         cynthia.getCart().getProducts().clear();
-
 
         nathan.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
         nathan.getCart().addProduct(products.get(1), 5);
@@ -137,6 +181,79 @@ public class UniShop {
         database.generateAndAddOrders(monpote20, "credit card");
         monpote20.getCart().getProducts().clear();
 
+        aaron.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        aaron.getCart().addProduct(products.get(2), 1);
+        aaron.getCart().addProduct(products.get(3), 1);
+        aaron.getCart().addProduct(products.get(7), 1);
+        aaron.getCart().addProduct(products.get(13), 1);
+        database.generateAndAddOrders(aaron, "credit card");
+        aaron.getCart().getProducts().clear();
+
+        kevin.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        kevin.getCart().addProduct(products.get(1), 1);
+        kevin.getCart().addProduct(products.get(4), 2);
+        kevin.getCart().addProduct(products.get(8), 1);
+        kevin.getCart().addProduct(products.get(11), 1);
+        database.generateAndAddOrders(kevin, "credit card");
+        kevin.getCart().getProducts().clear();
+
+        lenny.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        lenny.getCart().addProduct(products.get(0), 1);
+        lenny.getCart().addProduct(products.get(5), 2);
+        lenny.getCart().addProduct(products.get(9), 1);
+        lenny.getCart().addProduct(products.get(14), 1);
+        database.generateAndAddOrders(lenny, "credit card");
+        lenny.getCart().getProducts().clear();
+
+        levy.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        levy.getCart().addProduct(products.get(0), 1);
+        levy.getCart().addProduct(products.get(5), 3);
+        levy.getCart().addProduct(products.get(4), 1);
+        database.generateAndAddOrders(levy, "credit card");
+        levy.getCart().getProducts().clear();
+
+        patrick.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        patrick.getCart().addProduct(products.get(1), 1);
+        patrick.getCart().addProduct(products.get(15), 1);
+        patrick.getCart().addProduct(products.get(8), 1);
+        patrick.getCart().addProduct(products.get(2), 4);
+        database.generateAndAddOrders(patrick, "credit card");
+        patrick.getCart().getProducts().clear();
+
+        luc.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        luc.getCart().addProduct(products.get(9), 1);
+        luc.getCart().addProduct(products.get(4), 1);
+        luc.getCart().addProduct(products.get(10), 1);
+        luc.getCart().addProduct(products.get(17), 4);
+        database.generateAndAddOrders(luc, "credit card");
+        luc.getCart().getProducts().clear();
+
+        laura.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        laura.getCart().addProduct(products.get(7), 1);
+        laura.getCart().addProduct(products.get(19), 1);
+        laura.getCart().addProduct(products.get(18), 2);
+        database.generateAndAddOrders(laura, "credit card");
+        laura.getCart().getProducts().clear();
+
+        mimi.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        mimi.getCart().addProduct(products.get(6), 1);
+        mimi.getCart().addProduct(products.get(4), 3);
+        mimi.getCart().addProduct(products.get(5), 1);
+        database.generateAndAddOrders(mimi, "credit card");
+        mimi.getCart().getProducts().clear();
+
+        eren.setCard(new CreditCard("123456789012", "Nathan", "Razaf", "2022-01-01"));
+        eren.getCart().addProduct(products.get(2), 2);
+        eren.getCart().addProduct(products.get(3), 1);
+        eren.getCart().addProduct(products.get(8), 1);
+        database.generateAndAddOrders(eren, "credit card");
+        eren.getCart().getProducts().clear();
+
+        int i = 0;
+        for (OrderState status : OrderState.values()) {
+            users.get(i).getOrderHistory().get(0).setStatus(status);
+            i++;
+        }
 
     }
 
@@ -176,6 +293,11 @@ public class UniShop {
         users.add(new Buyer("Levy","Tran","levtran", "1234", "pat@a.com", "2005406970", new Address("1169 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A8")));
         users.add(new Buyer("Patrick","Tran","pattran", "1234", "luc@mg.fr", "2005406971", new Address("1170 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A9")));
         users.add(new Buyer("Luc","Tran","luctran", "1234", "abb@aj.di", "2005406972", new Address("1171 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1B1")));
+
+        users.add(new Buyer("Laura","Tran","lautrab", "1234", "lau@tr.di", "2005406944", new Address("1177 Av. Random Road", "Canada", "Quebec", "Montreal", "A5G1Y1")));
+        users.add(new Buyer("Mimi","Tran","mimitran", "1234", "mimi@tr.ca", "2005406969", new Address("1444 Av. Random Road", "Canada", "Quebec", "Montreal", "B1A7B1")));
+        users.add(new Buyer("Eren","Yeager","edtran", "1234", "edd@tr.vr", "2005406999", new Address("6969 Av. Random Road", "Canada", "Quebec", "Montreal", "A4A1D1")));
+
         users.add(new Seller("Trinh", "1234", "def@abc", "2004456745", new Address("1156 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A6"), Category.ELECTRONICS));
         users.add(new Seller("Laura", "1234", "jkl@ghi", "2006294850", new Address("1990 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A7"), Category.BOOKS));
         users.add(new Seller("Randy", "1234", "mno@pqr", "2007103948", new Address("1432 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A8"), Category.DESKTOP_ACCESSORIES));
