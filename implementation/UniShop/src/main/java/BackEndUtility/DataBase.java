@@ -121,10 +121,6 @@ public class DataBase implements java.io.Serializable {
         }
         return sellers;
     }
-    public ArrayList<Buyer> getTop5() {
-        top5Buyers(false);
-        return top5;
-    }
     public ArrayList<Buyer> searchBuyerById(String id) {
         ArrayList<Buyer> listOfBuyers = new ArrayList<>();
         for (Buyer buyer : getBuyers()) {
@@ -252,11 +248,6 @@ public class DataBase implements java.io.Serializable {
             return sortedStream;
         }
         return sortedStream;
-    }
-    public void top5Buyers(boolean ascending) {
-        sortBuyersByXp(ascending).limit(5).forEach(entry -> {
-            top5.add(entry.getKey());
-                });
     }
     public void addUser(User user) {
         if ( validateNewUser(user.getId(), user.getEmail()) ) {
