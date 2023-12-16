@@ -1,10 +1,7 @@
-import BackEndUtility.*;
-import Metrics.*;
-import productClasses.*;
-import serializationUtil.*;
-import UIs.*;
-import Users.*;
-import UtilityObjects.*;
+import BackEndUtility.DataBase;
+import Users.Buyer;
+import Users.User;
+import UtilityObjects.Address;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
