@@ -20,8 +20,7 @@ public class Order implements java.io.Serializable {
     private CreditCard paymentInfo;
     private Address shippingAddress;
     private String phoneNumber;
-    private final LocalDate today = LocalDate.now();
-    private String orderDate = today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+    private String orderDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     private HashMap<Product, Integer> products;
     private OrderState status = OrderState.IN_PRODUCTION;
     private String ETA;
