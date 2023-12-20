@@ -127,10 +127,10 @@ class DataBaseTest {
         database.addUser(buyer);
 
         // add products to cart
-        buyer.getCart().addProduct(product1, 10);
-        database.getProducts().get(database.getProducts().indexOf(product1)).setQuantity(product1.getQuantity() - 10);
         buyer.getCart().addProduct(product2, 15);
         database.getProducts().get(database.getProducts().indexOf(product2)).setQuantity(product2.getQuantity() - 15);
+        buyer.getCart().addProduct(product1, 10);
+        database.getProducts().get(database.getProducts().indexOf(product1)).setQuantity(product1.getQuantity() - 10);
 
 
         // generate and add orders
