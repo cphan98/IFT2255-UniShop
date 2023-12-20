@@ -3,13 +3,13 @@ import Users.Seller;
 import UtilityObjects.Address;
 import UtilityObjects.Notification;
 import UtilityObjects.NotificationSender;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Queue;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class sendSellerNotificationTest {
+class SendSellerNotificationTest {
     @Test
     public void testSendSellerNotification() {
         Seller seller = new Seller("Laura", "1234", "jkl@ghi", "2006294850", new Address("1990 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A7"), Category.BOOKS);

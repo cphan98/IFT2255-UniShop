@@ -1,14 +1,15 @@
-import static org.junit.Assert.*;
 
 import Users.Buyer;
 import UtilityObjects.Address;
 import UtilityObjects.Notification;
 import UtilityObjects.NotificationSender;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Queue;
 
-public class sendBuyerNotificationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class SendBuyerNotificationTest {
     @Test
     public void testSendBuyerNotification() {
         Buyer buyer = new Buyer("Cynthia","Phan","cphan98", "1234", "ghi@jkl", "2005748362", new Address("1567 Av. Random Road", "Canada", "Quebec", "Montreal", "A1A1A3"));

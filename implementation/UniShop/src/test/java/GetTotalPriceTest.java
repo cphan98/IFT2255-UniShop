@@ -1,14 +1,14 @@
 import BackEndUtility.Category;
 import Users.Seller;
 import UtilityObjects.Address;
+import org.junit.jupiter.api.Test;
 import productClasses.Inheritances.Hardware;
 import productClasses.Inheritances.OfficeEquipment;
 import productClasses.Product;
 import productClasses.Usages.Cart;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
-public class getTotalPriceTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+class GetTotalPriceTest {
     @Test
     public void testGetTotalPrice() {
 
