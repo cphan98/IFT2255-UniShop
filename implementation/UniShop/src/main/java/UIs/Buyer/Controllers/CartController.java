@@ -2,7 +2,6 @@ package UIs.Buyer.Controllers;
 
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
-import UIs.Buyer.BuyerMenu;
 import UIs.UIUtilities;
 import Users.Buyer;
 import UtilityObjects.Address;
@@ -11,6 +10,10 @@ import productClasses.Product;
 
 import java.util.Objects;
 
+/**
+ * Class that represents the controller of the shopping cart so that the buyerMenu is not overloaded.
+ * Contains the methods that allow the buyer to interact with his cart
+ */
 public class CartController {
 
     // ATTRIBUTES
@@ -21,6 +24,11 @@ public class CartController {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructor of the class CartController
+     * @param user the buyer that is logged in
+     * @param database the database of the platform
+     */
     public CartController(Buyer user, DataBase database) {
         this.user = user;
         this.database = database;
@@ -31,6 +39,10 @@ public class CartController {
 
     // shopping cart page ---------------------------------------------------------------------------------------------
 
+    /**
+     * Method that displays the shopping cart page, which allows the buyer to see and interact with the products he has added to his cart
+     * @return true if the loop in the buyerMenu should continue, false otherwise
+     */
     public boolean displayCart() {
         System.out.println(user.getCart().toString());
         System.out.println();

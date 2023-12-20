@@ -5,6 +5,10 @@ import productClasses.Product;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class that represents the cart of a buyer, which contains the products that the buyer wants to buy, as well as their
+ * quantities
+ */
 public class Cart implements java.io.Serializable {
 
     // ATTRIBUTES
@@ -26,7 +30,13 @@ public class Cart implements java.io.Serializable {
     // UTILITIES
 
     // quantities ------------------------------------------------------------------------------------------------------
-  
+
+    /**
+     * Method that returns a product, given its name if it exists in the cart
+     *
+     * @param name the name of the product
+     * @return the product if it exists there, null otherwise
+     */
     public Product searchProductByName(String name) {
         for (Map.Entry<Product, Integer> entry : productQuantities.entrySet()) {
             if (entry.getKey().getTitle().equals(name)) {
@@ -36,19 +46,33 @@ public class Cart implements java.io.Serializable {
         return null;
     }
 
-    // Add a product to the cart or increases the quantity if it already exists
+    /**
+     * Method that adds a product to the cart, or increases its quantity if it already is in there
+     *
+     * @param product the product to add
+     * @param quantity the quantity to add
+     */
     public void addProduct(Product product, int quantity) {
         productQuantities.merge(product, quantity, Integer::sum);
     }
 
-    // Remove a certain quantity of the product or removes it entirely if quantity drops to 0
+    /**
+     * Method that removes a certain quantity of the product chosen or removes it entirely if quantity drops to 0
+     *
+     * @param product
+     * @param quantity
+     */
     public void removeProduct(Product product, int quantity) {
         productQuantities.computeIfPresent(product, (key, val) -> val - quantity > 0 ? val - quantity : null);
     }
 
     // cost -----------------------------------------------------------------------------------------------------------
 
-    // Calculate total price based on the quantities of each product
+    /**
+     * Method that returns the total price of all the products in the cart
+     *
+     * @return the total price of the cart
+     */
     public float getTotalPrice() {
         float total = productQuantities.entrySet().stream()
                 .map(entry -> entry.getKey().getPrice() * entry.getValue())
@@ -59,7 +83,11 @@ public class Cart implements java.io.Serializable {
 
     // to string ------------------------------------------------------------------------------------------------------
 
-    // String representation of the cart
+    /**
+     * Method that returns a string representation of the cart
+     *
+     * @return the string representation of the cart
+     */
     public String toString() {
         if (productQuantities.isEmpty()) return ("Cart is empty");
         StringBuilder sb = new StringBuilder();

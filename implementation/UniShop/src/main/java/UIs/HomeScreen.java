@@ -10,6 +10,9 @@ import Users.Buyer;
 import Users.Seller;
 import Users.User;
 
+/**
+ * Class that represents the home screen of the platform, the first thing the user sees when he opens the program
+ */
 public class HomeScreen {
 
     // ATTRIBUTE
@@ -18,6 +21,10 @@ public class HomeScreen {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructor of the class HomeScreen
+     * @param database the database of the platform
+     */
     public HomeScreen(DataBase database) {
         this.database = database;
     }
@@ -26,6 +33,9 @@ public class HomeScreen {
 
     // initialization -------------------------------------------------------------------------------------------------
 
+    /**
+     * Method that displays the home screen, which allows the user to login, signup as a buyer, signup as a seller or exit the program
+     */
     public void initialize() {
         boolean continueLoop = true;
         while (continueLoop) {

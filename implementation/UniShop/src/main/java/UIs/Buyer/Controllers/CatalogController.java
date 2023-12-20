@@ -192,32 +192,51 @@ public class CatalogController {
         } else {
             Evaluation pointedEvaluation = pointedProduct.getEvaluations().get(choice - 1);
             System.out.println(pointedEvaluation);
-            if (user.getEvaluationsLiked().contains(pointedEvaluation)) {
-                System.out.println("1. Unlike this evaluation");
+            if (user.getEvaluationsMade().containsValue(pointedEvaluation)) {
+                System.out.println("1. Delete this evaluation");
+                System.out.println("2. Return to product");
+                int choice2 = uiUtilities.getUserInputAsInteger();
+                switch (choice2) {
+                    case 1:
+                        database.removeEvaluationFromProduct(pointedProduct, pointedEvaluation);
+                        System.out.println("Evaluation deleted.");
+                        break;
+                    case 2:
+                        System.out.println("Returning to product...");
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Please try again.");
+                        break;
+                }
             } else {
-                System.out.println("1. Like this evaluation");
+                if (user.getEvaluationsLiked().contains(pointedEvaluation)) {
+                    System.out.println("1. Unlike this evaluation");
+                } else {
+                    System.out.println("1. Like this evaluation");
+                }
+                if (user.getBuyersFollowed().contains(pointedEvaluation.getAuthor())) {
+                    System.out.println("2. Unfollow this buyer");
+                } else {
+                    System.out.println("2. Follow this buyer");
+                }
+                System.out.println("3. Return to product");
+                int choice2 = uiUtilities.getUserInputAsInteger();
+                switch (choice2) {
+                    case 1:
+                        uiUtilities.toggleEvaluationLike(user, pointedEvaluation);
+                        break;
+                    case 2:
+                        uiUtilities.toggleBuyerToFollowing(user, pointedEvaluation.getAuthor());
+                        break;
+                    case 3:
+                        System.out.println("Returning to product...");
+                        break;
+                    default:
+                        System.out.println("Invalid selection. Please try again.");
+                        break;
+                }
             }
-            if (user.getBuyersFollowed().contains(pointedEvaluation.getAuthor())) {
-                System.out.println("2. Unfollow this buyer");
-            } else {
-                System.out.println("2. Follow this buyer");
-            }
-            System.out.println("3. Return to product");
-            int choice2 = uiUtilities.getUserInputAsInteger();
-            switch (choice2) {
-                case 1:
-                    uiUtilities.toggleEvaluationLike(user, pointedEvaluation);
-                    break;
-                case 2:
-                    uiUtilities.toggleBuyerToFollowing(user, pointedEvaluation.getAuthor());
-                    break;
-                case 3:
-                    System.out.println("Returning to product...");
-                    break;
-                default:
-                    System.out.println("Invalid selection. Please try again.");
-                    break;
-            }
+
         }
     }
 
