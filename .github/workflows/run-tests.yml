@@ -15,3 +15,5 @@ jobs:
           distribution: 'oracle'
       - name: Test with Maven
         run: mvn text
+      - name: Standard Checkout
+        uses: actions/checkout@v2
