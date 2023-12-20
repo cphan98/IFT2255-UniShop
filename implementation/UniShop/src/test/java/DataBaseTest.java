@@ -1,31 +1,33 @@
 import BackEndUtility.Category;
 import BackEndUtility.DataBase;
-import Users.Buyer;
-import Users.Seller;
-import Users.User;
+import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
+import UtilityObjects.Notification;
 import org.junit.jupiter.api.BeforeEach;
 import productClasses.Inheritances.LearningResource;
 import productClasses.Inheritances.Stationery;
 import productClasses.Product;
+import productClasses.Usages.Order;
 
 import org.junit.jupiter.api.Test;
-import productClasses.Usages.Order;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DataBaseTest {
+
     private DataBase database;
     private Seller seller;
+
     @BeforeEach
     void setUp() {
         // create seller
-        Address address = new Address("19 King St.", "Brazil", "East Blue", "Foosha Village",
-                "L1F1F1");
+        Address address = new Address("19 King St.", "Brazil", "East Blue", "Foosha Village", "L1F1F1");
         seller = new Seller("Monkey D. Luffy", "ilovemeat", "king_of_pirates@onepiece.com",
                 "0123456789", address, Category.LEARNING_RESOURCES);
 
@@ -36,21 +38,37 @@ class DataBaseTest {
         // initialize database with list of users
         database = new DataBase(users);
     }
+
     @Test
     void testAddProduct() {
         // create product
         Product product = new Stationery("Sticky notes", "A sticky note", 1.00F, 1, seller,
                 100, "The Straw Hats", "3000", "Paper", "1999-10-20", "1999-10-20");
 
+        // add follower to seller
+        Address address = new Address("19 King St.", "Brazil", "East Blue", "Foosha Village", "L1F1F1");
+        Buyer testBuyer = new Buyer("Roronoa", "Zoro", "pirate_hunter", "santoryu",
+                "zoro@google.maps", "0123456789", address);
+        seller.addFollower(testBuyer);
+
         // add product to database
         database.addProduct(product);
 
         // make expected result
+        // product
         ArrayList<Product> testProducts = new ArrayList<>();
         testProducts.add(product);
+        // notification
+        Queue<Notification> testNotifications = new LinkedList<>();
+        Notification notification = new Notification("New product just added!", "This Monkey D. Luffy just added a new product!");
+        testNotifications.add(notification);
 
         // assert addProduct
-        assertEquals(testProducts, database.getProducts());
+        assertAll("Check all functionalities of addProduct",
+                () -> assertEquals(testProducts, database.getProducts(), "The new product is in the database"),
+                () -> assertEquals(testProducts, seller.getProducts(), "The new product is in the seller's products list"),
+                () -> assertEquals(testNotifications, testBuyer.getNotifications(), "The new product is in the following buyer's notifications list")
+        );
     }
 
     @Test
