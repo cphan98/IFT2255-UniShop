@@ -193,6 +193,8 @@ public class Order implements java.io.Serializable {
                 "ETA: " + ETA + "\n";
     }
 
+
+
     public String smallToString() {
         return "Order ID: " + id + "\n" + productsToString() + "Status: " + status + "\n";
     }

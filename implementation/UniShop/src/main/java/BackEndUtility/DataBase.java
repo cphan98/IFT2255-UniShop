@@ -199,11 +199,6 @@ public class DataBase implements java.io.Serializable {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
         for (Seller seller : splitCart.keySet()) {
             HashMap<Product, Integer> products = splitCart.get(seller);
-
-            for(Product product : user.getCart().getProducts().keySet()){
-                getSeller(seller).sellProduct(product, splitCart.size());
-            }
-
             addOrder(new Order(user, paymentType, products));
         }
     }
