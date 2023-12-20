@@ -4,6 +4,7 @@ import Users.*;
 import UtilityObjects.Address;
 import UtilityObjects.CreditCard;
 import UtilityObjects.Notification;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import productClasses.Inheritances.LearningResource;
 import productClasses.Inheritances.Stationery;
@@ -37,6 +38,12 @@ class DataBaseTest {
 
         // initialize database with list of users
         database = new DataBase(users);
+    }
+
+    @AfterEach
+    void tearDown() {
+        database = null;
+        seller = null;
     }
 
     @Test
@@ -97,13 +104,13 @@ class DataBaseTest {
     }
 
     @Test
-    void test_addOrder() {
+    void test_generateAndAddOrders() {
         // create products
         Product product1 = new Stationery("Sticky notes", "A sticky note", 1.00F, 1, seller,
-                 100, "The Straw Hats", "3000", "Paper", "1999-10-20", "1999-10-20");
+                100, "The Straw Hats", "3000", "Paper", "1999-10-20", "1999-10-20");
         Seller seller2 = new Seller("pirate_hunter", "santoryu", "zoro@google.maps", "0123456789",
-                 new Address("19 King St.", "Brazil", "East Blue", "Foosha Village",
-                "L1F1F1"), Category.LEARNING_RESOURCES);
+                new Address("19 King St.", "Brazil", "East Blue", "Foosha Village",
+                        "L1F1F1"), Category.LEARNING_RESOURCES);
         database.addUser(seller2);
         Product product2 = new LearningResource("How to be a pirate", "A guide to being a pirate",
                 2.00F, 1, seller2, 100, 52589849, "3000", "Paper", "1999-10-20", "1999-10-20", "English", 2022);
@@ -119,20 +126,28 @@ class DataBaseTest {
         buyer.setCard(new CreditCard("1234567890123456", "Tony Tony", "Chopper", "2022-10-20"));
         database.addUser(buyer);
 
-        // create orders
-        HashMap<Product, Integer> products1 = new HashMap<>();
-        products1.put(product1, 10);
-        Order order1 = new Order(buyer, "credit card", products1);
-        HashMap<Product, Integer> products2 = new HashMap<>();
-        products2.put(product2, 15);
-        Order order2 = new Order(buyer, "credit card", products2);
+        // add products to cart
+        buyer.getCart().addProduct(product2, 15);
+        database.getProducts().get(database.getProducts().indexOf(product2)).setQuantity(product2.getQuantity() - 15);
+        buyer.getCart().addProduct(product1, 10);
+        database.getProducts().get(database.getProducts().indexOf(product1)).setQuantity(product1.getQuantity() - 10);
 
-        // add orders to database
-        database.addOrder(order1);
-        database.addOrder(order2);
+
+        // generate and add orders
+        database.generateAndAddOrders(buyer, "credit card");
 
         // make expected result
         ArrayList<Order> expectedBuyerOrderHistory = new ArrayList<>();
+        HashMap<Product, Integer> products1 = new HashMap<>();
+        products1.put(product1, 10);
+        Order order1 = new Order(buyer, "credit card", products1);
+        order1.setId("order001");
+        order1.setETA(database.getOrders().get(0).getETA());
+        HashMap<Product, Integer> products2 = new HashMap<>();
+        products2.put(product2, 15);
+        Order order2 = new Order(buyer, "credit card", products2);
+        order2.setId("order002");
+        order2.setETA(database.getOrders().get(1).getETA());
         expectedBuyerOrderHistory.add(order1);
         expectedBuyerOrderHistory.add(order2);
 
@@ -142,8 +157,8 @@ class DataBaseTest {
         ArrayList<Order> expectedSeller2OrderHistory = new ArrayList<>();
         expectedSeller2OrderHistory.add(order2);
 
-        // assert addOrder
-        assertAll("Test addOrder",
+        // assert generateAndAddOrders
+        assertAll("Test generateAndAddOrders",
                 () -> assertEquals(expectedBuyerOrderHistory, buyer.getOrderHistory(), "The buyer's order history is updated"),
                 () -> assertEquals(expectedSeller1OrderHistory, seller.getOrderHistory(), "The seller's order history is updated"),
                 () -> assertEquals(expectedSeller2OrderHistory, seller2.getOrderHistory(), "The seller's order history is updated"),
@@ -153,7 +168,7 @@ class DataBaseTest {
                 () -> assertEquals(15, seller2.getMetrics().getProductsSold(), "The seller's products sold are updated"),
                 () -> assertEquals(10, seller.getMetrics().getRevenue(), "The seller's revenue is updated"),
                 () -> assertEquals(30, seller2.getMetrics().getRevenue(), "The seller's revenue is updated")
+    );
 
-        );
     }
 }
