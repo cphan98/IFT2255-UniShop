@@ -104,71 +104,52 @@ class DataBaseTest {
     }
 
     @Test
-    void test_generateAndAddOrders() {
-        // create products
-        Product product1 = new Stationery("Sticky notes", "A sticky note", 1.00F, 1, seller,
-                100, "The Straw Hats", "3000", "Paper", "1999-10-20", "1999-10-20");
-        Seller seller2 = new Seller("pirate_hunter", "santoryu", "zoro@google.maps", "0123456789",
-                new Address("19 King St.", "Brazil", "East Blue", "Foosha Village",
-                        "L1F1F1"), Category.LEARNING_RESOURCES);
-        database.addUser(seller2);
-        Product product2 = new LearningResource("How to be a pirate", "A guide to being a pirate",
-                2.00F, 1, seller2, 100, 52589849, "3000", "Paper", "1999-10-20", "1999-10-20", "English", 2022);
+    void test_searchBuyerById() {
+        // initialize buyers
+        Address zoroAddress = new Address("19 King St.", "Brazil", "East Blue", "Foosha Village", "L1F1F1");
+        Buyer zoro = new Buyer("Roronoa", "Zoro", "pirate_hunter_strawhat", "santoryu",
+                "zoro@google.maps", "0123456789", zoroAddress);
+        Address namiAddress = new Address("19 King St.", "Brazil", "East Blue", "Foosha Village", "L1F1F1");
+        Buyer nami = new Buyer("Nami", "Cat Burglar", "cat_burglar_strawhat", "clima_tact",
+                "nami@swaan.com", "0123456789", namiAddress);
+        Address usoppAddress = new Address("19 King St.", "Brazil", "East Blue", "Foosha Village", "L1F1F1");
+        Buyer usopp = new Buyer("Usopp", "Sogeking", "sogeking_strahwat", "kabuto",
+                "usopp@liar.com", "0123456789", usoppAddress);
+        Address sanjiAddress = new Address("19 King St.", "Brazil", "East Blue", "Foosha Village", "L1F1F1");
+        Buyer sanji = new Buyer("Sanji", "Black Leg", "black_leg_strawhat", "diable_jambe",
+                "sanji@cook.com", "0123456789", sanjiAddress);
 
-        // add products to database
-        database.addProduct(product1);
-        database.addProduct(product2);
+        // add buyers to database
+        database.addUser(zoro);
+        database.addUser(nami);
+        database.addUser(usopp);
+        database.addUser(sanji);
 
-        // initialize buyer
-        Address address = new Address("17 Doctor Dr.", "Canada", "Grand Line", "Drum Island",
-                "C0P1P1");
-        Buyer buyer = new Buyer("Tony Tony", "Chopper", "dr_chopper", "cottoncandy", "dr_chopper@onepice.com", "0123456789", address);
-        buyer.setCard(new CreditCard("1234567890123456", "Tony Tony", "Chopper", "2022-10-20"));
-        database.addUser(buyer);
+        // assert searchBuyerById
+        ArrayList<Buyer> actualBuyers = database.searchBuyerById("strawhat");
+        ArrayList<Buyer> expectedBuyers = new ArrayList<>();
+        expectedBuyers.add(zoro);
+        expectedBuyers.add(nami);
+        expectedBuyers.add(sanji);
 
-        // add products to cart
-        buyer.getCart().addProduct(product2, 15);
-        database.getProducts().get(database.getProducts().indexOf(product2)).setQuantity(product2.getQuantity() - 15);
-        buyer.getCart().addProduct(product1, 10);
-        database.getProducts().get(database.getProducts().indexOf(product1)).setQuantity(product1.getQuantity() - 10);
+        ArrayList<Buyer> actualBuyers2 = database.searchBuyerById("sogeking");
+        ArrayList<Buyer> expectedBuyers2 = new ArrayList<>();
+        expectedBuyers2.add(usopp);
 
+        ArrayList<Buyer> actualBuyers3 = database.searchBuyerById("luffy");
 
-        // generate and add orders
-        database.generateAndAddOrders(buyer, "credit card");
+        ArrayList<Buyer> actualBuyers4 = database.searchBuyerById("");
+        ArrayList<Buyer> expectedBuyers4 = new ArrayList<>();
+        expectedBuyers4.add(zoro);
+        expectedBuyers4.add(nami);
+        expectedBuyers4.add(usopp);
+        expectedBuyers4.add(sanji);
 
-        // make expected result
-        ArrayList<Order> expectedBuyerOrderHistory = new ArrayList<>();
-        HashMap<Product, Integer> products1 = new HashMap<>();
-        products1.put(product1, 10);
-        Order order1 = new Order(buyer, "credit card", products1);
-        order1.setId("order001");
-        order1.setETA(database.getOrders().get(0).getETA());
-        HashMap<Product, Integer> products2 = new HashMap<>();
-        products2.put(product2, 15);
-        Order order2 = new Order(buyer, "credit card", products2);
-        order2.setId("order002");
-        order2.setETA(database.getOrders().get(1).getETA());
-        expectedBuyerOrderHistory.add(order1);
-        expectedBuyerOrderHistory.add(order2);
-
-        ArrayList<Order> expectedSeller1OrderHistory = new ArrayList<>();
-        expectedSeller1OrderHistory.add(order1);
-
-        ArrayList<Order> expectedSeller2OrderHistory = new ArrayList<>();
-        expectedSeller2OrderHistory.add(order2);
-
-        // assert generateAndAddOrders
-        assertAll("Test generateAndAddOrders",
-                () -> assertEquals(expectedBuyerOrderHistory, buyer.getOrderHistory(), "The buyer's order history is updated"),
-                () -> assertEquals(expectedSeller1OrderHistory, seller.getOrderHistory(), "The seller's order history is updated"),
-                () -> assertEquals(expectedSeller2OrderHistory, seller2.getOrderHistory(), "The seller's order history is updated"),
-                () -> assertEquals(2, buyer.getMetrics().getOrdersMade(), "The buyer's orders made are updated"),
-                () -> assertEquals(25, buyer.getMetrics().getProductsBought(), "The buyer's products bought are updated"),
-                () -> assertEquals(10, seller.getMetrics().getProductsSold(), "The seller's products sold are updated"),
-                () -> assertEquals(15, seller2.getMetrics().getProductsSold(), "The seller's products sold are updated"),
-                () -> assertEquals(10, seller.getMetrics().getRevenue(), "The seller's revenue is updated"),
-                () -> assertEquals(30, seller2.getMetrics().getRevenue(), "The seller's revenue is updated")
-    );
-
+        assertAll("Check all functionalities of searchBuyerById",
+                () -> assertEquals(expectedBuyers, actualBuyers, "The search results are correct when many buyers are found"),
+                () -> assertEquals(expectedBuyers2, actualBuyers2, "The search results are correct when only one buyer is found"),
+                () -> assertEquals(0, actualBuyers3.size(), "The search results are correct when no buyer is found"),
+                () -> assertEquals(expectedBuyers4, actualBuyers4, "The search returns all buyers when input is empty")
+        );
     }
 }
