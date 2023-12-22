@@ -1,18 +1,17 @@
+
 import BackEndUtility.Category;
 import BackEndUtility.DataBase;
 import Users.*;
+
 import UtilityObjects.Address;
-import UtilityObjects.CreditCard;
 import UtilityObjects.Notification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import productClasses.Inheritances.LearningResource;
+
+import org.junit.jupiter.api.Test;
 import productClasses.Inheritances.Stationery;
 import productClasses.Product;
 import productClasses.Usages.Evaluation;
-import productClasses.Usages.Order;
-
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ class DataBaseTest {
     }
 
     @Test
-    void testAddProduct() {
+    void test_AddProduct() {
         // create product
         Product product = new Stationery("Sticky notes", "A sticky note", 1.00F, 1, seller,
                 100, "The Straw Hats", "3000", "Paper", "1999-10-20", "1999-10-20");
@@ -80,7 +79,7 @@ class DataBaseTest {
     }
 
     @Test
-    void testAddEvaluationToProduct() {
+    void test_AddEvaluationToProduct() {
         // create buyer
         Address address = new Address("444 Soichiro", "Japan", "Kanto","Tokyo",
                 "L1L1L1");

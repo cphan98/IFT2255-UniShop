@@ -57,12 +57,12 @@ public class SellerMetricsTest {
         database.addUser(buyer2);
 
         // creat evaluation
-        Evaluation evaluation1 = new Evaluation("Writing names don't do anything...", 3.3F, buyer);
-        Evaluation evaluation2 = new Evaluation("Sturdy cover!", 9.8F, buyer2);
-        Evaluation evaluation3 = new Evaluation("Notes are very sticky!", 9.0F, buyer);
+        Evaluation evaluation1 = new Evaluation("Writing names don't do anything...", 1.6F, buyer);
+        Evaluation evaluation2 = new Evaluation("Sturdy cover!", 4.3F, buyer2);
+        Evaluation evaluation3 = new Evaluation("Notes are very sticky!", 4.5F, buyer);
 
         // average note given
-        double note = Math.round((evaluation1.getRating() + evaluation2.getRating() + evaluation3.getRating()) / 3);
+        float note = (float) Math.round((evaluation1.getRating() + evaluation2.getRating() + evaluation3.getRating()) / 3 * 10) /10;
 
         // adding evaluations to product to make result
         database.addEvaluationToProduct(product1, evaluation1);
