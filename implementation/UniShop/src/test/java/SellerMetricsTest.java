@@ -62,7 +62,7 @@ public class SellerMetricsTest {
         Evaluation evaluation3 = new Evaluation("Notes are very sticky!", 9.0F, buyer);
 
         // average note given
-        float note = (evaluation1.getRating() + evaluation2.getRating() + evaluation3.getRating()) / 3;
+        float note = Math.round((evaluation1.getRating() + evaluation2.getRating() + evaluation3.getRating()) / 3);
 
         // adding evaluations to product to make result
         database.addEvaluationToProduct(product1, evaluation1);
