@@ -32,7 +32,7 @@ class BuyerMetricsTest {
     }
 
     @Test
-    void testAddExpPoints() {
+    void test_AddExpPoints() {
         // add experience points to buyer
         int xp = 1999;
         database.getBuyer(buyer).getMetrics().addExpPoints(xp);
@@ -42,7 +42,7 @@ class BuyerMetricsTest {
     }
 
     @Test
-    void testAddBuyPoints() {
+    void test_AddBuyPoints() {
         // add buy points to buyer
         int points = 2023;
         database.getBuyer(buyer).getMetrics().addBuyPoints(points);

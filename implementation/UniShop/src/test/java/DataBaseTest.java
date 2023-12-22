@@ -47,7 +47,7 @@ class DataBaseTest {
     }
 
     @Test
-    void testAddProduct() {
+    void test_AddProduct() {
         // create product
         Product product = new Stationery("Sticky notes", "A sticky note", 1.00F, 1, seller,
                 100, "The Straw Hats", "3000", "Paper", "1999-10-20", "1999-10-20");
