@@ -10,6 +10,11 @@ import productClasses.Product;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Class containing information about a buyer.
+ *
+ * This class is an extension of User and implements java.io.Serializable.
+ */
 public class Buyer extends User implements java.io.Serializable {
 
     // ATTRIBUTES
@@ -29,6 +34,18 @@ public class Buyer extends User implements java.io.Serializable {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructs a new instance of Buyer with given first and last name, ID (username), password, email, phone number
+     * and address.
+     *
+     * @param firstName     String
+     * @param lastName      String
+     * @param id            String, username
+     * @param password      String
+     * @param email         String
+     * @param phoneNumber   String
+     * @param address       Address
+     */
     public Buyer(String firstName, String lastName, String id, String password, String email, String phoneNumber, Address address) {
         super(id, password, email, phoneNumber, address);
         this.metrics = new BuyerMetrics();
@@ -46,57 +63,146 @@ public class Buyer extends User implements java.io.Serializable {
 
     // GETTERS
 
+    /**
+     * Returns the buyer's first name.
+     *
+     * @return  String, first name
+     */
     public String getFirstName() {
         return firstName;
     }
+
+    /**
+     * Returns the buyer's last name.
+     *
+     * @return  String, last name
+     */
     public String getLastName() {
         return lastName;
     }
+
+    /**
+     * Returns the list of sellers the buyer is following.
+     *
+     * @return  ArrayList of Seller
+     */
     public ArrayList<Seller> getSellersFollowed() {
         return sellersFollowed;
     }
+
+    /**
+     * Returns the top 5 buyers the buyer is following with the highest experience points.
+     *
+     * @return  ArrayList of Buyer
+     */
     public ArrayList<Buyer> getTop5ExpBuyers() {
         updateTop5();
         return top5;
     }
+
+    /**
+     * Returns the buyer's rank in experience points within the buyers they are following.
+     *
+     * @return  int
+     */
     public int getYourRank() {
         updateYourRank();
         return yourRank+1;
     }
+
+
+    /**
+     * Returns the buyer's cart.
+     *
+     * @return  Cart
+     */
     public Cart getCart() {
         return cart;
     }
+
+    /**
+     * Returns the buyer's metrics.
+     *
+     * @return  BuyerMetrics
+     */
     public BuyerMetrics getMetrics() {
         return metrics;
     }
+
+    /**
+     * Returns the buyer's credit card.
+     *
+     * @return  CreditCard
+     */
     public CreditCard getCard() {
         return card;
     }
+
+    /**
+     * Returns the buyer's wishlist.
+     *
+     * @return  ArrayList of Product
+     */
     public ArrayList<Product> getWishList() {
         return wishList;
     }
+
+    /**
+     * Returns the list of buyers the buyer is following.
+     *
+     * @return  ArrayList of Buyer
+     */
     public ArrayList<Buyer> getBuyersFollowed() {
         return buyersFollowed;
     }
+
+    /**
+     * Returns the list of evaluations the buyer liked.
+     *
+     * @return  ArrayList of Evaluation
+     */
     public ArrayList<Evaluation> getEvaluationsLiked() {
         return evaluationsLiked;
     }
+
+    /**
+     * Returns the list of evaluation the buyer made.
+     *
+     * @return  HashMap: Product as key, Evaluation as value
+     */
     public HashMap<Product, Evaluation> getEvaluationsMade() {
         return evaluationsMade;
     }
 
     // SETTERS
 
+    /**
+     * Sets the first name of the buyer.
+     *
+     * @param firstName String
+     */
     public void setFirstName(String firstName) {
         if (firstName != null && !firstName.isEmpty()) {
             this.firstName = firstName;
         }
     }
+
+    /**
+     * Sets the last name of the buyer.
+     *
+     * @param lastName  String
+     */
     public void setLastName(String lastName) {
         if (lastName != null && !lastName.isEmpty()) {
             this.lastName = lastName;
         }
     }
+
+    /**
+     * Sets the buyer's credit card.
+     *
+     * @param card  CreditCard
+     */
     public void setCard(CreditCard card) {
         this.card = card;
     }
@@ -104,6 +210,10 @@ public class Buyer extends User implements java.io.Serializable {
     // UTILITIES
 
     // followers ------------------------------------------------------------------------------------------------------
+
+    /**
+     * Removes a follower from the buyer's list of followers.
+     */
     @Override
     public void removeFollower(Buyer follower) {
         followers.remove(follower);
@@ -142,6 +252,11 @@ public class Buyer extends User implements java.io.Serializable {
 
     // to string ------------------------------------------------------------------------------------------------------
 
+    /**
+     * Transforms the buyer's wishlist into a string in order to properly print it.
+     *
+     * @return  String containing the products in the buyer's wishlist
+     */
     public String wishListToString() {
         if (wishList.isEmpty()) {
             return "Your wish list is empty!";

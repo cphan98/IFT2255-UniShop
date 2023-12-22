@@ -18,6 +18,9 @@ import serializationUtil.SerializationUtil;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Class representing the UniShop platform
+ */
 public class UniShop {
     // ATTRIBUTES
 
@@ -27,6 +30,11 @@ public class UniShop {
 
     // MAIN
 
+    /**
+     * Main method to run UniShop.
+     *
+     * @param args  String[]
+     */
     public static void main(String[] args) {
         try {
             // Try to load existing data

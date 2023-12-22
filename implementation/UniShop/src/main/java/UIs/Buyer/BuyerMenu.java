@@ -6,6 +6,11 @@ import UIs.Buyer.Controllers.*;
 import Users.*;
 import productClasses.Usages.Order;
 
+/**
+ * Class representing the buyer's menu page.
+ *
+ * This class contains methods to be implemented by controllers, and extends Menu.
+ */
 public class BuyerMenu extends Menu {
 
     // ATTRIBUTES
@@ -18,6 +23,12 @@ public class BuyerMenu extends Menu {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructs an instance of BuyerMenu with given user and databse.
+     *
+     * @param user      Buyer, the user is a buyer
+     * @param database  DataBase of UniShop containing all necessary information about users, products and orders
+     */
     public BuyerMenu(Buyer user, DataBase database) {
         super(user, database);
         this.user = user;
@@ -31,6 +42,14 @@ public class BuyerMenu extends Menu {
 
     // main menu ------------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays options for the buyer to choose from: display profile, display order history, display cart, display
+     * wishlist, display catalog, display buyers, display notifications, display metrics, and log out.
+     *
+     * Returns true in order for the calling method to continue the interaction loop.
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     @Override
     public boolean displayMenu() {
 
@@ -81,6 +100,11 @@ public class BuyerMenu extends Menu {
 
     // profile page ---------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the buyer's profile and returns true in order for the calling method to continue the interaction loop.
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     @Override
     public boolean displayProfile() {
         return false;
@@ -88,6 +112,11 @@ public class BuyerMenu extends Menu {
 
     // order history page ---------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the order history and returns true in order for the calling method to continue the interaction loop.
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     @Override
     public boolean displayOrderHistory() {
         return false;
@@ -95,6 +124,11 @@ public class BuyerMenu extends Menu {
 
     // order page -----------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays options for the buyer to interact with a selected order.
+     *
+     * @param order Order to interact with
+     */
     @Override
     public void interactWithOrder(Order order) {
       
@@ -102,12 +136,19 @@ public class BuyerMenu extends Menu {
 
     // metrics --------------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the buyer's metrics.
+     */
     @Override
     public void displayMetrics() {
 
     }
 
     // profile modification -------------------------------------------------------------------------------------------
+
+    /**
+     * Displays options for the buyer to modify their profile.
+     */
     @Override
     public void modifyProfile() {
 

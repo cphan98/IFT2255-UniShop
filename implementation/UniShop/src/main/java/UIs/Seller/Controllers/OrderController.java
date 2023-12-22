@@ -13,6 +13,12 @@ import productClasses.Usages.Order;
 
 import java.util.*;
 
+/**
+ * Class managing a seller's orders.
+ *
+ * By using this class, a seller can view their order history, prepare an order, handle an order issue requested by a
+ * customer, and confirm a reshipment order.
+ */
 public class OrderController  {
 
     // ATTRIBUTES
@@ -23,6 +29,12 @@ public class OrderController  {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructs an instance of OrderController with given user and database.
+     *
+     * @param user      Seller, user is a seller
+     * @param database  DataBase of UniShop containing information about orders
+     */
     public OrderController(Seller user, DataBase database) {
         this.database = database;
         this.user = user;
@@ -33,6 +45,13 @@ public class OrderController  {
 
     // order history page ---------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the seller's order history, and the user can choose an order to see its details.
+     *
+     * Returns true in order for the calling method to continue the interaction loop.
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     public boolean displayOrderHistory() {
         System.out.println();
         System.out.println("ORDER HISTORY");
@@ -62,6 +81,12 @@ public class OrderController  {
 
     // order page -----------------------------------------------------------------------------------------------------
 
+    /**
+     * For a selected order, the seller can prepare the order, handle the problem related to the order, or confirm the
+     * reshipment reception when a customer sends back items.
+     *
+     * @param order Order, order selected by the seller
+     */
     public void interactWithOrder(Order order) {
         System.out.println(order);
         System.out.println();
