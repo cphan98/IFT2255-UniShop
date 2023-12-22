@@ -44,7 +44,7 @@ public class SellerMetricsTest {
 
     @Test
     void testUpdateAverageNoteReceived() {
-        // create product
+        // create products
         Product product1 = new Stationery("DeathNote", "A notebook", 1.00F, 1, seller,
                 100, "The Shinigamis", "4444", "Paper", "2006-10-04", "2006-10-04");
         Product product2 = new Stationery("Sticky notes", "A sticky note", 1.00F, 1, seller,
@@ -64,6 +64,7 @@ public class SellerMetricsTest {
         // average note given
         float note = (evaluation1.getRating() + evaluation2.getRating() + evaluation3.getRating()) / 3;
 
+        // adding evaluations to product to make result
         database.addEvaluationToProduct(product1, evaluation1);
         database.addEvaluationToProduct(product1, evaluation2);
         database.addEvaluationToProduct(product2, evaluation3);
