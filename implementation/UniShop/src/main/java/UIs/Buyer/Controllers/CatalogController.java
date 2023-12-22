@@ -17,7 +17,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static UIs.Menu.line;
-
+/**
+ * The CatalogController class represents a controller responsible for managing
+ * the interaction between the buyer user interface and the catalog, allowing the user
+ * to browse, search, and interact with products and sellers.
+ *
+ */
 public class CatalogController {
 
     // ATTRIBUTES
@@ -29,7 +34,12 @@ public class CatalogController {
     private final UIUtilities uiUtilities;
 
     // CONSTRUCTOR
-
+    /**
+     * Constructs a new CatalogController with the specified buyer user and database.
+     *
+     * @param user     the buyer user associated with the controller
+     * @param database the database containing product and seller information
+     */
     public CatalogController(Buyer user, DataBase database) {
         this.user = user;
         this.database = database;
@@ -39,7 +49,14 @@ public class CatalogController {
     // UTILITIES
 
     // catalog page ---------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays the catalog and provides options to: get a product, Get a seller's info and products
+     * filter products, filter sellers and display products liked by the buyers you follow
+     * The user can interact with everone of these options.
+     *
+     * @return {@code true} if the user interaction loop continues, {@code false} if
+     * the user chooses to return to the menu
+     */
     public boolean displayCatalog() {
         line();
         System.out.println("CATALOG");
@@ -76,7 +93,9 @@ public class CatalogController {
     }
 
     // product page ---------------------------------------------------------------------------------------------------
-
+    /**
+     * Searches for a product in the catalog and displays its details.
+     */
     public void searchAndDisplayProduct() {
         if (searchProduct(catalog)) {
             System.out.println(pointedProduct);
@@ -85,7 +104,12 @@ public class CatalogController {
             System.out.println("Product not found. Please try again.");
         }
     }
-
+    /**
+     * Searches for a product in the catalog by the specified title.
+     *
+     * @param catalog the catalog to search within
+     * @return boolean true if the user decides to continue searching, boolean false otherwise
+     */
     public boolean searchProduct(Catalog catalog) {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -96,7 +120,11 @@ public class CatalogController {
         }
         return true;  // continue the loop
     }
-
+    /**
+     * Displays options for the user to interact with the pointed product.
+     * Options include adding the product to the cart, removing and adding it from the wishlist,
+     * making an evaluation, interacting with existing evaluations, and returning to the catalog.
+     */
     public void interactWithProduct() {
         boolean continueInteraction = true;
         while (continueInteraction) {
@@ -125,7 +153,12 @@ public class CatalogController {
             }
         }
     }
-
+    /**
+     * Adds the specified product to the user's cart with a specified quantity.
+     * if there are not enough products as required, a message is shown
+     *
+     * @param product  the product to add to the cart
+     */
     public void addProductToCart(Product product) {
         System.out.println();
         System.out.println("Adding product to cart...");
@@ -151,7 +184,11 @@ public class CatalogController {
         System.out.println();
         System.out.println("Product added to cart");
     }
-
+    /**
+     * Adds an evaluation to the specified product if the user has purchased the product.
+     *
+     * @param product the product to evaluate
+     */
     private void addEvaluationToProduct(Product product) {
         System.out.println();
         System.out.println("Adding evaluation...");
@@ -181,7 +218,10 @@ public class CatalogController {
         String summary = this.user + " added a new comment on " + product.getTitle() + "!";
         product.getSeller().addNotification(new Notification(title, summary));
     }
-
+    /**
+     * Interacts with the evaluations of the pointed product, allowing the user to like/unlike
+     * evaluations and follow/unfollow buyers who authored the evaluations.
+     */
     private void interactWithEvaluations() {
         System.out.println("Enter the number of the evaluation you want to interact with, or 0 to return:");
         int choice = uiUtilities.getUserInputAsInteger();
@@ -241,7 +281,11 @@ public class CatalogController {
     }
 
     // seller page ----------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays options for searching and interacting with sellers.
+     * The user can search for sellers by ID or address and choose to view a seller's profile.
+     * Options include following/unfollowing a seller and returning to the main catalog menu.
+     */
     public void searchSeller() {
         line();
         ArrayList<Seller> listOfSellers = null;
@@ -313,7 +357,10 @@ public class CatalogController {
             }
         }
     }
-
+    /**
+     * Interacts with the profile of the pointed seller, allowing the user to follow or unfollow the seller
+     * and return to the main catalog menu.
+     */
     public void interactWithSeller() {
         line();
         System.out.println(pointedSeller.toString());
@@ -337,7 +384,10 @@ public class CatalogController {
     }
 
     // filter products ------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays options for filtering products in the catalog based on categories,
+     * price, likes, and average rating.
+     */
     public void filterProducts() {
         System.out.println("1. Filter by category");
         System.out.println("2. Order by price");
@@ -404,7 +454,10 @@ public class CatalogController {
     }
 
     // filter sellers -------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays options for filtering sellers in the catalog based on categories, likes,
+     * and average rating.
+     */
     public void filterSellers() {
         System.out.println("1. Filter by category");
         System.out.println("2. Order by likes");
@@ -487,7 +540,9 @@ public class CatalogController {
     }
 
     // display products liked -----------------------------------------------------------------------------------------
-
+    /**
+     * Displays products liked by the buyers followed by the current user.
+     */
     public void displayProductsLikedByFollowing() {
         System.out.println("Products liked by the buyers you're following:");
         HashMap<Product, Integer> productsLikedByFollowing = new HashMap<>();
