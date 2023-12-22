@@ -10,6 +10,11 @@ import java.util.ArrayList;
 
 import static UIs.Menu.line;
 
+/**
+ * Class with utilities related to the buyer's profile.
+ *
+ * This class manages the buyer's profile, such as modifying the profile and deleting the account.
+ */
 public class ProfileController {
 
     // ATTRIBUTES
@@ -20,6 +25,12 @@ public class ProfileController {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructs an instance of ProfileController with given user and database.
+     *
+     * @param user      Buyer, the user is a buyer
+     * @param database  DataBase of UniShop containing all necessary information about users, products and orders
+     */
     public ProfileController(Buyer user, DataBase database) {
         this.user = user;
         this.database = database;
@@ -30,6 +41,12 @@ public class ProfileController {
 
     // profile page ---------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays options for the buyer to choose from, and returns true in order for the calling method to continue the
+     * interaction loop.
+     *
+     * @return  Boolean, true for the calling methods to continue the interaction loop
+     */
     public boolean displayProfile() {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -83,6 +100,10 @@ public class ProfileController {
 
     // ranks ----------------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the buyer's rank within their followings according to experience points. This method also displays the
+     * top 5 buyers who the buyer is following with the highest experience points.
+     */
     public void displayRanks() {
         System.out.println("Your rank is the " + user.getYourRank());
         int i = 0;
@@ -95,6 +116,14 @@ public class ProfileController {
 
     // buyers ---------------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the list of UniShop's buyers, and displays action options for the buyer to choose from: get a buyer's
+     * profile, filter buyers, display the user's followers, and return to menu.
+     *
+     * The function also returns true in order for the calling method to continue the interaction loop.
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     public boolean displayBuyers() {
         line();
         System.out.println("BUYERS");
@@ -132,6 +161,14 @@ public class ProfileController {
         return true;
     }
 
+    /**
+     * Searches a buyer according to the user's selection, and returns true in order for the calling method to continue
+     * the interaction loop.
+     *
+     * A buyer can be searched by ID or name.
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     public boolean searchBuyer() {
         line();
         ArrayList<Buyer> pointedBuyer;
@@ -221,6 +258,14 @@ public class ProfileController {
         }
     }
 
+    /**
+     * Filters a list of buyers according to the user's selection, and returns true in order for the calling method to
+     * continue the interaction loop.
+     *
+     * The list can be sorted by name, ID, followers or experience points (ascending or descending).
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     public boolean filterBuyers() {
         System.out.println("1. Sort by name");
         System.out.println("2. Sort by ID");
@@ -290,6 +335,10 @@ public class ProfileController {
 
     // profile modifications ------------------------------------------------------------------------------------------
 
+    /**
+     * The buyer can select which component of his profile they want to modify: personal info, shipping address,
+     * password, or payment info.
+     */
     public void modifyProfile() {
         System.out.println();
         System.out.println("1. Modify personal info");
@@ -339,6 +388,10 @@ public class ProfileController {
         }
     }
 
+    /**
+     * Displays all the metrics of the buyer. The buyer also have the option to configure which metrics to display on
+     * the landing page.
+     */
     public void displayMetrics(){
         boolean continueLoop = true;
         while (continueLoop){
@@ -362,6 +415,13 @@ public class ProfileController {
 
     // followers page -------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the buyer's followers. The user also has the option to get a specific follower from this list.
+     *
+     * The function returns true in order for the calling method to continue the interaction loop.
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     public boolean displayFollowers() {
         int i = 0;
         for (Buyer buyer : user.getFollowers()) {
@@ -381,6 +441,9 @@ public class ProfileController {
 
     // follower page --------------------------------------------------------------------------------------------------
 
+    /**
+     * Searches by ID and displays a specific follower.
+     */
     public void searchFollower() {
         System.out.println("Enter the id of the follower you want to view:");
         String id = InputManager.getInstance().nextLine();
@@ -393,6 +456,11 @@ public class ProfileController {
         }
     }
 
+    /**
+     * For a given follower profile, the buyer can remove the follower.
+     *
+     * @param pointedFollower   Buyer, a selected follower
+     */
     public void interactWithFollower(Buyer pointedFollower) {
         System.out.println("1. Remove this follower");
         System.out.println("2. Return to menu");

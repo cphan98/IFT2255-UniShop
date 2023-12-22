@@ -5,6 +5,11 @@ import UIs.Seller.SellerMenu;
 import UIs.UIUtilities;
 import Users.Seller;
 
+/**
+ * Class managing a seller's profile.
+ *
+ * In this class, a seller can display their metrics, modify their profile, or deleter their account.
+ */
 public class ProfileController {
 
     // ATTRIBUTES
@@ -15,6 +20,12 @@ public class ProfileController {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructs an instance of ProfileController with given user and database.
+     *
+     * @param user      Seller, user is a seller
+     * @param database  DataBase of UniShop containing information about this seller
+     */
     public ProfileController(Seller user, DataBase database) {
         this.database = database;
         this.user = user;
@@ -25,6 +36,14 @@ public class ProfileController {
 
     // profile page ---------------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the seller's profile, including their metrics. The seller can modify their profile or deleter their
+     * account.
+     *
+     * Returns true in order for the calling method to continue the interaction loop.
+     *
+     * @return  Boolean, true in order for the calling method to continue the interaction loop
+     */
     public boolean displayProfile() {
         boolean continueLoop = true;
         while (continueLoop) {
@@ -67,6 +86,9 @@ public class ProfileController {
 
     // profile modifications ------------------------------------------------------------------------------------------
 
+    /**
+     * Modifies the seller's profile. The seller can modify their personal information, address, and/or password.
+     */
     public void modifyProfile() {
         System.out.println("1. Modify personal info");
         System.out.println("2. Modify address");
@@ -93,6 +115,9 @@ public class ProfileController {
         }
     }
 
+    /**
+     * Displays the seller's metrics. The seller can also configure which metrics to display on their profile.
+     */
     public void  displayMetrics() {
         boolean continueLoop = true;
         while (continueLoop){
