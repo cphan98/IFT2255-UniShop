@@ -43,7 +43,7 @@ public class SellerMetricsTest {
     }
 
     @Test
-    void testUpdateAverageNoteReceived() {
+    void test_UpdateAverageNoteReceived() {
         // create products
         Product product1 = new Stationery("DeathNote", "A notebook", 1.00F, 1, seller,
                 100, "The Shinigamis", "4444", "Paper", "2006-10-04", "2006-10-04");
