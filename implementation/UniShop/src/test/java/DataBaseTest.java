@@ -1,17 +1,17 @@
+
 import BackEndUtility.Category;
 import BackEndUtility.DataBase;
 import Users.*;
+
 import UtilityObjects.Address;
-import UtilityObjects.CreditCard;
 import UtilityObjects.Notification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import productClasses.Inheritances.LearningResource;
-import productClasses.Inheritances.Stationery;
-import productClasses.Product;
-import productClasses.Usages.Order;
 
 import org.junit.jupiter.api.Test;
+import productClasses.Inheritances.Stationery;
+import productClasses.Product;
+import productClasses.Usages.Evaluation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,6 +76,46 @@ class DataBaseTest {
                 () -> assertEquals(testProducts, seller.getProducts(), "The new product is in the seller's products list"),
                 () -> assertEquals(testNotifications, testBuyer.getNotifications(), "The new product is in the following buyer's notifications list")
         );
+    }
+
+    @Test
+    void test_AddEvaluationToProduct() {
+        // create buyer
+        Address address = new Address("444 Soichiro", "Japan", "Kanto","Tokyo",
+                "L1L1L1");
+        Buyer testBuyer = new Buyer("Light", "Yagami", "light_yagami", "iamL",
+                "light@google.maps", "4444444444", address);
+
+        // create product
+        Product product = new Stationery("DeathNote", "A notebook", 1.00F, 1, seller,
+                100, "The Shinigamis", "4444", "Paper", "2006-10-04", "2006-10-04");
+
+        // create Evaluation
+        HashMap<Product, Evaluation> evaluations = new HashMap<>();
+        ArrayList<Evaluation> evaluationList = new ArrayList<>();
+        Evaluation evaluation = new Evaluation("Writing names don't do anything...", 3.3F, testBuyer);
+        evaluations.put(product, evaluation);
+        evaluationList.add(evaluation);
+
+        // add product to database
+        database.addProduct(product);
+
+        // do actions
+        evaluation.getAuthor().getEvaluationsMade().put(product, evaluation);
+        evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() + 1);
+        evaluation.getAuthor().getMetrics().updateAverageNoteGiven(evaluation.getRating());
+        product.getEvaluations().add(evaluation);
+        product.getSeller().getMetrics().updateAverageNoteReceived(evaluation.getRating());
+        product.updateOverallRating();
+
+        // assert addEvaluationToProduct
+        assertAll("Check all functionalities of addEvaluationToProduct",
+                () -> assertEquals(evaluations, evaluation.getAuthor().getEvaluationsMade()),
+                () -> assertEquals(evaluations.size(), evaluation.getAuthor().getMetrics().getEvaluationsMade()),
+                () -> assertEquals(evaluation.getRating(), evaluation.getAuthor().getMetrics().getAverageNoteGiven()),
+                () -> assertEquals(evaluationList, product.getEvaluations()),
+                () -> assertEquals(evaluation.getRating(), product.getSeller().getMetrics().getAverageNoteReceived()),
+                () -> assertEquals(evaluation.getRating(), product.getOverallRating()));
     }
 
     @Test
