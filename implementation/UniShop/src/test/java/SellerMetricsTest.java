@@ -14,9 +14,7 @@ import productClasses.Usages.Evaluation;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-class BuyerMetricsTest {
-
+public class SellerMetricsTest {
     private DataBase database;
     private Buyer buyer;
     private Seller seller;
@@ -45,27 +43,7 @@ class BuyerMetricsTest {
     }
 
     @Test
-    void testAddExpPoints() {
-        // add experience points to buyer
-        int xp = 1999;
-        database.getBuyer(buyer).getMetrics().addExpPoints(xp);
-
-        // assert addExpPoints
-        assertEquals(xp, database.getBuyer(buyer).getMetrics().getExpPoints());
-    }
-
-    @Test
-    void testAddBuyPoints() {
-        // add buy points to buyer
-        int points = 2023;
-        database.getBuyer(buyer).getMetrics().addBuyPoints(points);
-
-        // assert addBuyPoints
-        assertEquals(points, database.getBuyer(buyer).getMetrics().getBuyPoints());
-    }
-
-    @Test
-    void testUpdateAverageNoteGiven() {
+    void testUpdateAverageNoteReceived() {
         // create product
         Product product1 = new Stationery("DeathNote", "A notebook", 1.00F, 1, seller,
                 100, "The Shinigamis", "4444", "Paper", "2006-10-04", "2006-10-04");
@@ -84,13 +62,13 @@ class BuyerMetricsTest {
         Evaluation evaluation3 = new Evaluation("Notes are very sticky!", 9.0F, buyer);
 
         // average note given
-        float note = (evaluation1.getRating() + evaluation3.getRating()) / 2;
+        float note = (evaluation1.getRating() + evaluation2.getRating() + evaluation3.getRating()) / 3;
 
         database.addEvaluationToProduct(product1, evaluation1);
         database.addEvaluationToProduct(product1, evaluation2);
         database.addEvaluationToProduct(product2, evaluation3);
 
-        assertEquals(note, buyer.getMetrics().getAverageNoteGiven());
-        assertEquals(evaluation2.getRating(), evaluation2.getAuthor().getMetrics().getAverageNoteGiven());
+        // assert updateAverageNoteReceived
+        assertEquals(note, seller.getMetrics().getAverageNoteReceived());
     }
 }
