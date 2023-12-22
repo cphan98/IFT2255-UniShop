@@ -8,7 +8,7 @@ import productClasses.Usages.Cart;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class getTotalPriceTest {
+public class CartTest {
     @Test
     public void testGetTotalPrice() {
 
