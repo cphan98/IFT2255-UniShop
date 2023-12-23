@@ -184,7 +184,7 @@ public class ProfileController {
                     System.out.println("Enter the id of the buyer you want to view:");
                     String id = InputManager.getInstance().nextLine();
                     pointedBuyer = database.searchBuyerById(id);
-                    if (pointedBuyer == null) {
+                    if (pointedBuyer.isEmpty()) {
                         System.out.println("Buyer not found.");
                     } else {
                         System.out.println(pointedBuyer);

@@ -2,6 +2,7 @@ package UtilityObjects;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * Class representing a notification a user gets. A notification includes the title, summary of the notification, date
@@ -108,4 +109,17 @@ public class Notification implements java.io.Serializable {
     public String toString() {
         return "Title: " + title + "\nSummary: " + summary + "\nDate: " + date + (!read ? "\t\t(new)" : "");
     }
+
+    // equals (for test purposes)--------------------------------------------------------------------------------------
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Notification notification)) return false;
+        return (Objects.equals(title, notification.title)) &&
+                (Objects.equals(summary, notification.summary)) &&
+                (Objects.equals(date, notification.date)) &&
+                (read == notification.read);
+    }
+
 }

@@ -135,6 +135,7 @@ public class Seller extends User implements java.io.Serializable {
         return null;
     }
 
+
     /**
      * Updates the revenue and the number of products sold in the seller's metrics
      *
@@ -164,7 +165,7 @@ public class Seller extends User implements java.io.Serializable {
      * @param buyer Buyer, customer to add
      */
     public void addCustomers(Buyer buyer) {
-        getCustomers().add(buyer);
+        customers.add(buyer);
     }
 
     // to string ------------------------------------------------------------------------------------------------------

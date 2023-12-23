@@ -151,7 +151,6 @@ public class CartController {
             }
 
         }
-        database.updateOrderIDCounts();
         user.getCart().getProducts().clear();
     }
 

@@ -23,8 +23,7 @@ public class Order implements java.io.Serializable {
     private CreditCard paymentInfo;
     private Address shippingAddress;
     private String phoneNumber;
-    private final LocalDate today = LocalDate.now();
-    private String orderDate = today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+    private String orderDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     private HashMap<Product, Integer> products;
     private OrderState status = OrderState.IN_PRODUCTION;
     private String ETA;
@@ -393,5 +392,29 @@ public class Order implements java.io.Serializable {
      */
     public String smallToString() {
         return "Order ID: " + id + "\n" + productsToString() + "Status: " + status + "\n";
+    }
+
+    // equals ---------------------------------------------------------------------------------------------------------
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
+        Order order = (Order) o;
+        boolean sameId = Objects.equals(id, order.id);
+        boolean sameBuyer = Objects.equals(buyer, order.buyer);
+        boolean samePaymentType = Objects.equals(paymentType, order.paymentType);
+        boolean samePaymentInfo = Objects.equals(paymentInfo, order.paymentInfo);
+        boolean sameShippingAddress = Objects.equals(shippingAddress, order.shippingAddress);
+        boolean samePhoneNumber = Objects.equals(phoneNumber, order.phoneNumber);
+        boolean sameOrderDate = Objects.equals(orderDate, order.orderDate);
+        boolean sameProducts = Objects.equals(products, order.products);
+        boolean sameStatus = Objects.equals(status, order.status);
+        boolean sameETA = Objects.equals(ETA, order.ETA);
+        boolean sameIssue = Objects.equals(issue, order.issue);
+        boolean sameShippingCompany = Objects.equals(shippingCompany, order.shippingCompany);
+        boolean sameShippingNumber = Objects.equals(shippingNumber, order.shippingNumber);
+        boolean sameTotalCost = Objects.equals(totalCost, order.totalCost);
+        return sameId && sameBuyer && samePaymentType && samePaymentInfo && sameShippingAddress && samePhoneNumber && sameOrderDate && sameProducts && sameStatus && sameETA && sameIssue && sameShippingCompany && sameShippingNumber && sameTotalCost;
     }
 }
