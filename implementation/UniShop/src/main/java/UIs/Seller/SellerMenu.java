@@ -17,7 +17,7 @@ public class SellerMenu extends Menu {
 
     // ATTRIBUTES
 
-    private Seller user;
+    private final Seller user;
     private final ProfileController profileController;
     private final OrderController orderController;
     private final InventoryController inventoryController;

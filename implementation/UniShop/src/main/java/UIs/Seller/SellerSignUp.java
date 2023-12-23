@@ -13,7 +13,6 @@ import static java.lang.Float.parseFloat;
 
 /**
  * Class managing a seller's sign up.
- *
  * This class implements SignUpScreen.
  */
 public class SellerSignUp implements SignUpScreen {

@@ -1,13 +1,11 @@
 package UIs.Seller.Controllers;
 
 import BackEndUtility.DataBase;
-import UIs.Seller.SellerMenu;
 import UIs.UIUtilities;
 import Users.Seller;
 
 /**
  * Class managing a seller's profile.
- *
  * In this class, a seller can display their metrics, modify their profile, or deleter their account.
  */
 public class ProfileController {
@@ -15,7 +13,6 @@ public class ProfileController {
     // ATTRIBUTES
 
     private final Seller user;
-    private final DataBase database;
     private final UIUtilities uiUtilities;
 
     // CONSTRUCTOR
@@ -27,7 +24,6 @@ public class ProfileController {
      * @param database  DataBase of UniShop containing information about this seller
      */
     public ProfileController(Seller user, DataBase database) {
-        this.database = database;
         this.user = user;
         this.uiUtilities = new UIUtilities(database, user);
     }
@@ -39,7 +35,6 @@ public class ProfileController {
     /**
      * Displays the seller's profile, including their metrics. The seller can modify their profile or deleter their
      * account.
-     *
      * Returns true in order for the calling method to continue the interaction loop.
      *
      * @return  Boolean, true in order for the calling method to continue the interaction loop

@@ -245,19 +245,6 @@ public class Catalog implements Serializable {
         //create a method to add sellers in list when sign up
         System.out.println("List of Sellers: \n" + sellersToString() + "\n");
     }
-    /**
-     * Searches for a seller in the catalog by their ID.
-     *
-     * @param id The ID of the seller to search for.
-     * @return The found seller or null if no matching seller is found.
-     */
-    public Seller searchSellerByName(String id) {
-        for (Seller seller : sellers_list) {
-            if (seller.getId().equals(id))
-                return seller;
-        }
-        return null;
-    }
 
     // to string ------------------------------------------------------------------------------------------------------
 

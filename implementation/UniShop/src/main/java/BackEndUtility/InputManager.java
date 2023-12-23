@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 /**
  * Gets a user's input in the command line.
- *
  * This class is used multiple times in the project to avoid repetitive instantiation of the object Scanner.
  */
 public class InputManager implements java.io.Serializable {
@@ -12,7 +11,7 @@ public class InputManager implements java.io.Serializable {
     // ATTRIBUTES
 
     private static InputManager instance = null;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     // CONSTRUCTOR
 

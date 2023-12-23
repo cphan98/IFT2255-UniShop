@@ -20,10 +20,10 @@ public class CreditCard implements java.io.Serializable {
     /**
      * Creates an instance of CreditCard with a given card number, first and last name, and expiry date.
      *
-     * @param cardNumber
-     * @param firstName
-     * @param lastName
-     * @param expiryDate
+     * @param cardNumber   String, card number
+     * @param firstName   String, owner's first name
+     * @param lastName   String, owner's last name
+     * @param expiryDate  String, expiry date
      */
     public CreditCard(String cardNumber, String firstName, String lastName, String expiryDate) {
         this.cardNumber = cardNumber;

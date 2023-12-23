@@ -1,3 +1,5 @@
+package UniShop;
+
 import BackEndUtility.DataBase;
 import UIs.Buyer.BuyerMenu;
 import UIs.HomeScreen;
@@ -26,12 +28,12 @@ public class UniShop {
 
     private static final String DATA_FILE = "dataBase.ser";
     private static DataBase database;
-    private static NotificationSender notificationSender = new NotificationSender();
+    private static final NotificationSender notificationSender = new NotificationSender();
 
     // MAIN
 
     /**
-     * Main method to run UniShop.
+     * Main method to run UniShop. Creates a new database if no data is found, otherwise loads the existing data.
      *
      * @param args  String[]
      */
