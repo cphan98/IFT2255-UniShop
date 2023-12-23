@@ -76,19 +76,13 @@ public class Seller extends User implements java.io.Serializable {
         return null;
     }
 
-    public void sellProduct(Product product, int quantity) {
-        float totalPrice = product.getPrice() * quantity;
-        metrics.updateRevenue(metrics.getRevenue() + totalPrice);
-        metrics.updateProductsSold(metrics.getProductsSold() + quantity);
-    }
-
     // customer -------------------------------------------------------------------------------------------------------
 
     public ArrayList<Buyer> getCustomers() {
         return customers;
     }
     public void addCustomers(Buyer buyer) {
-        getCustomers().add(buyer);
+        customers.add(buyer);
     }
 
     // to string ------------------------------------------------------------------------------------------------------

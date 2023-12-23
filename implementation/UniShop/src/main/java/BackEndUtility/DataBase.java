@@ -57,7 +57,9 @@ public class DataBase implements java.io.Serializable {
         }
         return null;
     }
-
+    public ArrayList<Order> getOrders() {
+        return orders;
+    }
     public ArrayList<Buyer> getBuyers() {
         ArrayList<Buyer> buyers = new ArrayList<>();
         for (User user : users) {
@@ -153,7 +155,7 @@ public class DataBase implements java.io.Serializable {
 
     }
 
-    public void updateOrderIDCounts() {
+    private void updateOrderIDCounts() {
         for (int i = 0; i<orders.size(); i++) {
             orders.get(i).setId(orders.get(i).makeId(i+1));
         }
@@ -197,11 +199,6 @@ public class DataBase implements java.io.Serializable {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
         for (Seller seller : splitCart.keySet()) {
             HashMap<Product, Integer> products = splitCart.get(seller);
-
-            for(Product product : user.getCart().getProducts().keySet()){
-                getSeller(seller).sellProduct(product, splitCart.size());
-            }
-
             addOrder(new Order(user, paymentType, products));
         }
     }
