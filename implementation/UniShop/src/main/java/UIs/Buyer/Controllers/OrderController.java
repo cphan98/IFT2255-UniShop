@@ -21,6 +21,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Class with utilities related to a product.
+ *
+ * An order can be cancelled, returned or exchanged. This class also manages issues related to the order, the acceptance
+ * of a solution for the problem, and the confirmation of the reception of an order.
+ */
 public class OrderController {
 
     // ATTRIBUTES
@@ -32,6 +38,12 @@ public class OrderController {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructs an instance of OrderController with given user and database.
+     *
+     * @param user      Buyer, the user is a buyer
+     * @param database  DataBase of UniShop containing all necessary information about users, products and orders
+     */
     public OrderController(Buyer user, DataBase database) {
         this.user = user;
         this.database = database;
@@ -42,6 +54,12 @@ public class OrderController {
 
     // order history page ---------------------------------------------------------------------------------------------
 
+    /**
+     * Displays the buyer's order history, and returns true in order for the calling method to continue the interaction
+     * loop.
+     *
+     * @return  Boolean, true for the calling methods to continue the interaction loop
+     */
     public boolean displayOrderHistory() {
         System.out.println();
         System.out.println("ORDER HISTORY");
@@ -71,6 +89,12 @@ public class OrderController {
 
     // order page -----------------------------------------------------------------------------------------------------
 
+    /**
+     * For a selected order, the buyer can choose what to do with this order : cancel, return, exchange, report an issue,
+     * accept solution for a problem, confirm order reception, and return to order history.
+     *
+     * @param order Order, order selected by the buyer
+     */
     public void interactWithOrder(Order order) {
         // check if there is an issue
         if (order.getIssue() != null) {

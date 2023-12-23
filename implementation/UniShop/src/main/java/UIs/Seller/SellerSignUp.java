@@ -11,6 +11,10 @@ import productClasses.Inheritances.*;
 
 import static java.lang.Float.parseFloat;
 
+/**
+ * Class managing a seller's sign up.
+ * This class implements SignUpScreen.
+ */
 public class SellerSignUp implements SignUpScreen {
 
     // ATTRIBUTE
@@ -19,6 +23,11 @@ public class SellerSignUp implements SignUpScreen {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructs an instance of SellerSignUp with a given database.
+     *
+     * @param database  DataBase of UniShop, in which a new seller will be added
+     */
     public SellerSignUp(DataBase database) {
         this.database = database;
     }
@@ -27,6 +36,10 @@ public class SellerSignUp implements SignUpScreen {
 
     // credentials ----------------------------------------------------------------------------------------------------
 
+    /**
+     * Gets the necessary information for the user to sign up as a seller. Once the seller is signed up the user must
+     * connect withing 24h in order for their account to remain valid.
+     */
     @Override
     public void getCredentialsAndSignUp() {
         System.out.println("Welcome, new seller!");

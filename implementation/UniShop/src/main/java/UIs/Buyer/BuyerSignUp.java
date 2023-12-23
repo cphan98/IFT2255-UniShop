@@ -6,6 +6,11 @@ import UIs.SignUpScreen;
 import UtilityObjects.Address;
 import Users.Buyer;
 
+/**
+ * Class representing the buyer's sign up screen.
+ *
+ * This class manages a buyer's sign up, and extends SignUpScreen.
+ */
 public class BuyerSignUp implements SignUpScreen {
 
     // ATTRIBUTES
@@ -14,6 +19,11 @@ public class BuyerSignUp implements SignUpScreen {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructs an instance of BuyerSignUp with a given database.
+     *
+     * @param database  DataBase of UniShop, where the buyer will be added
+     */
     public BuyerSignUp(DataBase database) {
         this.database = database;
     }
@@ -22,6 +32,10 @@ public class BuyerSignUp implements SignUpScreen {
 
     // credentials ----------------------------------------------------------------------------------------------------
 
+    /**
+     * Gets the necessary information from the user in order to sign them up as a buyer. Once the buyer is signed up,
+     * they are required to sign in within 24h in order for their account to remain valid.
+     */
     @Override
     public void getCredentialsAndSignUp() {
         InputManager inputManager = InputManager.getInstance();

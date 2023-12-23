@@ -11,6 +11,9 @@ import productClasses.Usages.Evaluation;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Class that contains some methods utilities for the UIs to allow the user to interact with the platform
+ */
 public class UIUtilities {
 
     // ATTRIBUTES
@@ -20,6 +23,12 @@ public class UIUtilities {
 
     // CONSTRUCTOR
 
+    /**
+     * Constructor of the class UIUtilities
+     *
+     * @param database the database of the platform
+     * @param user    the user that is logged in
+     */
     public UIUtilities(DataBase database, User user) {
         this.database = database;
         this.user = user;
@@ -29,6 +38,12 @@ public class UIUtilities {
 
     // toggles --------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method that allows the user to like the evaluation made by another user, unless the user is the author of the evaluation.
+     * Also gives experience points to the author of the evaluation if he gets his first like, and updates the metrics of both users.
+     * @param user the user that made the evaluation
+     * @param evaluation the evaluation that the user wants to like
+     */
     public void toggleEvaluationLike(Buyer user, Evaluation evaluation) {
         if (evaluation.getAuthor() == user) {
             System.out.println("You cannot like your own evaluation!");
@@ -57,6 +72,12 @@ public class UIUtilities {
         }
     }
 
+    /**
+     * Method that allows the user to follow/unfollow another buyer and update both their metrics, unless the buyer is himself.
+     * Also gives experience points to both users if they follow each other.
+     * @param user  the user that wants to follow another buyer
+     * @param buyer the buyer that the user wants to follow
+     */
     public void toggleBuyerToFollowing(Buyer user, Buyer buyer) {
         if (buyer == user) {
             System.out.println("You cannot follow yourself!");
@@ -88,6 +109,11 @@ public class UIUtilities {
         }
     }
 
+    /**
+     * Method that allows the user to like/unlike a product and update the metrics of both the user and the product.
+     * @param user   the user that wants to like/unlike the product
+     * @param product the product that the user wants to like/unlike
+     */
     public void toggleProductToWishList(Buyer user, Product product) {
         System.out.println();
         System.out.println("Removing product(s) from cart...");
@@ -108,6 +134,12 @@ public class UIUtilities {
         }
     }
 
+    /**
+     * Method that allows a buyer to follow/unfollow a seller to get his notifications.
+     * Also updates the metrics of both the buyer and the seller.
+     * @param user  the buyer that wants to follow/unfollow the seller
+     * @param seller the seller that the buyer wants to follow/unfollow
+     */
     public void toggleSellerToFollowing(Buyer user, Seller seller) {
         ArrayList<Seller> sellersFollowed = user.getSellersFollowed();
         if (!sellersFollowed.contains(seller)) {
@@ -128,6 +160,9 @@ public class UIUtilities {
 
     // profile --------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method that allows the user to delete his account from the platform
+     */
     public void deleteAccount() {
         System.out.println("Are you sure you want to delete your account? (y/n)");
         String input = InputManager.getInstance().nextLine();
@@ -146,6 +181,9 @@ public class UIUtilities {
         }
     }
 
+    /**
+     * Method that allows the user to modify his address
+     */
     public void modifyAddress() {
         System.out.println("Enter your street name:");
         String street = InputManager.getInstance().nextLine();
@@ -179,6 +217,10 @@ public class UIUtilities {
         return phoneNumber;
     }
 
+    /**
+     * Method that allows the buyer to modify his personal info. Doesn't modify his id or email if they are already taken.
+     * @param user the buyer that wants to modify his personal info
+     */
     public void modifyPersonalInfo(Buyer user) {
         System.out.println("Enter your first name:");
         String firstName = InputManager.getInstance().nextLine();
@@ -201,6 +243,10 @@ public class UIUtilities {
         System.out.println("Personal info modified");
     }
 
+    /**
+     * Method that allows the seller to modify his personal info. Doesn't modify his id or email if they are already taken.
+     * @param user the seller that wants to modify his personal info
+     */
     public void modifyPersonalInfo(Seller user) {
         System.out.println("Enter your new id:");
         String id = InputManager.getInstance().nextLine();
@@ -217,6 +263,9 @@ public class UIUtilities {
         System.out.println("Personal info modified");
     }
 
+    /**
+     * Method that allows the user to modify his password
+     */
     public void modifyPassword() {
         while (true) {
             System.out.println("Enter your current password:");
@@ -236,6 +285,10 @@ public class UIUtilities {
 
     // inputs ---------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method that takes an input from the user and returns it as an integer
+     * @return the input of the user as an integer
+     */
     public int getUserInputAsInteger() {
         while (true) {
             try {
