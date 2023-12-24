@@ -44,3 +44,9 @@ Run the program through that class. It will kickstart the UniShop platform and y
 For any questions, suggestions or issues, feel free to contact us at our email address by typing **our first name**, **a period dot** and **our last name**, following our school email (**@umontreal.ca**).
 
 Thank you for using UniShop, the command-line based online commerce platform coded in Java dedicated to university students! 
+
+
+### Reports
+* [Report 1](exigences/rapport_devoir_1.html)
+* [Report 2](analyse/rapport_devoir_2.html)
+* [Report 3](documentation/rapport_devoir_3.html)
