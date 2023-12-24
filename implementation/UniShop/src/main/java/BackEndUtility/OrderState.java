@@ -1,5 +1,8 @@
 package BackEndUtility;
 
+/**
+ * Enum class for the states of the orders
+ */
 public enum OrderState implements java.io.Serializable {
     PENDING,
     REJECTED,

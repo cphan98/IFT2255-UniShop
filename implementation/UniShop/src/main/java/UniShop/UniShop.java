@@ -1,3 +1,5 @@
+package UniShop;
+
 import BackEndUtility.DataBase;
 import UIs.Buyer.BuyerMenu;
 import UIs.HomeScreen;
@@ -18,15 +20,23 @@ import serializationUtil.SerializationUtil;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Class representing the UniShop platform
+ */
 public class UniShop {
     // ATTRIBUTES
 
     private static final String DATA_FILE = "dataBase.ser";
     private static DataBase database;
-    private static NotificationSender notificationSender = new NotificationSender();
+    private static final NotificationSender notificationSender = new NotificationSender();
 
     // MAIN
 
+    /**
+     * Main method to run UniShop. Creates a new database if no data is found, otherwise loads the existing data.
+     *
+     * @param args  String[]
+     */
     public static void main(String[] args) {
         try {
             // Try to load existing data

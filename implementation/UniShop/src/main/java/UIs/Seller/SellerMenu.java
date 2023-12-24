@@ -8,18 +8,27 @@ import UIs.Seller.Controllers.ProfileController;
 import Users.Buyer;
 import Users.Seller;
 import productClasses.Usages.Order;
-
+/**
+ * The SellerMenu class represents the menu and user interface for a Seller in UniShop.
+ * It extends the Menu class and provides specific functionality related to sellers,
+ * such as displaying the profile, order history, inventory, notifications, metrics, and managing customers.
+ */
 public class SellerMenu extends Menu {
 
     // ATTRIBUTES
 
-    private Seller user;
+    private final Seller user;
     private final ProfileController profileController;
     private final OrderController orderController;
     private final InventoryController inventoryController;
 
     // CONSTRUCTOR
-
+    /**
+     * Constructs a new SellerMenu object.
+     *
+     * @param user     The Seller user for whom the menu is created.
+     * @param database The database to be used for data retrieval and storage.
+     */
     public SellerMenu(Seller user, DataBase database) {
         super(user, database);
         this.user = user;
@@ -31,7 +40,13 @@ public class SellerMenu extends Menu {
     // UTILITIES
 
     // main menu ------------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays the main menu for the Seller, providing various options, as, display their profile, order history,
+     * the inventory of products, their notifications, metrics, followers, customers, and log out
+     * by handling user input.
+     *
+     * @return True if the menu should continue looping, false if the user chooses to log out.
+     */
     @Override
     public boolean displayMenu() {
         boolean continueLoop = true;
@@ -87,42 +102,62 @@ public class SellerMenu extends Menu {
     }
 
     // profile page ---------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays the profile page for the seller.
+     *
+     * @return false.
+     */
     @Override
     public boolean displayProfile() {
         return false;
     }
 
     // order history page ---------------------------------------------------------------------------------------------
-
+    /**
+     * Displays the order history page for the seller.
+     *
+     * @return false.
+     */
     @Override
     public boolean displayOrderHistory() {
         return false;
     }
 
     // order page -----------------------------------------------------------------------------------------------------
-
+    /**
+     * Interacts with a specific order, providing options for the seller.
+     *
+     * @param order The order to interact with.
+     */
     @Override
     public void interactWithOrder(Order order) {
 
     }
 
     // metrics --------------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays metrics related to the seller.
+     */
     @Override
     public void displayMetrics() {
 
     }
 
     // profile modification -------------------------------------------------------------------------------------------
-
+    /**
+     * Modifies the user's profile.
+     */
     @Override
     public void modifyProfile() {
 
     }
 
     // customers ------------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays a list of customers associated with the Seller.
+     *
+     * @return True, indicating that the operation was successful.
+     */
     public boolean displayCustomers() {
         System.out.println("Your customers: ");
         int i = 0;

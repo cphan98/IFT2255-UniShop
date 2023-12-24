@@ -2,7 +2,6 @@ package UIs.Seller.Controllers;
 
 import BackEndUtility.DataBase;
 import BackEndUtility.InputManager;
-import UIs.Seller.SellerMenu;
 import UIs.UIUtilities;
 import Users.Buyer;
 import Users.Seller;
@@ -15,6 +14,9 @@ import java.util.Objects;
 
 import static java.lang.Float.parseFloat;
 
+/**
+ * Class that represents the inventory screen of the platform, where the seller can add, remove or change the quantity of products, as well as add promotions to them
+ */
 public class InventoryController {
 
     // ATTRIBUTES
@@ -27,6 +29,11 @@ public class InventoryController {
 
     // CONTROLLER
 
+    /**
+     * Constructor of the class InventoryController
+     * @param user the user that is currently logged in
+     * @param database the database of the platform
+     */
     public InventoryController(Seller user, DataBase database) {
         this.user = user;
         this.database = database;
@@ -37,6 +44,10 @@ public class InventoryController {
 
     // inventory page -------------------------------------------------------------------------------------------------
 
+    /**
+     * Method that displays the inventory page, where the seller can interact with his products
+     * @return true to continue the loop from the main menu
+     */
     public boolean displayInventory() {
         boolean continueLoop = true;
         while (continueLoop) {

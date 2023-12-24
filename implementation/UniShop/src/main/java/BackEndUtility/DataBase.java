@@ -10,6 +10,10 @@ import UtilityObjects.*;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Class that represents the database of the platform, which contains all the users, products, and orders. Can be
+ * serialized after each session to make the data persistent.
+ */
 public class DataBase implements java.io.Serializable {
 
     // ATTRIBUTES
@@ -17,22 +21,36 @@ public class DataBase implements java.io.Serializable {
     private final ArrayList<User> users;
     private final ArrayList<Product> products = new ArrayList<>();
     private final ArrayList<Order> orders = new ArrayList<>();
-    private final ArrayList<Buyer> top5 = new ArrayList<>();
     private int issueID = 0;
     private int reshipmentCount = 0;
 
     // CONSTRUCTORS
 
+    /**
+     * Constructor for a new database taking pre-made users as parameter
+     *
+     * @param users an ArrayList of users
+     */
     public DataBase(ArrayList<User> users) {
         this.users = users;
     }
-    
+
+    /**
+     * Constructor for a new database with no users
+     */
     public DataBase() {
         this.users = new ArrayList<>();
     }
 
     // GETTERS
 
+    /**
+     * Method to get a user from the database, given his id and password
+     *
+     * @param id the id of the wanted user
+     * @param password the password of the corresponding user
+     * @return a user if the id and password match, null otherwise
+     */
     public User getUser(String id, String password) {
         for (User user : users) {
             if (user.getId().equals(id) && user.getPassword().equals(password)) {
@@ -42,14 +60,30 @@ public class DataBase implements java.io.Serializable {
         return null;
     }
 
+    /**
+     * Method to get the list of all the users in the database
+     *
+     * @return an ArrayList of all the users in the database
+     */
     public ArrayList<User> getUsers() {
         return users;
     }
 
+    /**
+     * Method to get the list of all the products in the database
+     *
+     * @return an ArrayList of all the products in the database
+     */
     public ArrayList<Product> getProducts() {
         return products;
     }
 
+    /**
+     * Method to get a buyer specified from the database
+     *
+     * @param buyer the buyer to be found
+     * @return the buyer if found in the database, null otherwise
+     */
     public Buyer getBuyer(Buyer buyer) {
         for (User person : users) {
             if (person.equals(buyer))
@@ -57,9 +91,13 @@ public class DataBase implements java.io.Serializable {
         }
         return null;
     }
-    public ArrayList<Order> getOrders() {
-        return orders;
-    }
+
+
+    /**
+     * Method to get the list of all the buyers in the database
+     *
+     * @return an ArrayList of all the buyers in the database
+     */
     public ArrayList<Buyer> getBuyers() {
         ArrayList<Buyer> buyers = new ArrayList<>();
         for (User user : users) {
@@ -70,6 +108,12 @@ public class DataBase implements java.io.Serializable {
         return buyers;
     }
 
+    /**
+     * Method to get a seller specified from the database
+     *
+     * @param seller the seller to be found
+     * @return the seller if found in the database, null otherwise
+     */
     public Seller getSeller(Seller seller) {
         for (User person : users) {
             if (person.equals(seller))
@@ -78,6 +122,11 @@ public class DataBase implements java.io.Serializable {
         return null;
     }
 
+    /**
+     * Method to get the list of all the sellers in the database
+     *
+     * @return an ArrayList of all the sellers in the database
+     */
     public ArrayList<Seller> getSellers() {
         ArrayList<Seller> sellers = new ArrayList<>();
         for (User user : users) {
@@ -86,11 +135,6 @@ public class DataBase implements java.io.Serializable {
             }
         }
         return sellers;
-    }
-
-    public ArrayList<Buyer> getTop5() {
-        top5Buyers(false);
-        return top5;
     }
 
     // UTILITIES
@@ -127,6 +171,12 @@ public class DataBase implements java.io.Serializable {
 
     // orders ---------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method to add an order to the database, and to the order history of the corresponding buyer and seller.
+     * Also updates their specific metrics
+     *
+     * @param order the order to be added
+     */
     public void addOrder(Order order) {
         orders.add(order);
         assignOrders();
@@ -155,7 +205,11 @@ public class DataBase implements java.io.Serializable {
 
     }
 
-    private void updateOrderIDCounts() {
+
+    /**
+     * Method to reset the IDs of all the orders in the database, in the order they were added
+     */
+    public void updateOrderIDCounts() {
         for (int i = 0; i<orders.size(); i++) {
             orders.get(i).setId(orders.get(i).makeId(i+1));
         }
@@ -171,6 +225,14 @@ public class DataBase implements java.io.Serializable {
         }
     }
 
+    /**
+     * Method to generate and assign the orders of the buyer to the corresponding sellers from the buyer's cart after checkout
+     *
+     * @param user the buyer whose cart is being checked out
+     * @param paymentType the payment type specified by the buyer
+     * @param shippingAddress the shipping address specified by the buyer
+     * @param phoneNumber the phone number specified by the buyer
+     */
     public void generateAndAddOrders(Buyer user, String paymentType, Address shippingAddress, String phoneNumber) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
         for (Seller seller : splitCart.keySet()) {
@@ -179,6 +241,14 @@ public class DataBase implements java.io.Serializable {
         }
     }
 
+    /**
+     * Method to generate and assign the orders of the buyer to the corresponding sellers from the buyer's cart after checkout
+     *
+     * @param user the buyer whose cart is being checked out
+     * @param creditCard the credit card specified by the buyer
+     * @param shippingAddress the shipping address specified by the buyer
+     * @param phoneNumber the phone number specified by the buyer
+     */
     public void generateAndAddOrders(Buyer user, CreditCard creditCard, Address shippingAddress, String phoneNumber) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
         for (Seller seller : splitCart.keySet()) {
@@ -187,6 +257,11 @@ public class DataBase implements java.io.Serializable {
         }
     }
 
+    /**
+     * Method to generate and assign the orders of the buyer to the corresponding sellers from the buyer's cart after checkout
+     *
+     * @param user the buyer whose cart is being checked out
+     */
     public void generateAndAddOrders(Buyer user) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
         for (Seller seller : splitCart.keySet()) {
@@ -195,6 +270,12 @@ public class DataBase implements java.io.Serializable {
         }
     }
 
+    /**
+     * Method to generate and assign the orders of the buyer to the corresponding sellers from the buyer's cart after checkout
+     *
+     * @param user the buyer whose cart is being checked out
+     * @param paymentType the payment type specified by the buyer
+     */
     public void generateAndAddOrders(Buyer user, String paymentType) {
         HashMap<Seller, HashMap<Product, Integer>> splitCart = splitCartBeforeOrder(user);
         for (Seller seller : splitCart.keySet()) {
@@ -203,6 +284,11 @@ public class DataBase implements java.io.Serializable {
         }
     }
 
+    /**
+     * Method to make the tracking number for a reshipment, which will be unique and ordered in the order the reshipments were made
+     *
+     * @return a string representing the tracking number of the reshipment
+     */
     public String makeReshipmentTrackingNum() {
         int zeros = 12 - Integer.toString(++reshipmentCount).length();
         return ("0".repeat(zeros) + reshipmentCount);
@@ -210,6 +296,12 @@ public class DataBase implements java.io.Serializable {
 
     // products -------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method to add a product into the database as well as in the corresponding seller's inventory.
+     * Also notifies the seller's followers of the new product
+     *
+     * @param product the product to be added
+     */
     public void addProduct(Product product) {
         products.add(product);
         // add into the seller's product list as well
@@ -222,6 +314,11 @@ public class DataBase implements java.io.Serializable {
         }
     }
 
+    /**
+     * Method to remove a product from the database as well as from the corresponding seller's inventory
+     *
+     * @param product the product to be removed
+     */
     public void removeProduct(Product product) {
         products.remove(product);
         // remove from the seller's product list as well
@@ -229,6 +326,11 @@ public class DataBase implements java.io.Serializable {
         seller.getProducts().remove(product);
     }
 
+    /**
+     * Method to verify if the name of a product is already taken in the database
+     *
+     * @return true if the name is not taken, false otherwise
+     */
     public boolean verifyNewProduct(Product product) {
         boolean valid = true;
         for (Product p : getProducts()) {
@@ -242,6 +344,12 @@ public class DataBase implements java.io.Serializable {
 
     // buyers ---------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method to return the list of all the buyers in the database whose ID contains the given string
+     *
+     * @param id the ID input by the user
+     * @return an ArrayList of all the buyers whose ID contains the given string
+     */
     public ArrayList<Buyer> searchBuyerById(String id) {
         ArrayList<Buyer> listOfBuyers = new ArrayList<>();
         for (Buyer buyer : getBuyers()) {
@@ -252,6 +360,12 @@ public class DataBase implements java.io.Serializable {
         return listOfBuyers;
     }
 
+    /**
+     * Method to return the list of all the buyers in the database whose first or last name contains the given string
+     *
+     * @param name the name input by the user
+     * @return an ArrayList of all the buyers whose first or last name contains the given string
+     */
     public ArrayList<Buyer> searchBuyerByName(String name) {
         ArrayList<Buyer> listOfBuyers = new ArrayList<>();
         for (Buyer buyer : getBuyers()) {
@@ -264,6 +378,12 @@ public class DataBase implements java.io.Serializable {
         return listOfBuyers;
     }
 
+    /**
+     * Method to sort the list of buyers in the database by the given filter, in ascending or descending order
+     *
+     * @param ascending true if the list is to be sorted in ascending order, false otherwise
+     * @param filter the filter by which the list is to be sorted
+     */
     public void sortBuyer(boolean ascending, String filter) {
         switch (filter) {
             case "name":
@@ -359,15 +479,14 @@ public class DataBase implements java.io.Serializable {
         return sortedStream;
     }
 
-
-    private void top5Buyers(boolean ascending) {
-        sortBuyersByXp(ascending).limit(5).forEach(entry -> {
-            top5.add(entry.getKey());
-        });
-    }
-
     // sellers --------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method to return the list of all the sellers in the database whose ID contains the given string
+     *
+     * @param id the ID input by the user
+     * @return an ArrayList of all the sellers whose ID contains the given string
+     */
     public ArrayList<Seller> searchSellerById(String id) {
         ArrayList<Seller> listOfSellers = new ArrayList<>();
         for (Seller seller : getSellers()) {
@@ -378,6 +497,12 @@ public class DataBase implements java.io.Serializable {
         return listOfSellers;
     }
 
+    /**
+     * Method to return the list of all the sellers in the database whose address line contains the given string
+     *
+     * @param address the address input by the user
+     * @return an ArrayList of all the sellers whose address line contains the given string
+     */
     public ArrayList<Seller> searchSellerByAddress(String address) {
         ArrayList<Seller> listOfSellers = new ArrayList<>();
         for (Seller seller : getSellers()) {
@@ -390,6 +515,11 @@ public class DataBase implements java.io.Serializable {
 
     // users ----------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method to add a user to the database if his ID and email are not already taken
+     *
+     * @param user the user to be added
+     */
     public void addUser(User user) {
         if ( validateNewUser(user.getId(), user.getEmail()) ) {
             users.add(user);
@@ -399,14 +529,32 @@ public class DataBase implements java.io.Serializable {
         System.out.println("User already exists");
     }
 
+    /**
+     * Method to remove a user from the database
+     *
+     * @param user the user to be removed
+     */
     public void removeUser(User user) {
         users.remove(user);
     }
 
+    /**
+     * Method to change the password of a user in the database
+     *
+     * @param user the user whose password is to be changed
+     * @param newPassword the new password to be set
+     */
     public void changePassword(User user, String newPassword) {
         user.setPassword(newPassword);
     }
 
+    /**
+     * Method to check if the given ID and email are not already taken in the database
+     *
+     * @param id the ID to be checked
+     * @param email the email to be checked
+     * @return true if the ID and email are not taken, false otherwise
+     */
     public boolean validateNewUser(String id, String email) {
         for (User u : users) {
             if (u.getId().equals(id) || u.getEmail().equals(email)) {
@@ -416,6 +564,12 @@ public class DataBase implements java.io.Serializable {
         return true;
     }
 
+    /**
+     * Method to check if the user has connected to the platform within 24 hours after its creation
+     *
+     * @param user the user to be checked
+     * @return true if the user has connected within 24 hours, false otherwise
+     */
     public boolean check24H(User user) {
         if (!user.getChecked24H()) {
             Date startTime = user.getStartTime();
@@ -434,6 +588,12 @@ public class DataBase implements java.io.Serializable {
 
     // evaluations ----------------------------------------------------------------------------------------------------
 
+    /**
+     * Method to add a given evaluation to a given product, and to update the metrics of the corresponding buyer and seller
+     *
+     * @param product the product to be evaluated
+     * @param evaluation the evaluation to be added
+     */
     public void addEvaluationToProduct(Product product, Evaluation evaluation) {
         evaluation.getAuthor().getEvaluationsMade().put(product, evaluation);
         evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() + 1);
@@ -443,6 +603,12 @@ public class DataBase implements java.io.Serializable {
         product.updateOverallRating();
     }
 
+    /**
+     * Method to remove a given evaluation from a given product, and to update the metrics of the corresponding buyer and seller
+     *
+     * @param product the product to be evaluated
+     * @param evaluation the evaluation to be removed
+     */
     public void removeEvaluationFromProduct(Product product, Evaluation evaluation) {
         evaluation.getAuthor().getEvaluationsMade().remove(product);
         evaluation.getAuthor().getMetrics().setEvaluationsMade(evaluation.getAuthor().getMetrics().getEvaluationsMade() - 1);
@@ -454,6 +620,11 @@ public class DataBase implements java.io.Serializable {
 
     // issue queries --------------------------------------------------------------------------------------------------
 
+    /**
+     * Method to give the description of the problem to the issue query, then give a new ID to the description
+     *
+     * @param issue the issue whose description and ID are to be set
+     */
     public void createTicket(IssueQuery issue) {
         System.out.println("What is the problem with the order?");
         System.out.println("1. Wrong item received");
@@ -509,6 +680,11 @@ public class DataBase implements java.io.Serializable {
 
     // to string ------------------------------------------------------------------------------------------------------
 
+    /**
+     * Method to return a string representation of the database
+     *
+     * @return a string representation of the database
+     */
     @Override
     public String toString() {
         return "DataBase{" +

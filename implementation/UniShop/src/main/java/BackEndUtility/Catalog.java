@@ -8,6 +8,12 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * The Catalog class represents a catalog of products and sellers in UniShop.
+ * It organizes products into different categories and provides various functionalities for
+ * displaying, filtering, and ordering products and sellers.
+ *
+ */
 public class Catalog implements Serializable {
 
     // ATTRIBUTES
@@ -20,7 +26,12 @@ public class Catalog implements Serializable {
     private final HashSet<Seller> sellers_list;
 
     // CONSTRUCTOR
-
+    /**
+     * Constructs a catalog with the given list of sellers. Populates the catalog with products
+     * from each seller based on their category.
+     *
+     * @param sellers List of sellers to initialize the catalog with.
+     */
     public Catalog(ArrayList<Seller> sellers) {
         this.books_catalog = new HashSet<>();
         this.learningRes_catalog = new HashSet<>();
@@ -38,7 +49,12 @@ public class Catalog implements Serializable {
     }
 
     // GETTER
-
+    /**
+     * Returns the set of products for a specific category.
+     *
+     * @param category The category of products to retrieve.
+     * @return A HashSet of products belonging to the specified category.
+     */
     public HashSet<Product> getCatalogType(Category category) {
         return switch (category) {
             case BOOKS -> books_catalog;
@@ -52,7 +68,9 @@ public class Catalog implements Serializable {
     // UTILITIES
 
     // catalog --------------------------------------------------------------------------------------------------------
-
+    /**
+     * Displays the entire catalog organized by categories, and prints the list of sellers.
+     */
     public void displayCatalog() {
         System.out.println("Books: \n" + categoryCatalogToString(books_catalog) + "\n");
         System.out.println("Learning Resources: \n" + categoryCatalogToString(learningRes_catalog) + "\n");
@@ -67,7 +85,11 @@ public class Catalog implements Serializable {
     private void addProduct(Category category, Product product) {
         getCatalogType(category).add(product);
     }
-
+    /**
+     * Filters and prints products in the catalog based on the specified category.
+     *
+     * @param category The category by which products will be filtered and displayed.
+     */
     public void filterProductsByCategory(Category category) {
         HashSet<Product> catalog = getCatalogType(category);
         System.out.println("Products in category " + category + ":");
@@ -75,7 +97,12 @@ public class Catalog implements Serializable {
             System.out.println("\t" + product.smallToString());
         }
     }
-
+    /**
+     * Searches for a product in the catalog by its title.
+     *
+     * @param title The title of the product to search for.
+     * @return The information for the found product or null if there is no matching product.
+     */
     public Product searchProductByName(String title) {
         for (Product product : books_catalog) {
             if (product.getTitle().equals(title))
@@ -192,7 +219,12 @@ public class Catalog implements Serializable {
                 System.out.println(entry.getKey().smallToString() + "\n")
         );
     }
-
+    /**
+     * Orders and prints products in the catalog based on the specified sorting criteria.
+     *
+     * @param ascending Indicates if the sorting should be in ascending order or not.
+     * @param filter    The criteria by which products will be ordered ("price", "likes", or "averageNote").
+     */
     public void orderProducts(boolean ascending, String filter) {
         switch (filter) {
             case "price":
@@ -212,14 +244,6 @@ public class Catalog implements Serializable {
     private void displaySellers() {
         //create a method to add sellers in list when sign up
         System.out.println("List of Sellers: \n" + sellersToString() + "\n");
-    }
-
-    public Seller searchSellerByName(String id) {
-        for (Seller seller : sellers_list) {
-            if (seller.getId().equals(id))
-                return seller;
-        }
-        return null;
     }
 
     // to string ------------------------------------------------------------------------------------------------------
@@ -245,7 +269,11 @@ public class Catalog implements Serializable {
         }
         return result.toString();
     }
-
+    /**
+     * Filters sellers in the catalog based on the specified category and prints the ones that meet the criteria.
+     *
+     * @param category The category by which sellers will be filtered and displayed.
+     */
     public void filterSellersByCategory(Category category) {
         System.out.println("Sellers in category " + category + ":");
         for (Seller seller : sellers_list) {
@@ -295,7 +323,11 @@ public class Catalog implements Serializable {
                         + "\t\tAverage note: " + entry.getKey().getMetrics().getAverageNoteReceived() + "\n")
         );
     }
-
+    /**
+     * Filters and prints sellers in the catalog based on the sellers followed by a specific buyer.
+     *
+     * @param user The buyer for whom to display the sellers they are following.
+     */
     public void filterSellersByFollowing(Buyer user) {
         System.out.println("Sellers you are following:");
         for (Seller seller : user.getSellersFollowed()) {
@@ -303,7 +335,12 @@ public class Catalog implements Serializable {
                     + seller.getMetrics().getLikes() + "\n");
         }
     }
-
+    /**
+     * Orders and prints sellers in the catalog based on the specified sorting criteria.
+     *
+     * @param ascending Indicates whether the sorting should be in ascending order.
+     * @param filter    The criteria by which sellers will be ordered ("likes" or "averageNote").
+     */
     public void orderSellers(boolean ascending, String filter) {
         switch (filter) {
             case "likes":
