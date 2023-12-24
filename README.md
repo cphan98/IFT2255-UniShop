@@ -20,10 +20,18 @@ To begin using UniShop through command line, you have all the prerequisite to ge
 
 ### Installation
 * Make sure to have JDK-20 installed on your machine before usage. You can download it from [Oracle's website](https://www.oracle.com/java/technologies/javase/jdk20-archive-downloads.html)
-* Ensure to have the latest stable release of maven if you haven't already from [Maven's website](https://maven.apache.org/download.cgi)
+* Ensure to have the latest stable release of Maven if you haven't already from [Maven's website](https://maven.apache.org/download.cgi)
 
 ### Usage
-Head through the UniShop class that contains the main method and to initialize the sample data for testing purposes, which consists of at least one buyer and one seller, for example:
+Head through the UniShop class that contains the main method. When you launch UniShop for the first time, its database is going to be initialized with premade orders, products and users, and every time you quit it, the database will be saved into a serialized file at the root of the project.
+
+The base data consists of:
+* 10 buyers
+* 5 sellers
+* 20 products (4 for each product category)
+* 12 pre-made order, with each one having a different status
+
+Here are the credentials of one buyer and one seller:
 
 | Type of role        | Username           | Password  |
 | --------------------|:------------------:| ---------:|
